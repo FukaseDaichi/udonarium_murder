@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  NgZone,
+  OnDestroy,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -42,11 +49,11 @@ import { SaveDataService } from 'service/save-data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-
-  @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
+  @ViewChild('modalLayer', { read: ViewContainerRef, static: true })
+  modalLayerViewContainerRef: ViewContainerRef;
   private immediateUpdateTimer: NodeJS.Timer = null;
   private lazyUpdateTimer: NodeJS.Timer = null;
   private openPanelCount: number = 0;
@@ -62,7 +69,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private saveDataService: SaveDataService,
     private ngZone: NgZone
   ) {
-
     this.ngZone.runOutsideAngular(() => {
       EventSystem;
       Network;
@@ -99,21 +105,51 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let noneIconImage = ImageStorage.instance.add(fileContext);
 
     AudioPlayer.resumeAudioContext();
-    PresetSound.dicePick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
-    PresetSound.dicePut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
-    PresetSound.diceRoll1 = AudioStorage.instance.add('./assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3').identifier;
-    PresetSound.diceRoll2 = AudioStorage.instance.add('./assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3').identifier;
-    PresetSound.cardDraw = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/card-turn-over1.mp3').identifier;
-    PresetSound.cardPick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
-    PresetSound.cardPut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
-    PresetSound.cardShuffle = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/card-open1.mp3').identifier;
-    PresetSound.piecePick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
-    PresetSound.piecePut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
-    PresetSound.blockPick = AudioStorage.instance.add('./assets/sounds/tm2/tm2_pon002.wav').identifier;
-    PresetSound.blockPut = AudioStorage.instance.add('./assets/sounds/tm2/tm2_pon002.wav').identifier;
-    PresetSound.lock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
-    PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
-    PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
+    PresetSound.dicePick = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
+    ).identifier;
+    PresetSound.dicePut = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/book-stack1.mp3'
+    ).identifier;
+    PresetSound.diceRoll1 = AudioStorage.instance.add(
+      './assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3'
+    ).identifier;
+    PresetSound.diceRoll2 = AudioStorage.instance.add(
+      './assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3'
+    ).identifier;
+    PresetSound.cardDraw = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/card-turn-over1.mp3'
+    ).identifier;
+    PresetSound.cardPick = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
+    ).identifier;
+    PresetSound.cardPut = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/book-stack1.mp3'
+    ).identifier;
+    PresetSound.cardShuffle = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/card-open1.mp3'
+    ).identifier;
+    PresetSound.piecePick = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
+    ).identifier;
+    PresetSound.piecePut = AudioStorage.instance.add(
+      './assets/sounds/soundeffect-lab/book-stack1.mp3'
+    ).identifier;
+    PresetSound.blockPick = AudioStorage.instance.add(
+      './assets/sounds/tm2/tm2_pon002.wav'
+    ).identifier;
+    PresetSound.blockPut = AudioStorage.instance.add(
+      './assets/sounds/tm2/tm2_pon002.wav'
+    ).identifier;
+    PresetSound.lock = AudioStorage.instance.add(
+      './assets/sounds/tm2/tm2_switch001.wav'
+    ).identifier;
+    PresetSound.unlock = AudioStorage.instance.add(
+      './assets/sounds/tm2/tm2_switch001.wav'
+    ).identifier;
+    PresetSound.sweep = AudioStorage.instance.add(
+      './assets/sounds/tm2/tm2_swing003.wav'
+    ).identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -136,48 +172,74 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
 
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
-      .on('DELETE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
-      .on('SYNCHRONIZE_AUDIO_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
-      .on('SYNCHRONIZE_FILE_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
-      .on<AppConfig>('LOAD_CONFIG', event => {
+      .on('UPDATE_GAME_OBJECT', (event) => {
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
+      })
+      .on('DELETE_GAME_OBJECT', (event) => {
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
+      })
+      .on('SYNCHRONIZE_AUDIO_LIST', (event) => {
+        if (event.isSendFromSelf) this.lazyNgZoneUpdate(false);
+      })
+      .on('SYNCHRONIZE_FILE_LIST', (event) => {
+        if (event.isSendFromSelf) this.lazyNgZoneUpdate(false);
+      })
+      .on<AppConfig>('LOAD_CONFIG', (event) => {
         console.log('LOAD_CONFIG !!!');
         Network.setApiKey(event.data.webrtc.key);
         Network.open();
       })
-      .on<File>('FILE_LOADED', event => {
+      .on<File>('FILE_LOADED', (event) => {
         this.lazyNgZoneUpdate(false);
       })
-      .on('OPEN_NETWORK', event => {
+      .on('OPEN_NETWORK', (event) => {
         console.log('OPEN_NETWORK', event.data.peerId);
         PeerCursor.myCursor.peerId = Network.peerContext.peerId;
         PeerCursor.myCursor.userId = Network.peerContext.userId;
       })
-      .on('CLOSE_NETWORK', event => {
+      .on('CLOSE_NETWORK', (event) => {
         console.log('CLOSE_NETWORK', event.data.peerId);
         this.ngZone.run(async () => {
           if (1 < Network.peerIds.length) {
-            await this.modalService.open(TextViewComponent, { title: 'ネットワークエラー', text: 'ネットワーク接続に何らかの異常が発生しました。\nこの表示以後、接続が不安定であれば、ページリロードと再接続を試みてください。' });
+            await this.modalService.open(TextViewComponent, {
+              title: 'ネットワークエラー',
+              text: 'ネットワーク接続に何らかの異常が発生しました。\nこの表示以後、接続が不安定であれば、ページリロードと再接続を試みてください。',
+            });
           } else {
-            await this.modalService.open(TextViewComponent, { title: 'ネットワークエラー', text: '接続情報が破棄されました。\nこのウィンドウを閉じると再接続を試みます。' });
+            await this.modalService.open(TextViewComponent, {
+              title: 'ネットワークエラー',
+              text: '接続情報が破棄されました。\nこのウィンドウを閉じると再接続を試みます。',
+            });
             Network.open();
           }
         });
       })
-      .on('CONNECT_PEER', event => {
+      .on('CONNECT_PEER', (event) => {
         if (event.isSendFromSelf) this.chatMessageService.calibrateTimeOffset();
         this.lazyNgZoneUpdate(event.isSendFromSelf);
       })
-      .on('DISCONNECT_PEER', event => {
+      .on('DISCONNECT_PEER', (event) => {
         this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
   }
 
   ngAfterViewInit() {
-    PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
+    PanelService.defaultParentViewContainerRef =
+      ModalService.defaultParentViewContainerRef =
+      ContextMenuService.defaultParentViewContainerRef =
+        this.modalLayerViewContainerRef;
     setTimeout(() => {
-      this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      this.panelService.open(PeerMenuComponent, {
+        width: 500,
+        height: 450,
+        left: 100,
+      });
+      this.panelService.open(ChatWindowComponent, {
+        width: 700,
+        height: 400,
+        left: 100,
+        top: 450,
+      });
     }, 0);
   }
 
@@ -186,8 +248,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   open(componentName: string) {
-    let component: { new(...args: any[]): any } = null;
-    let option: PanelOption = { width: 450, height: 600, left: 100 }
+    let component: { new (...args: any[]): any } = null;
+    let option: PanelOption = { width: 450, height: 600, left: 100 };
     switch (componentName) {
       case 'PeerMenuComponent':
         component = PeerMenuComponent;
@@ -218,8 +280,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
     }
     if (component) {
-      option.top = (this.openPanelCount % 10 + 1) * 20;
-      option.left = 100 + (this.openPanelCount % 20 + 1) * 5;
+      option.top = ((this.openPanelCount % 10) + 1) * 20;
+      option.left = 100 + ((this.openPanelCount % 20) + 1) * 5;
       this.openPanelCount = this.openPanelCount + 1;
       this.panelService.open(component, option);
     }
@@ -230,10 +292,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.isSaveing = true;
     this.progresPercent = 0;
 
-    let roomName = Network.peerContext && 0 < Network.peerContext.roomName.length
-      ? Network.peerContext.roomName
-      : 'ルームデータ';
-    await this.saveDataService.saveRoomAsync(roomName, percent => {
+    let roomName =
+      Network.peerContext && 0 < Network.peerContext.roomName.length
+        ? Network.peerContext.roomName
+        : 'ルームデータ';
+    await this.saveDataService.saveRoomAsync(roomName, (percent) => {
       this.progresPercent = percent;
     });
 
@@ -259,7 +322,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           clearTimeout(this.lazyUpdateTimer);
           this.lazyUpdateTimer = null;
         }
-        this.ngZone.run(() => { });
+        this.ngZone.run(() => {});
       }, 0);
     } else {
       if (this.lazyUpdateTimer !== null) return;
@@ -269,7 +332,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           clearTimeout(this.immediateUpdateTimer);
           this.immediateUpdateTimer = null;
         }
-        this.ngZone.run(() => { });
+        this.ngZone.run(() => {});
       }, 100);
     }
   }

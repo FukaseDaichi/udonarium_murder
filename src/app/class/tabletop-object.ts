@@ -16,12 +16,14 @@ export class TabletopObject extends ObjectNode {
   @SyncVar() location: TabletopLocation = {
     name: 'table',
     x: 0,
-    y: 0
+    y: 0,
   };
 
   @SyncVar() posZ: number = 0;
 
-  get isVisibleOnTable(): boolean { return this.location.name === 'table'; }
+  get isVisibleOnTable(): boolean {
+    return this.location.name === 'table';
+  }
 
   private _imageFile: ImageFile = ImageFile.Empty;
   private _dataElements: { [name: string]: string } = {};
@@ -29,44 +31,89 @@ export class TabletopObject extends ObjectNode {
   // GameDataElement getter/setter
   get rootDataElement(): DataElement {
     for (let node of this.children) {
-      if (node.getAttribute('name') === this.aliasName) return <DataElement>node;
+      if (node.getAttribute('name') === this.aliasName)
+        return <DataElement>node;
     }
     return null;
   }
 
-  get imageDataElement(): DataElement { return this.getElement('image'); }
-  get commonDataElement(): DataElement { return this.getElement('common'); }
-  get detailDataElement(): DataElement { return this.getElement('detail'); }
+  get imageDataElement(): DataElement {
+    return this.getElement('image');
+  }
+  get commonDataElement(): DataElement {
+    return this.getElement('common');
+  }
+  get detailDataElement(): DataElement {
+    return this.getElement('detail');
+  }
 
   get imageFile(): ImageFile {
     if (!this.imageDataElement) return this._imageFile;
-    let imageIdElement: DataElement = this.imageDataElement.getFirstElementByName('imageIdentifier');
+    let imageIdElement: DataElement =
+      this.imageDataElement.getFirstElementByName('imageIdentifier');
     if (imageIdElement && this._imageFile.identifier !== imageIdElement.value) {
-      let file: ImageFile = ImageStorage.instance.get(<string>imageIdElement.value);
+      let file: ImageFile = ImageStorage.instance.get(
+        <string>imageIdElement.value
+      );
       this._imageFile = file ? file : ImageFile.Empty;
     }
     return this._imageFile;
+  }
+
+  // 表
+  get frontImage(): ImageFile {
+    return this.imageFile;
+  }
+
+  // 裏
+  get backImage(): ImageFile {
+    return this.imageFile;
   }
 
   protected createDataElements() {
     this.initialize();
     let aliasName: string = this.aliasName;
     if (!this.rootDataElement) {
-      let rootElement = DataElement.create(aliasName, '', {}, aliasName + '_' + this.identifier);
+      let rootElement = DataElement.create(
+        aliasName,
+        '',
+        {},
+        aliasName + '_' + this.identifier
+      );
       this.appendChild(rootElement);
     }
 
     if (!this.imageDataElement) {
-      this.rootDataElement.appendChild(DataElement.create('image', '', {}, 'image_' + this.identifier));
-      this.imageDataElement.appendChild(DataElement.create('imageIdentifier', '', { type: 'image' }, 'imageIdentifier_' + this.identifier));
+      this.rootDataElement.appendChild(
+        DataElement.create('image', '', {}, 'image_' + this.identifier)
+      );
+      this.imageDataElement.appendChild(
+        DataElement.create(
+          'imageIdentifier',
+          '',
+          { type: 'image' },
+          'imageIdentifier_' + this.identifier
+        )
+      );
     }
-    if (!this.commonDataElement) this.rootDataElement.appendChild(DataElement.create('common', '', {}, 'common_' + this.identifier));
-    if (!this.detailDataElement) this.rootDataElement.appendChild(DataElement.create('detail', '', {}, 'detail_' + this.identifier));
+    if (!this.commonDataElement)
+      this.rootDataElement.appendChild(
+        DataElement.create('common', '', {}, 'common_' + this.identifier)
+      );
+    if (!this.detailDataElement)
+      this.rootDataElement.appendChild(
+        DataElement.create('detail', '', {}, 'detail_' + this.identifier)
+      );
   }
 
-  protected getElement(name: string, from: DataElement = this.rootDataElement): DataElement {
+  protected getElement(
+    name: string,
+    from: DataElement = this.rootDataElement
+  ): DataElement {
     if (!from) return null;
-    let element: DataElement = this._dataElements[name] ? ObjectStore.instance.get(this._dataElements[name]) : null;
+    let element: DataElement = this._dataElements[name]
+      ? ObjectStore.instance.get(this._dataElements[name])
+      : null;
     if (!element || !from.contains(element)) {
       element = from.getFirstElementByName(name);
       this._dataElements[name] = element ? element.identifier : null;
@@ -74,7 +121,10 @@ export class TabletopObject extends ObjectNode {
     return element;
   }
 
-  protected getCommonValue<T extends string | number>(elementName: string, defaultValue: T): T {
+  protected getCommonValue<T extends string | number>(
+    elementName: string,
+    defaultValue: T
+  ): T {
     let element = this.getElement(elementName, this.commonDataElement);
     if (!element) return defaultValue;
 
@@ -88,7 +138,9 @@ export class TabletopObject extends ObjectNode {
 
   protected setCommonValue(elementName: string, value: any) {
     let element = this.getElement(elementName, this.commonDataElement);
-    if (!element) { return; }
+    if (!element) {
+      return;
+    }
     element.value = value;
   }
 
@@ -99,7 +151,9 @@ export class TabletopObject extends ObjectNode {
   }
 
   protected setImageFile(elementName: string, imageFile: ImageFile) {
-    let image = imageFile ? this.getElement(elementName, this.imageDataElement) : null;
+    let image = imageFile
+      ? this.getElement(elementName, this.imageDataElement)
+      : null;
     if (!image) return;
     image.value = imageFile.identifier;
   }

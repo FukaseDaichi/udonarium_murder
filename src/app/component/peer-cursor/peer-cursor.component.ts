@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
 import { EventSystem, Network } from '@udonarium/core/system';
 import { ResettableTimeout } from '@udonarium/core/system/util/resettable-timeout';
@@ -11,17 +20,22 @@ import { PointerCoordinate } from 'service/pointer-device.service';
 @Component({
   selector: 'peer-cursor, [peer-cursor]',
   templateUrl: './peer-cursor.component.html',
-  styleUrls: ['./peer-cursor.component.css']
+  styleUrls: ['./peer-cursor.component.css'],
 })
 export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild('cursor') cursorElementRef: ElementRef;
   @ViewChild('opacity') opacityElementRef: ElementRef;
   @Input() cursor: PeerCursor = PeerCursor.myCursor;
 
-  get iconUrl(): string { return this.cursor.image.url; }
-  get name(): string { return this.cursor.name }
-  get isMine(): boolean { return this.cursor.isMine; }
+  get iconUrl(): string {
+    return this.cursor.image.url;
+  }
+  get name(): string {
+    return this.cursor.name;
+  }
+  get isMine(): boolean {
+    return this.cursor.isMine;
+  }
 
   private cursorElement: HTMLElement = null;
   private opacityElement: HTMLElement = null;
@@ -43,20 +57,19 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
     private batchService: BatchService,
     private coordinateService: CoordinateService,
     private ngZone: NgZone
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (!this.isMine) {
-      EventSystem.register(this)
-        .on('CURSOR_MOVE', event => {
-          if (event.sendFrom !== this.cursor.peerId) return;
-          this.batchService.add(() => {
-            this.stopTransition();
-            this.setAnimatedTransition();
-            this.setPosition(event.data[0], event.data[1], event.data[2]);
-            this.resetFadeOut();
-          }, this);
-        });
+      EventSystem.register(this).on('CURSOR_MOVE', (event) => {
+        if (event.sendFrom !== this.cursor.peerId) return;
+        this.batchService.add(() => {
+          this.stopTransition();
+          this.setAnimatedTransition();
+          this.setPosition(event.data[0], event.data[1], event.data[2]);
+          this.resetFadeOut();
+        }, this);
+      });
     }
   }
 
@@ -102,7 +115,10 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!document.getElementById('app-table-layer').contains(target)) return;
 
     let coordinate: PointerCoordinate = { x: x, y: y, z: 0 };
-    coordinate = this.coordinateService.calcTabletopLocalCoordinate(coordinate, target);
+    coordinate = this.coordinateService.calcTabletopLocalCoordinate(
+      coordinate,
+      target
+    );
 
     EventSystem.call('CURSOR_MOVE', [coordinate.x, coordinate.y, coordinate.z]);
   }
@@ -118,14 +134,19 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private stopTransition() {
-    this.cursorElement.style.transform = window.getComputedStyle(this.cursorElement).transform;
+    this.cursorElement.style.transform = window.getComputedStyle(
+      this.cursorElement
+    ).transform;
   }
 
   private setAnimatedTransition() {
-    this.cursorElement.style.transition = `transform ${this.delayMs + 33}ms linear, opacity 0.5s ease-out`;
+    this.cursorElement.style.transition = `transform ${
+      this.delayMs + 33
+    }ms linear, opacity 0.5s ease-out`;
   }
 
   private setPosition(x: number, y: number, z: number) {
-    this.cursorElement.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px) translateZ(' + z + 'px)';
+    this.cursorElement.style.transform =
+      'translateX(' + x + 'px) translateY(' + y + 'px) translateZ(' + z + 'px)';
   }
 }

@@ -3,7 +3,9 @@ import * as SHA256 from 'crypto-js/sha256';
 
 import { base } from '../util/base-x';
 
-const Base62 = base('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+const Base62 = base(
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+);
 const roomIdPattern = /^(\w{6})(\w{3})(\w*)-(\w*)/i;
 
 export interface IPeerContext {
@@ -29,8 +31,12 @@ export class PeerContext implements IPeerContext {
   digestPassword: string = '';
   isOpen: boolean = false;
 
-  get isRoom(): boolean { return 0 < this.roomId.length; }
-  get hasPassword(): boolean { return 0 < this.password.length + this.digestPassword.length; }
+  get isRoom(): boolean {
+    return 0 < this.roomId.length;
+  }
+  get hasPassword(): boolean {
+    return 0 < this.password.length + this.digestPassword.length;
+  }
 
   private constructor(peerId: string) {
     this.parse(peerId);
@@ -65,8 +71,13 @@ export class PeerContext implements IPeerContext {
     return new PeerContext(peerId);
   }
 
-  static create(userId: string): PeerContext
-  static create(userId: string, roomId: string, roomName: string, password: string): PeerContext
+  static create(userId: string): PeerContext;
+  static create(
+    userId: string,
+    roomId: string,
+    roomName: string,
+    password: string
+  ): PeerContext;
   static create(...args: any[]): PeerContext {
     if (args.length <= 1) {
       return PeerContext._create.apply(this, args);
@@ -83,10 +94,17 @@ export class PeerContext implements IPeerContext {
     return peerContext;
   }
 
-  private static _createRoom(userId: string = '', roomId: string = '', roomName: string = '', password: string = ''): PeerContext {
+  private static _createRoom(
+    userId: string = '',
+    roomId: string = '',
+    roomName: string = '',
+    password: string = ''
+  ): PeerContext {
     let digestUserId = this.generateId('******');
     let digestPassword = calcDigestPassword(roomId, password);
-    let peerId = `${digestUserId}${roomId}${lzbase62.compress(roomName)}-${digestPassword}`;
+    let peerId = `${digestUserId}${roomId}${lzbase62.compress(
+      roomName
+    )}-${digestPassword}`;
 
     let peerContext = new PeerContext(peerId);
     peerContext.userId = userId;
@@ -95,10 +113,11 @@ export class PeerContext implements IPeerContext {
   }
 
   static generateId(format: string = '********'): string {
-    const h: string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const h: string =
+      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     let k: string = format;
-    k = format.replace(/\*/g, c => h[Math.floor(Math.random() * (h.length))]);
+    k = format.replace(/\*/g, (c) => h[Math.floor(Math.random() * h.length)]);
 
     return k;
   }

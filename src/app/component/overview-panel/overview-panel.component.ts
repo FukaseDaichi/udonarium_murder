@@ -1,4 +1,10 @@
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  keyframes,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -9,11 +15,14 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { Card } from '@udonarium/card';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
+import { Observable, Subscription } from 'rxjs';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
@@ -25,46 +34,107 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   animations: [
     trigger('fadeInOut', [
       transition('void => *', [
-        animate('100ms ease-out', keyframes([
-          style({ opacity: 0, offset: 0 }),
-          style({ opacity: 1, offset: 1.0 })
-        ]))
+        animate(
+          '100ms ease-out',
+          keyframes([
+            style({ opacity: 0, offset: 0 }),
+            style({ opacity: 1, offset: 1.0 }),
+          ])
+        ),
       ]),
       transition('* => void', [
-        animate('100ms ease-in', keyframes([
-          style({ opacity: 1, offset: 0 }),
-          style({ opacity: 0, offset: 1.0 })
-        ]))
-      ])
-    ])
-  ]
+        animate(
+          '100ms ease-in',
+          keyframes([
+            style({ opacity: 1, offset: 0 }),
+            style({ opacity: 0, offset: 1.0 }),
+          ])
+        ),
+      ]),
+    ]),
+  ],
 })
 export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('draggablePanel', { static: true }) draggablePanel: ElementRef<HTMLElement>;
+  @ViewChild('draggablePanel', { static: true })
+  draggablePanel: ElementRef<HTMLElement>;
   @Input() tabletopObject: TabletopObject = null;
 
   @Input() left: number = 0;
   @Input() top: number = 0;
 
-  get imageUrl(): string { return this.tabletopObject && this.tabletopObject.imageFile ? this.tabletopObject.imageFile.url : ''; }
-  get hasImage(): boolean { return 0 < this.imageUrl.length; }
+  // GMフラグ
+  obs: Observable<boolean>;
+  subs: Subscription;
+  isGM: boolean;
 
-  get inventoryDataElms(): DataElement[] { return this.tabletopObject ? this.getInventoryTags(this.tabletopObject) : []; }
-  get dataElms(): DataElement[] { return this.tabletopObject && this.tabletopObject.detailDataElement ? this.tabletopObject.detailDataElement.children as DataElement[] : []; }
-  get hasDataElms(): boolean { return 0 < this.dataElms.length; }
+  get frontUrl(): string {
+    return this.tabletopObject && this.tabletopObject.imageFile
+      ? this.tabletopObject.frontImage.url
+      : '';
+  }
 
-  get newLineString(): string { return this.inventoryService.newLineString; }
-  get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
+  get backUrl(): string {
+    return this.tabletopObject && this.tabletopObject.imageFile
+      ? this.tabletopObject.backImage.url
+      : '';
+  }
 
-  get pointerEventsStyle(): any { return { 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }; }
+  get imageUrl(): string {
+    return this.tabletopObject && this.tabletopObject.imageFile
+      ? this.tabletopObject.imageFile.url
+      : '';
+  }
+  get hasImage(): boolean {
+    return 0 < this.imageUrl.length;
+  }
+
+  get inventoryDataElms(): DataElement[] {
+    return this.tabletopObject
+      ? this.getInventoryTags(this.tabletopObject)
+      : [];
+  }
+  get dataElms(): DataElement[] {
+    return this.tabletopObject && this.tabletopObject.detailDataElement
+      ? (this.tabletopObject.detailDataElement.children as DataElement[])
+      : [];
+  }
+  get hasDataElms(): boolean {
+    return 0 < this.dataElms.length;
+  }
+
+  get newLineString(): string {
+    return this.inventoryService.newLineString;
+  }
+  get isPointerDragging(): boolean {
+    return this.pointerDeviceService.isDragging;
+  }
+
+  get pointerEventsStyle(): any {
+    return {
+      'is-pointer-events-auto': !this.isPointerDragging,
+      'pointer-events-none': this.isPointerDragging,
+    };
+  }
 
   isOpenImageView: boolean = false;
 
   constructor(
     private inventoryService: GameObjectInventoryService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
-  ) { }
+    private pointerDeviceService: PointerDeviceService,
+    private appCustomService: AppConfigCustomService
+  ) {}
+
+  ngOnInit() {
+    //GMフラグ管理
+    this.obs = this.appCustomService.isViewer$;
+    this.subs = this.obs.subscribe((flg) => {
+      this.isGM = flg;
+      // 同期をする
+      this.changeDetector.markForCheck();
+    });
+    this.isGM = this.appCustomService.dataViewer;
+  }
 
   ngAfterViewInit() {
     this.initPanelPosition();
@@ -72,22 +142,29 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
       this.adjustPositionRoot();
     }, 16);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', -1000, event => {
+      .on('UPDATE_GAME_OBJECT', -1000, (event) => {
         let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.tabletopObject || !object || !(object instanceof ObjectNode)) return;
-        if (this.tabletopObject === object || this.tabletopObject.contains(object)) {
+        if (!this.tabletopObject || !object || !(object instanceof ObjectNode))
+          return;
+        if (
+          this.tabletopObject === object ||
+          this.tabletopObject.contains(object)
+        ) {
           this.changeDetector.markForCheck();
         }
       })
-      .on('SYNCHRONIZE_FILE_LIST', event => {
+      .on('SYNCHRONIZE_FILE_LIST', (event) => {
         this.changeDetector.markForCheck();
       })
-      .on('UPDATE_FILE_RESOURE', -1000, event => {
+      .on('UPDATE_FILE_RESOURE', -1000, (event) => {
         this.changeDetector.markForCheck();
       });
   }
 
   ngOnDestroy() {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
     EventSystem.unregister(this);
   }
 
@@ -154,6 +231,8 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   private getInventoryTags(gameObject: TabletopObject): DataElement[] {
-    return this.inventoryService.tableInventory.dataElementMap.get(gameObject.identifier);
+    return this.inventoryService.tableInventory.dataElementMap.get(
+      gameObject.identifier
+    );
   }
 }

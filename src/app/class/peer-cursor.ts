@@ -1,7 +1,10 @@
 import { ImageFile } from './core/file-storage/image-file';
 import { ImageStorage } from './core/file-storage/image-storage';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
-import { GameObject, ObjectContext } from './core/synchronize-object/game-object';
+import {
+  GameObject,
+  ObjectContext,
+} from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
 import { EventSystem, Network } from './core/system';
 
@@ -17,23 +20,27 @@ export class PeerCursor extends GameObject {
   @SyncVar() imageIdentifier: string = '';
 
   static myCursor: PeerCursor = null;
+
   private static userIdMap: Map<UserId, ObjectIdentifier> = new Map();
   private static peerIdMap: Map<PeerId, ObjectIdentifier> = new Map();
 
-  get isMine(): boolean { return (PeerCursor.myCursor && PeerCursor.myCursor === this); }
-  get image(): ImageFile { return ImageStorage.instance.get(this.imageIdentifier); }
+  get isMine(): boolean {
+    return PeerCursor.myCursor && PeerCursor.myCursor === this;
+  }
+  get image(): ImageFile {
+    return ImageStorage.instance.get(this.imageIdentifier);
+  }
 
   // GameObject Lifecycle
   onStoreAdded() {
     super.onStoreAdded();
     if (!this.isMine) {
-      EventSystem.register(this)
-        .on('DISCONNECT_PEER', -1000, event => {
-          if (event.data.peerId !== this.peerId) return;
-          PeerCursor.userIdMap.delete(this.userId);
-          PeerCursor.peerIdMap.delete(this.peerId);
-          ObjectStore.instance.remove(this);
-        });
+      EventSystem.register(this).on('DISCONNECT_PEER', -1000, (event) => {
+        if (event.data.peerId !== this.peerId) return;
+        PeerCursor.userIdMap.delete(this.userId);
+        PeerCursor.peerIdMap.delete(this.peerId);
+        ObjectStore.instance.remove(this);
+      });
     }
   }
 
@@ -53,9 +60,14 @@ export class PeerCursor extends GameObject {
     return this.find(PeerCursor.peerIdMap, peerId, false);
   }
 
-  private static find(map: Map<string, string>, key: string, isUserId: boolean): PeerCursor {
+  private static find(
+    map: Map<string, string>,
+    key: string,
+    isUserId: boolean
+  ): PeerCursor {
     let identifier = map.get(key);
-    if (identifier != null && ObjectStore.instance.get(identifier)) return ObjectStore.instance.get<PeerCursor>(identifier);
+    if (identifier != null && ObjectStore.instance.get(identifier))
+      return ObjectStore.instance.get<PeerCursor>(identifier);
     let cursors = ObjectStore.instance.getObjects<PeerCursor>(PeerCursor);
     for (let cursor of cursors) {
       let id = isUserId ? cursor.userId : cursor.peerId;
@@ -94,6 +106,6 @@ export class PeerCursor extends GameObject {
   }
 
   isPeerAUdon(): boolean {
-    return /u.*d.*o.*n/ig.exec(this.peerId) != null;
+    return /u.*d.*o.*n/gi.exec(this.peerId) != null;
   }
 }

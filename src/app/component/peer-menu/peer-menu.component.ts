@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
@@ -10,37 +17,46 @@ import { LobbyComponent } from 'component/lobby/lobby.component';
 import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
 
 @Component({
   selector: 'peer-menu',
   templateUrl: './peer-menu.component.html',
-  styleUrls: ['./peer-menu.component.css']
+  styleUrls: ['./peer-menu.component.css'],
 })
 export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
-
   targetUserId: string = '';
-  networkService = Network
+  networkService = Network;
   gameRoomService = ObjectStore.instance;
   help: string = '';
 
-  get myPeer(): PeerCursor { return PeerCursor.myCursor; }
+  @Input() isViewer: boolean = false;
+
+  get myPeer(): PeerCursor {
+    return PeerCursor.myCursor;
+  }
 
   constructor(
     private ngZone: NgZone,
     private modalService: ModalService,
     private panelService: PanelService,
-    public appConfigService: AppConfigService
-  ) { }
+    public appConfigService: AppConfigService,
+    private appCustomService: AppConfigCustomService
+  ) {}
+
+  output() {
+    this.appCustomService.isViewer.next(this.isViewer);
+    this.appCustomService.dataViewer = this.isViewer;
+  }
 
   ngOnInit() {
-    Promise.resolve().then(() => this.panelService.title = '接続情報');
+    Promise.resolve().then(() => (this.panelService.title = '接続情報'));
   }
 
   ngAfterViewInit() {
-    EventSystem.register(this)
-      .on('OPEN_NETWORK', event => {
-        this.ngZone.run(() => { });
-      });
+    EventSystem.register(this).on('OPEN_NETWORK', (event) => {
+      this.ngZone.run(() => {});
+    });
   }
 
   ngOnDestroy() {
@@ -48,7 +64,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeIcon() {
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+    this.modalService.open<string>(FileSelecterComponent).then((value) => {
       if (!this.myPeer || !value) return;
       this.myPeer.imageIdentifier = value;
     });
@@ -98,11 +114,17 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
       if (conectPeers.length < 1) {
-        this.help = '前回接続していたルームが見つかりませんでした。既に解散しているかもしれません。';
+        this.help =
+          '前回接続していたルームが見つかりませんでした。既に解散しているかもしれません。';
         console.warn('Room is already closed...');
         return;
       }
-      Network.open(PeerContext.generateId(), conectPeers[0].roomId, conectPeers[0].roomName, conectPeers[0].password);
+      Network.open(
+        PeerContext.generateId(),
+        conectPeers[0].roomId,
+        conectPeers[0].roomName,
+        conectPeers[0].password
+      );
     } else {
       console.warn('connectPeers ' + conectPeers.length);
       Network.open();
@@ -111,7 +133,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     PeerCursor.myCursor.peerId = Network.peerId;
 
     let listener = EventSystem.register(this);
-    listener.on('OPEN_NETWORK', event => {
+    listener.on('OPEN_NETWORK', (event) => {
       console.log('OPEN_NETWORK', event.data.peerId);
       EventSystem.unregisterListener(listener);
       ObjectStore.instance.clearDeleteHistory();
@@ -122,7 +144,12 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   showLobby() {
-    this.modalService.open(LobbyComponent, { width: 700, height: 400, left: 0, top: 400 });
+    this.modalService.open(LobbyComponent, {
+      width: 700,
+      height: 400,
+      left: 0,
+      top: 400,
+    });
   }
 
   findUserId(peerId: string) {

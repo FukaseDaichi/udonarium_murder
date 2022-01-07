@@ -1,6 +1,6 @@
 # ユドナリウム
 
-[ユドナリウム（Udonarium）][1]はWebブラウザで動作するボードゲームオンラインセッション支援ツールです。
+[ユドナリウム（Udonarium）][1]は Web ブラウザで動作するボードゲームオンラインセッション支援ツールです。
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TK11235/udonarium/blob/master/LICENSE)
 
@@ -9,7 +9,7 @@
 ## クイックスタート
 
 今すぐ試したり利用したりできる公開サーバを用意しています。  
-推奨ブラウザはデスクトップ版Google Chromeです。
+推奨ブラウザはデスクトップ版 Google Chrome です。
 
 [**ユドナリウムをはじめる**][1]
 
@@ -23,9 +23,10 @@
 - [License](#license)
 
 ## 機能
+
 - **ブラウザ間通信**
-  - WebRTCを利用したブラウザ間通信を実現しています。  
-    サーバサイドを介さずに全ての機能をWebブラウザ上で完結させることを目指しています。
+  - WebRTC を利用したブラウザ間通信を実現しています。  
+    サーバサイドを介さずに全ての機能を Web ブラウザ上で完結させることを目指しています。
 - **軽量 & リアルタイム**
   - 軽量で快適に動作し、ユーザの操作は他のユーザにリアルタイムに反映されます。
 - **遊ぶ機能**
@@ -34,22 +35,22 @@
   - 立体地形
   - コマ、カード、共有メモ
   - チャット送受信、チャットパレット
-  - ダイスボット（[BCDice](https://github.com/bcdice/BCDice)を[Opal](http://opalrb.com/)でJavaScriptにトランスパイル）
+  - ダイスボット（[BCDice](https://github.com/bcdice/BCDice)を[Opal](http://opalrb.com/)で JavaScript にトランスパイル）
   - 画像ファイル共有
-  - BGM再生
-  - セーブデータ生成（ZIP形式）
+  - BGM 再生
+  - セーブデータ生成（ZIP 形式）
 
 ## サーバ設置
 
-ユーザ自身でWebサーバを用意し、そのサーバにユドナリウムを設置して利用することができます。  
+ユーザ自身で Web サーバを用意し、そのサーバにユドナリウムを設置して利用することができます。
 
-1. [リリース版（**udonarium.zip**）](../../releases/latest)をダウンロードして解凍し、Webサーバに配置してください。  
-**開発者向けのソースコードをダウンロードしないように注意して下さい。**
-1. [SkyWay](https://webrtc.ecl.ntt.com/)のAPIキーを取得し、APIキー情報を`assets/config.yaml`に記述します。
+1. [リリース版（**udonarium.zip**）](../../releases/latest)をダウンロードして解凍し、Web サーバに配置してください。  
+   **開発者向けのソースコードをダウンロードしないように注意して下さい。**
+1. [SkyWay](https://webrtc.ecl.ntt.com/)の API キーを取得し、API キー情報を`assets/config.yaml`に記述します。
 1. サーバに配置したユドナリウムの`index.html`にアクセスして動作することを確認してみてください。  
-上手く動作しない時は付属の`上手くサーバで動かない時Q&A.txt`を参照してください。
+   上手く動作しない時は付属の`上手くサーバで動かない時Q&A.txt`を参照してください。
 
-ユドナリウムはサーバーサイドの処理を持たないので、CGIやデータベースは必要はありません。
+ユドナリウムはサーバーサイドの処理を持たないので、CGI やデータベースは必要はありません。
 
 ## 開発者クイックスタート
 
@@ -57,12 +58,13 @@
 開発環境を用意してビルドする必要があります。
 
 ### 開発環境
-[Node.js](https://nodejs.org/)と[npm](https://www.npmjs.com/)が必要です。  
 
-言語はTypeScriptを用い、[Angular](https://angular.io/)で実装されています。  
-開発を効率化するCLIツールとして[Angular CLI](https://github.com/angular/angular-cli)を利用しています。
+[Node.js](https://nodejs.org/)と[npm](https://www.npmjs.com/)が必要です。
 
-インストール手順は[Angular公式ページのセットアップ](https://angular.jp/guide/setup-local)が参考になります。
+言語は TypeScript を用い、[Angular](https://angular.io/)で実装されています。  
+開発を効率化する CLI ツールとして[Angular CLI](https://github.com/angular/angular-cli)を利用しています。
+
+インストール手順は[Angular 公式ページのセットアップ](https://angular.jp/guide/setup-local)が参考になります。
 
 #### Angular CLI
 
@@ -82,43 +84,17 @@ ng serve
 
 #### SkyWay
 
-このアプリケーションは通信処理にWebRTCを使用しています。  
-WebRTC向けのシグナリングサーバとして[SkyWay](https://webrtc.ecl.ntt.com/)を利用しているため、動作確認のためにSkyWayのAPIキーが必要です。
+このアプリケーションは通信処理に WebRTC を使用しています。  
+WebRTC 向けのシグナリングサーバとして[SkyWay](https://webrtc.ecl.ntt.com/)を利用しているため、動作確認のために SkyWay の API キーが必要です。
 
-取得したAPIキーの情報は`src/assets/config.yaml`に記述します。
+取得した API キーの情報は`src/assets/config.yaml`に記述します。
 
-## 開発に寄与する
+#### 実際の開発手順コマンド
 
-バグを報告したり、ドキュメントを改善したり、開発の手助けをしたりしたいですか？
-
-報告や要望の窓口として[GitHubのIssue](https://github.com/TK11235/udonarium/issues)、または[Twitter](https://twitter.com/TK11235)を利用できます。  
-コードの[Pull Request](https://github.com/TK11235/udonarium/pulls)も歓迎です。
-
-### 報告
-
-バグ報告では、バグを再現できる必要十分な条件について、分かっている範囲で詳しく書いてください。  
-基本的には「報告を受けて改修 → 次回更新時に反映」の流れで対応する予定です。
-
-### 要望
-
-機能要望では「何故それが必要なのか」について説明があると良いです。  
-ただ、難易度や優先度の都合によりそっとしたままになる可能性があります。
-
-### Pull Request
-
-作成したコードやドキュメントをこのリポジトリに反映させたい時はPull Request（PR）を送ってください。  
-
-PRのコードが完全ではない場合でも作業中PRとして送ることができます。  
-その場合、作業中である旨をPRタイトルか説明文に付け加えてください。
-
-## 今後の開発
-
-最低限必要となる機能は実装されていますが、作業すべき課題が残されています。
-
-- UIデザインおよび操作性の改善
-- モバイル向け対応
-- 機能追加
-- ドキュメント整備
+git clone https://github.com/TK11235/udonarium.git
+npm install
+npm install -g @angular/cli
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ## License
 

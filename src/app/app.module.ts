@@ -44,6 +44,7 @@ import { ResizableDirective } from 'directive/resizable.directive';
 import { RotableDirective } from 'directive/rotable.directive';
 import { TooltipDirective } from 'directive/tooltip.directive';
 import { SafePipe } from 'pipe/safe.pipe';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
 
 import { AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
@@ -102,14 +103,10 @@ import { AppComponent } from './app.component';
     ResizableDirective,
     ChatInputComponent,
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    FormsModule
-  ],
+  imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule],
   providers: [
     AppConfigService,
+    AppConfigCustomService,
     ChatMessageService,
     ContextMenuService,
     ModalService,
@@ -118,6 +115,6 @@ import { AppComponent } from './app.component';
     PointerDeviceService,
     TabletopService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
