@@ -47,9 +47,11 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   output() {
     this.appCustomService.isViewer.next(this.isViewer);
     this.appCustomService.dataViewer = this.isViewer;
+    this.changeGMModeName();
   }
 
   ngOnInit() {
+    this.isViewer = this.appCustomService.dataViewer;
     Promise.resolve().then(() => (this.panelService.title = '接続情報'));
   }
 
@@ -74,6 +76,24 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     if (Network.peerContexts.length < 1) {
       Network.open();
       PeerCursor.myCursor.peerId = Network.peerId;
+    }
+  }
+
+  private changeGMModeName() {
+    if (!this.myPeer || !this.myPeer.name) {
+      return;
+    }
+
+    if (this.isViewer) {
+      if (this.myPeer.name.match(/^【GM】.*/)) {
+        return;
+      } else {
+        this.myPeer.name = '【GM】' + this.myPeer.name;
+      }
+    } else {
+      if (this.myPeer.name.match(/^【GM】.*/)) {
+        this.myPeer.name = this.myPeer.name.replace('【GM】', '');
+      }
     }
   }
 
