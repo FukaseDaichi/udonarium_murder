@@ -63,6 +63,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: 'ＧＭモード中、ニックネームの先頭に「【GM】」が付与されるようになりました。手動で文字を取り除くことも可能です。また軽微なバグ修正しました。',
     },
+    {
+      from: 'System',
+      timestamp: 1646033256138,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: 'BGMの音量調整をより詳細に変更できるようにしました。変更前(1/100)⇒(1/500)',
+    },
   ];
 
   private topTimestamp = 0;
