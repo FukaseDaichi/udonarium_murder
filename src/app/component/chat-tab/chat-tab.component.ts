@@ -71,6 +71,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: 'BGMの音量調整をより詳細に変更できるようにしました。変更前(1/100)⇒(1/500)',
     },
+    {
+      from: 'System',
+      timestamp: 1647335205714,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: '「音楽」にSE機能を追加しました。',
+    },
   ];
 
   private topTimestamp = 0;

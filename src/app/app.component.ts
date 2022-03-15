@@ -24,6 +24,7 @@ import { DataSummarySetting } from '@udonarium/data-summary-setting';
 import { DiceBot } from '@udonarium/dice-bot';
 import { Jukebox } from '@udonarium/Jukebox';
 import { PeerCursor } from '@udonarium/peer-cursor';
+import { SeBox } from '@udonarium/SeBox';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
@@ -93,6 +94,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
+
+    let seBox: SeBox = new SeBox('SeBox');
+    seBox.initialize();
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
