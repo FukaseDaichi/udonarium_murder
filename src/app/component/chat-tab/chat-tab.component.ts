@@ -79,6 +79,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: '「音楽」にSE機能を追加しました。',
     },
+    {
+      from: 'System',
+      timestamp: 1648624385000,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: '接続URL取得機能を追加しました。これにより、プライベート接続の手間が省けます。',
+    },
   ];
 
   private topTimestamp = 0;

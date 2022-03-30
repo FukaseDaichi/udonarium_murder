@@ -46,6 +46,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { PeerContext } from '@udonarium/core/system/network/peer-context';
 
 @Component({
   selector: 'app-root',
@@ -200,6 +201,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         console.log('OPEN_NETWORK', event.data.peerId);
         PeerCursor.myCursor.peerId = Network.peerContext.peerId;
         PeerCursor.myCursor.userId = Network.peerContext.userId;
+
+        // 接続
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        const id = params.get('id');
+
+        if (id) {
+          let context = PeerContext.create(id);
+          if (context.isRoom) return;
+          ObjectStore.instance.clearDeleteHistory();
+          Network.connect(context.peerId);
+        }
       })
       .on('CLOSE_NETWORK', (event) => {
         console.log('CLOSE_NETWORK', event.data.peerId);

@@ -22,6 +22,9 @@
     >
     <span *ngIf="!networkService.isOpen" style="font-weight: bold">???</span>
   </span>
+  <button *ngIf="networkService.isOpen" (click)="getUrl()" id="geturlbtn">
+    接続URL取得
+  </button>
 </div>
 <div>
   <span
@@ -89,10 +92,7 @@
 </div>
 <ng-container *ngIf="!networkService.peerContext.isRoom">
   <div style="font-size: 12px" *ngIf="networkService.peerContexts.length < 1">
-    ※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。
-  </div>
-  <div style="font-size: 12px" *ngIf="networkService.peerContexts.length < 1">
-    ※一人で動作確認を行いたい場合はブラウザを2つ開くと良いと思います。
+    ※接続URLは、URLにアクセスすると取得者にプライベート接続されます。
   </div>
 </ng-container>
 <ng-container *ngIf="networkService.peerContext.isRoom">

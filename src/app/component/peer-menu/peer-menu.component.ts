@@ -53,6 +53,9 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.isViewer = this.appCustomService.dataViewer;
     Promise.resolve().then(() => (this.panelService.title = '接続情報'));
+    Promise.resolve().then(() => {
+      console.log;
+    });
   }
 
   ngAfterViewInit() {
@@ -96,6 +99,22 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+  getUrl = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('id');
+    url.searchParams.append('id', this.networkService.peerContext.userId);
+    navigator.clipboard.writeText(url.href);
+
+    const btnDom = document.getElementById('geturlbtn');
+    btnDom.classList.remove('clicked');
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        btnDom.classList.add('clicked');
+        btnDom.innerText = 'コピー完了';
+      });
+    });
+  };
 
   connectPeer() {
     this.help = '';
