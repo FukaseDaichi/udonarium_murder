@@ -87,6 +87,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: '接続URL取得機能を追加しました。これにより、プライベート接続の手間が省けます。',
     },
+    {
+      from: 'System',
+      timestamp: 1547446619000,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: '本家様(https://udonarium.app/)のアップデート内容を全て反映し、Chromeにおける3Dレンダリング速度を改善しました。',
+    },
   ];
 
   private topTimestamp = 0;
