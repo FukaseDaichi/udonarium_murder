@@ -89,11 +89,19 @@ export class ChatTabComponent
     },
     {
       from: 'System',
-      timestamp: 1547446619000,
+      timestamp: 1651330800000,
       imageIdentifier: '',
       tag: '',
       name: 'アップデート',
       text: '本家様(https://udonarium.app/)のアップデート内容を全て反映し、Chromeにおける3Dレンダリング速度を改善しました。',
+    },
+    {
+      from: 'System',
+      timestamp: 1656992583725,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: '本家様(https://udonarium.app/)のアップデート内容を全て反映し、Chromeのレンダリング速度を改善しました。',
     },
   ];
 
