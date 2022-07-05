@@ -1,3 +1,4 @@
+<div class="chrome-3d-transform-trick"></div>
 <div
   class="component is-3d is-pointer-events-none is-grab"
   [style.width.px]="size * gridSize"
@@ -7,7 +8,7 @@
   (movable.ondragend)="onMoved()"
 >
   <div
-    class="component-content is-pointer-events-auto"
+    class="component-content is-pointer-events-auto is-3d"
     appRotable
     [rotable.option]="rotableOption"
     (rotable.ondragstart)="onMove()"
@@ -15,7 +16,7 @@
   >
     <img
       *ngIf="imageFile"
-      class="card-image"
+      class="card-image chrome-smooth-image-trick"
       [src]="(isFront ? frontImage.url : backImage.url) | safe: 'resourceUrl'"
     />
     <div
@@ -32,7 +33,7 @@
     </div>
     <img
       *ngIf="(isHand && frontImage) || (isGM && frontImage && !isFront)"
-      class="card-image thumbnail-transform is-translucent"
+      class="card-image thumbnail-transform is-translucent chrome-smooth-image-trick"
       [src]="frontImage.url | safe: 'resourceUrl'"
     />
     <ng-container *ngIf="!isIconHidden">
