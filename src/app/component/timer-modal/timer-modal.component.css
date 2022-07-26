@@ -1,0 +1,42 @@
+.timer-input {
+  display: flex;
+}
+
+.timer-input label {
+  display: block;
+  margin-bottom: 1px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.009em;
+}
+.timer-input > div {
+  width: 50%;
+}
+
+.timer-input input {
+  width: 90%;
+  line-height: 1.5;
+}
+
+.timer-button {
+  padding: 10px 0 5px 0;
+  text-align: center;
+}
+
+.timer-button button {
+  background-color: rgba(48, 48, 48, 0.7);
+  color: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: all 0.1s;
+}
+
+.timer-button button:hover {
+  color: rgba(48, 48, 48, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: all 0.2s;
+}

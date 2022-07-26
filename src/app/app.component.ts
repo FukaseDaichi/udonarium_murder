@@ -25,6 +25,7 @@ import { DiceBot } from '@udonarium/dice-bot';
 import { Jukebox } from '@udonarium/Jukebox';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { SeBox } from '@udonarium/SeBox';
+import { TimerBot } from '@udonarium/timer-bot';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TableSelecter } from '@udonarium/table-selecter';
 
@@ -48,6 +49,11 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
+
+// タイマーメニュー
+import { TimerMenuComponent } from 'component/timer/timer-menu.component';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -105,6 +111,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
 
+    let timerBot: TimerBot = new TimerBot('timer-bot');
+    timerBot.initialize();
+
     ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
     ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
 
@@ -158,6 +167,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.sweep = AudioStorage.instance.add(
       './assets/sounds/tm2/tm2_swing003.wav'
     ).identifier;
+    PresetSound.alerm = AudioStorage.instance.add(
+      './assets/sounds/otologic/alerm.mp3'
+    ).identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -174,6 +186,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.lock).isHidden = true;
     AudioStorage.instance.get(PresetSound.unlock).isHidden = true;
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
+    AudioStorage.instance.get(PresetSound.alerm).isHidden = true;
 
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';
@@ -273,6 +286,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         left: 100,
         top: 450,
       });
+      this.panelService.open(TimerMenuComponent, {
+        width: 180,
+        height: 80,
+        left: 1000,
+        top: 10,
+        className: 'timer-menu-panel',
+      });
     }, 0);
   }
 
@@ -311,6 +331,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
         break;
+
+      // タイマーメニュー(特殊処理)
+      case 'TimerMenuComponent':
+        component = TimerMenuComponent;
+        option = {
+          width: 180,
+          height: 80,
+          left: 1000,
+          top: 10,
+          className: 'timer-menu-panel',
+        };
+        this.openPanelCount = this.openPanelCount + 1;
+        option.top = option.top + this.openPanelCount * 10;
+        this.panelService.open(component, option);
+        return;
     }
     if (component) {
       option.top = ((this.openPanelCount % 10) + 1) * 20;

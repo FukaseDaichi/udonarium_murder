@@ -91,10 +91,10 @@ WebRTC 向けのシグナリングサーバとして[SkyWay](https://webrtc.ecl.
 
 #### 実際の開発手順コマンド
 
-git clone https://github.com/TK11235/udonarium.git
-npm install
-npm install -g @angular/cli
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+- git clone https://github.com/TK11235/udonarium.git
+- npm install
+- npm install -g @angular/cli
+- Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ## License
 

@@ -1,0 +1,72 @@
+.timer-menu {
+  position: relative;
+}
+
+.timer-view {
+  width: 100%;
+  text-align: center;
+  font-size: 42px;
+  line-height: 30px;
+  transition: all 0.2s;
+}
+
+.timer-menu:hover .timer-view {
+  color: rgba(122, 122, 122, 0.7);
+}
+
+.timer-button {
+  position: absolute;
+  line-height: 50px;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.timer-menu:hover .timer-button {
+  opacity: 1;
+}
+
+.timer-button div {
+  width: 33%;
+  text-align: center;
+}
+.timer-button div i {
+  cursor: pointer;
+  font-size: 36px;
+  transition: all 0.2s;
+}
+
+.timer-button div i:hover {
+  color: rgba(192, 192, 192, 0.8);
+}
+
+.clicked {
+  animation: jello-vertical 0.9s both;
+}
+
+@keyframes jello-vertical {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
