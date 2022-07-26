@@ -1,7 +1,8 @@
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { EventSystem } from './core/system';
-import { Subject, timer, Subscription } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
 @SyncObject('timer-bot')
 export class TimerBot extends GameObject {
@@ -31,7 +32,7 @@ export class TimerBot extends GameObject {
     this.subscription = timer(1000, 1000).subscribe((value) => {
       this.time = this.time - 1;
       if (this.time <= 0) {
-        this.stopTime();
+        this.endTime();
       }
     });
   };
@@ -45,6 +46,7 @@ export class TimerBot extends GameObject {
   };
 
   public endTime = () => {
+    SoundEffect.play(PresetSound.alerm);
     EventSystem.call('TIMER_STOP', null);
   };
 }

@@ -23,6 +23,7 @@ export class PresetSound {
   static lock: string = '';
   static unlock: string = '';
   static sweep: string = '';
+  static alerm: string = '';
 }
 
 @SyncObject('sound-effect')
@@ -31,12 +32,19 @@ export class SoundEffect extends GameObject {
   onStoreAdded() {
     super.onStoreAdded();
     EventSystem.register(this)
-      .on<string>('SOUND_EFFECT', event => {
+      .on<string>('SOUND_EFFECT', (event) => {
         AudioPlayer.play(AudioStorage.instance.get(event.data), 0.5);
       })
-      .on('SEND_MESSAGE', event => {
-        let chatMessage = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
-        if (!chatMessage || !chatMessage.isSendFromSelf || !chatMessage.isDicebot) return;
+      .on('SEND_MESSAGE', (event) => {
+        let chatMessage = ObjectStore.instance.get<ChatMessage>(
+          event.data.messageIdentifier
+        );
+        if (
+          !chatMessage ||
+          !chatMessage.isSendFromSelf ||
+          !chatMessage.isDicebot
+        )
+          return;
         if (Math.random() < 0.5) {
           SoundEffect.play(PresetSound.diceRoll1);
         } else {
@@ -51,14 +59,14 @@ export class SoundEffect extends GameObject {
     EventSystem.unregister(this);
   }
 
-  play(identifier: string)
-  play(audio: AudioFile)
+  play(identifier: string);
+  play(audio: AudioFile);
   play(arg: any) {
     SoundEffect.play(arg);
   }
 
-  static play(identifier: string)
-  static play(audio: AudioFile)
+  static play(identifier: string);
+  static play(audio: AudioFile);
   static play(arg: any) {
     let identifier = '';
     if (typeof arg === 'string') {

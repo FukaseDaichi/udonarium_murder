@@ -167,6 +167,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.sweep = AudioStorage.instance.add(
       './assets/sounds/tm2/tm2_swing003.wav'
     ).identifier;
+    PresetSound.alerm = AudioStorage.instance.add(
+      './assets/sounds/otologic/alerm.mp3'
+    ).identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -183,6 +186,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.lock).isHidden = true;
     AudioStorage.instance.get(PresetSound.unlock).isHidden = true;
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
+    AudioStorage.instance.get(PresetSound.alerm).isHidden = true;
 
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';
