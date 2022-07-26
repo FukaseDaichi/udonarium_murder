@@ -52,8 +52,6 @@ import { PeerContext } from '@udonarium/core/system/network/peer-context';
 
 // タイマーメニュー
 import { TimerMenuComponent } from 'component/timer/timer-menu.component';
-import { AppConfigCustomService } from 'service/app-config-custom.service';
-import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -289,7 +287,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.panelService.open(TimerMenuComponent, {
         width: 180,
         height: 80,
-        left: 1000,
+        left: 1500,
         top: 10,
         className: 'timer-menu-panel',
       });
@@ -338,7 +336,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         option = {
           width: 180,
           height: 80,
-          left: 1000,
+          left: 1500,
           top: 10,
           className: 'timer-menu-panel',
         };
