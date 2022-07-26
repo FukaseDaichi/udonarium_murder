@@ -1,7 +1,16 @@
-<div>
-  <h1>こんにちは</h1>
-  <h2>{{ minute }}分{{ second }}秒</h2>
-  <button (click)="startTime()">スタート</button>
-  <button (click)="stopTime()">ストップ</button>
-  <button (click)="setTime()">テスト</button>
+<div class="timer-menu">
+  <div class="timer-view">{{ minute }}:{{ second }}</div>
+  <div class="timer-button">
+    <div>
+      <i (click)="startTime($event)" class="material-icons">play_arrow</i>
+    </div>
+    <div>
+      <i (click)="stopTime($event)" class="material-icons">pause</i>
+    </div>
+    <div>
+      <i (click)="openTimerModal($event)" class="material-icons"
+        >access_alarm</i
+      >
+    </div>
+  </div>
 </div>

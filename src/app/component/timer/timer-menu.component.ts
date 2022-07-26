@@ -5,6 +5,8 @@ import { AppConfigService } from 'service/app-config.service';
 import { PanelService } from 'service/panel.service';
 import { TimerBot } from '@udonarium/timer-bot';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { ModalService } from 'service/modal.service';
+import { TimerModalComponent } from 'component/timer-modal/timer-modal.component';
 
 @Component({
   selector: 'timer-menu',
@@ -13,6 +15,7 @@ import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 })
 export class TimerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
+    private modalService: ModalService,
     private panelService: PanelService,
     public appConfigService: AppConfigService
   ) {}
@@ -31,7 +34,7 @@ export class TimerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     Promise.resolve().then(() => {
-      this.panelService.title = 'タイマー';
+      this.panelService.title = '';
     });
   }
 
@@ -41,13 +44,33 @@ export class TimerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     EventSystem.unregister(this);
   }
 
-  setTime = () => {};
+  openTimerModal = (e) => {
+    this.clickedAnime(e);
+    EventSystem.call('TIMER_STOP', null);
+    this.modalService.open<number>(TimerModalComponent).then((value) => {
+      if (!value || value == 0) {
+        return;
+      }
+      this.timerBot.time = Number(value);
+    });
+  };
 
-  startTime = () => {
+  startTime = (e) => {
+    this.clickedAnime(e);
     this.timerBot.startTime();
   };
 
-  stopTime = () => {
+  stopTime = (e) => {
+    this.clickedAnime(e);
     EventSystem.call('TIMER_STOP', null);
+  };
+
+  private clickedAnime = (e) => {
+    e.target.classList.remove('clicked');
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        e.target.classList.add('clicked');
+      });
+    });
   };
 }

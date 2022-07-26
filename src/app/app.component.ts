@@ -53,6 +53,7 @@ import { PeerContext } from '@udonarium/core/system/network/peer-context';
 // タイマーメニュー
 import { TimerMenuComponent } from 'component/timer/timer-menu.component';
 import { AppConfigCustomService } from 'service/app-config-custom.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -75,8 +76,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone,
-    private appCustomService: AppConfigCustomService
+    private ngZone: NgZone
   ) {
     this.ngZone.runOutsideAngular(() => {
       EventSystem;
@@ -282,6 +282,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         left: 100,
         top: 450,
       });
+      this.panelService.open(TimerMenuComponent, {
+        width: 180,
+        height: 80,
+        left: 1000,
+        top: 10,
+        className: 'timer-menu-panel',
+      });
     }, 0);
   }
 
@@ -321,10 +328,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         component = GameObjectInventoryComponent;
         break;
 
-      // タイマーメニュー
+      // タイマーメニュー(特殊処理)
       case 'TimerMenuComponent':
         component = TimerMenuComponent;
-        break;
+        option = {
+          width: 180,
+          height: 80,
+          left: 1000,
+          top: 10,
+          className: 'timer-menu-panel',
+        };
+        this.openPanelCount = this.openPanelCount + 1;
+        option.top = option.top + this.openPanelCount * 10;
+        this.panelService.open(component, option);
+        return;
     }
     if (component) {
       option.top = ((this.openPanelCount % 10) + 1) * 20;

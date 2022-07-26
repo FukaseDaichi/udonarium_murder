@@ -1,28 +1,52 @@
-.image {
-  padding: 0px;
-  width: 128px;
-  height: 128px;
-  display: table-cell;
-  vertical-align: top;
+.timer-menu {
+  position: relative;
 }
 
-.image img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  vertical-align: bottom;
+.timer-view {
+  width: 100%;
+  text-align: center;
+  font-size: 42px;
+  line-height: 30px;
+  transition: all 0.2s;
 }
 
-.cover {
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-size: cover;
+.timer-menu:hover .timer-view {
+  color: rgba(122, 122, 122, 0.7);
+}
+
+.timer-button {
+  position: absolute;
+  line-height: 50px;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.timer-menu:hover .timer-button {
+  opacity: 1;
+}
+
+.timer-button div {
+  width: 33%;
+  text-align: center;
+}
+.timer-button div i {
+  cursor: pointer;
+  font-size: 36px;
+  transition: all 0.2s;
+}
+
+.timer-button div i:hover {
+  color: rgba(192, 192, 192, 0.8);
 }
 
 .clicked {
   animation: jello-vertical 0.9s both;
 }
+
 @keyframes jello-vertical {
   0% {
     transform: scale3d(1, 1, 1);
