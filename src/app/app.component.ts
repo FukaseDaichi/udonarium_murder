@@ -25,6 +25,7 @@ import { DiceBot } from '@udonarium/dice-bot';
 import { Jukebox } from '@udonarium/Jukebox';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { SeBox } from '@udonarium/SeBox';
+import { TimerBot } from '@udonarium/timer-bot';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TableSelecter } from '@udonarium/table-selecter';
 
@@ -49,6 +50,10 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 
+// タイマーメニュー
+import { TimerMenuComponent } from 'component/timer/timer-menu.component';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -70,7 +75,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private appCustomService: AppConfigCustomService
   ) {
     this.ngZone.runOutsideAngular(() => {
       EventSystem;
@@ -104,6 +110,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
+
+    let timerBot: TimerBot = new TimerBot('timer-bot');
+    timerBot.initialize();
 
     ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
     ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
@@ -310,6 +319,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
+        break;
+
+      // タイマーメニュー
+      case 'TimerMenuComponent':
+        component = TimerMenuComponent;
         break;
     }
     if (component) {
