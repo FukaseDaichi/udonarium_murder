@@ -51,7 +51,8 @@ export class TimerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!value || value == 0) {
         return;
       }
-      this.timerBot.time = Number(value);
+      this.timerBot.time = value;
+      this.timerBot.defaultTime = value;
     });
   };
 

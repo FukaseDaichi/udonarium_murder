@@ -1,3 +1,72 @@
+.area {
+  position: relative;
+  margin: 2em 0;
+  padding: 0.5em 1em;
+  border: solid 3px rgba(255, 255, 255, 0.9);
+}
+
+.area-title {
+  color: rgba(255, 255, 255, 1);
+  position: absolute;
+  display: inline-block;
+  top: -27px;
+  left: -3px;
+  padding: 0 9px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 15px;
+  background: rgba(180, 180, 180, 0.9);
+  border-radius: 5px 5px 0 0;
+}
+
+.timer-quick-button-area {
+  color: rgba(122, 122, 122, 0.7);
+  display: flex;
+  justify-content: space-between;
+}
+
+.quick-button {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  text-align: center;
+}
+
+.quick-button:hover label {
+  font-size: 1.1rem;
+  text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+.quick-button:hover i {
+  text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.3);
+}
+
+.quick-button label {
+  cursor: pointer;
+  width: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  line-height: 50px;
+  color: rgba(255, 255, 255, 1);
+  transition: all 0.2s;
+}
+
+.quick-button label span {
+  font-size: 0.3rem;
+}
+
+.quick-button i {
+  position: absolute;
+  top: 0;
+  font-size: 50px;
+  display: block;
+  z-index: 0;
+  transition: all 0.2s;
+}
+
 .timer-input {
   display: flex;
 }
@@ -12,16 +81,42 @@
   letter-spacing: 0.009em;
 }
 .timer-input > div {
-  width: 50%;
+  position: relative;
+}
+.timer-input .input-div {
+  width: 40%;
 }
 
 .timer-input input {
-  width: 90%;
+  width: 80%;
   line-height: 1.5;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 1);
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+  background-color: transparent;
+  outline: none;
+}
+
+.timer-input .focus_line {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  transition: 0.4s;
+  background-color: rgba(233, 237, 255, 0.9);
+}
+.timer-input input:focus ~ .focus_line {
+  left: 0;
+  width: 80%;
+  transition: 0.2s;
 }
 
 .timer-button {
-  padding: 10px 0 5px 0;
+  width: 20%;
+  padding: 10px 0 0 0;
   text-align: center;
 }
 
@@ -39,4 +134,8 @@
   color: rgba(48, 48, 48, 0.9);
   background-color: rgba(255, 255, 255, 0.9);
   transition: all 0.2s;
+}
+
+.mt {
+  margin-top: 50px;
 }
