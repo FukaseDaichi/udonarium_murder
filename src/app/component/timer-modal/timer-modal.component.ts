@@ -55,6 +55,11 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
       );
       modalTitleElm.style.background = 'rgba(44,44,44,0.8)';
       modalTitleElm.style.color = 'rgba(255,255,255,0.8)';
+
+      const modalTitleButtonElm: HTMLElement = document.querySelector(
+        '.modal-panel .title button'
+      );
+      modalTitleButtonElm.style.color = 'rgba(255,255,255,0.8)';
     });
   }
 
@@ -64,7 +69,11 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
     EventSystem.unregister(this);
   }
 
-  setTime = () => {
+  setTime = (value: number) => {
+    if (value !== 0) {
+      this.modalService.resolve(value);
+      return;
+    }
     const minElm: HTMLInputElement = <HTMLInputElement>(
       document.getElementById('minute-input')
     );

@@ -1,27 +1,61 @@
 <div>
-  <div class="timer-input">
-    <div>
-      <label for="minute-input">分</label
-      ><input
-        type="number"
-        id="minute-input"
-        value="{{ minute }}"
-        min="0"
-        max="300"
-      />
-    </div>
-    <div>
-      <label for="second-input">秒</label
-      ><input
-        type="number"
-        id="second-input"
-        value="{{ second }}"
-        min="0"
-        max="59"
-      />
+  <div class="area">
+    <span class="area-title">簡易設定</span>
+    <div class="timer-quick-button-area">
+      <div class="quick-button" (click)="setTime(300)">
+        <label>5<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
+      <div class="quick-button" (click)="setTime(600)">
+        <label>10<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
+      <div class="quick-button" (click)="setTime(900)">
+        <label>15<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
+      <div class="quick-button" (click)="setTime(1200)">
+        <label>20<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
+      <div class="quick-button" (click)="setTime(1500)">
+        <label>25<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
+      <div class="quick-button" (click)="setTime(1800)">
+        <label>30<span>分</span></label>
+        <i class="material-icons">access_alarm</i>
+      </div>
     </div>
   </div>
-  <div class="timer-button">
-    <button (click)="setTime()">SET</button>
+  <div class="area mt">
+    <span class="area-title">詳細設定</span>
+    <div class="timer-input">
+      <div class="input-div">
+        <label for="minute-input">分</label
+        ><input
+          type="number"
+          id="minute-input"
+          value="{{ minute }}"
+          min="0"
+          max="300"
+        />
+        <span class="focus_line"></span>
+      </div>
+      <div class="input-div">
+        <label for="second-input">秒</label
+        ><input
+          type="number"
+          id="second-input"
+          value="{{ second }}"
+          min="0"
+          max="59"
+        />
+        <span class="focus_line"></span>
+      </div>
+      <div class="timer-button">
+        <button (click)="setTime(0)">SET</button>
+      </div>
+    </div>
   </div>
 </div>

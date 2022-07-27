@@ -103,6 +103,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: '本家様(https://udonarium.app/)のアップデート内容を全て反映し、Chromeのレンダリング速度を改善しました。',
     },
+    {
+      from: 'System',
+      timestamp: 1658890863000,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: 'タイマー機能を追加しました。',
+    },
   ];
 
   private topTimestamp = 0;

@@ -9,6 +9,7 @@ export class TimerBot extends GameObject {
   subscription: Subscription;
   @SyncVar() time: number = 600;
   @SyncVar() isStart: boolean = false;
+  @SyncVar() defaultTime: number = 600;
 
   onStoreAdded() {
     super.onStoreAdded();
@@ -48,5 +49,6 @@ export class TimerBot extends GameObject {
   public endTime = () => {
     SoundEffect.play(PresetSound.alerm);
     EventSystem.call('TIMER_STOP', null);
+    this.time = this.defaultTime;
   };
 }
