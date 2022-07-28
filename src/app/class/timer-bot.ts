@@ -1,8 +1,10 @@
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { EventSystem } from './core/system';
+import { AudioStorage } from './core/file-storage/audio-storage';
 import { timer, Subscription } from 'rxjs';
-import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+import { PresetSound } from '@udonarium/sound-effect';
+import { AudioPlayer, VolumeType } from './core/file-storage/audio-player';
 
 @SyncObject('timer-bot')
 export class TimerBot extends GameObject {
@@ -11,11 +13,19 @@ export class TimerBot extends GameObject {
   @SyncVar() isStart: boolean = false;
   @SyncVar() defaultTime: number = 600;
 
+  private audioPlayer: AudioPlayer = new AudioPlayer();
+
   onStoreAdded() {
     super.onStoreAdded();
-    EventSystem.register(this).on('TIMER_STOP', () => {
-      this.stopTime();
-    });
+
+    EventSystem.register(this)
+      .on('TIMER_STOP', () => {
+        this.stopTime();
+      })
+      .on('TIMER_ALERM', () => {
+        this.audioPlayer.volumeType = VolumeType.AUDITION;
+        this.audioPlayer.play(AudioStorage.instance.get(PresetSound.alerm));
+      });
   }
 
   // GameObject Lifecycle
@@ -47,7 +57,7 @@ export class TimerBot extends GameObject {
   };
 
   public endTime = () => {
-    SoundEffect.play(PresetSound.alerm);
+    EventSystem.call('TIMER_ALERM', null);
     EventSystem.call('TIMER_STOP', null);
     this.time = this.defaultTime;
   };

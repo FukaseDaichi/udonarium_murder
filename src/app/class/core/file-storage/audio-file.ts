@@ -21,23 +21,37 @@ export class AudioFile {
     name: '',
     blob: null,
     type: '',
-    url: ''
+    url: '',
   };
 
-  get identifier(): string { return this.context.identifier };
-  get name(): string { return this.context.name };
-  get blob(): Blob { return this.context.blob; };
-  get url(): string { return this.context.url; };
-  get isReady(): boolean { return AudioState.NULL < this.state; }
+  get identifier(): string {
+    return this.context.identifier;
+  }
+  get name(): string {
+    return this.context.name;
+  }
+  get blob(): Blob {
+    return this.context.blob;
+  }
+  get url(): string {
+    return this.context.url;
+  }
+  get isReady(): boolean {
+    return AudioState.NULL < this.state;
+  }
   get state(): AudioState {
     if (!this.url && !this.blob) return AudioState.NULL;
     if (this.url && !this.blob) return AudioState.URL;
     return AudioState.COMPLETE;
   }
 
+  set name(name: string) {
+    this.context.name = name;
+  }
+
   isHidden: boolean = false;
 
-  private constructor() { }
+  private constructor() {}
 
   static createEmpty(identifier: string): AudioFile {
     let audio = new AudioFile();
@@ -46,8 +60,8 @@ export class AudioFile {
     return audio;
   }
 
-  static create(url: string): AudioFile
-  static create(context: AudioFileContext): AudioFile
+  static create(url: string): AudioFile;
+  static create(context: AudioFileContext): AudioFile;
   static create(arg: any): AudioFile {
     if (typeof arg === 'string') {
       let audio = new AudioFile();
@@ -62,8 +76,8 @@ export class AudioFile {
     }
   }
 
-  static async createAsync(file: File): Promise<AudioFile>
-  static async createAsync(blob: Blob): Promise<AudioFile>
+  static async createAsync(file: File): Promise<AudioFile>;
+  static async createAsync(blob: Blob): Promise<AudioFile>;
   static async createAsync(arg: any): Promise<AudioFile> {
     if (arg instanceof File) {
       return await AudioFile._createAsync(arg, arg.name);
@@ -72,11 +86,16 @@ export class AudioFile {
     }
   }
 
-  private static async _createAsync(blob: Blob, name?: string): Promise<AudioFile> {
+  private static async _createAsync(
+    blob: Blob,
+    name?: string
+  ): Promise<AudioFile> {
     let arrayBuffer = await FileReaderUtil.readAsArrayBufferAsync(blob);
 
     let audio = new AudioFile();
-    audio.context.identifier = await FileReaderUtil.calcSHA256Async(arrayBuffer);
+    audio.context.identifier = await FileReaderUtil.calcSHA256Async(
+      arrayBuffer
+    );
     audio.context.name = name;
     audio.context.blob = new Blob([arrayBuffer], { type: blob.type });
     audio.context.type = audio.context.blob.type;
@@ -92,12 +111,14 @@ export class AudioFile {
   }
 
   apply(context: AudioFileContext) {
-    if (!this.context.identifier && context.identifier) this.context.identifier = context.identifier;
+    if (!this.context.identifier && context.identifier)
+      this.context.identifier = context.identifier;
     if (context.name) this.context.name = context.name;
     if (!this.context.blob && context.blob) this.context.blob = context.blob;
     if (!this.context.type && context.type) this.context.type = context.type;
     if (!this.context.url && context.url) {
-      if (this.state !== AudioState.URL) window.URL.revokeObjectURL(this.context.url);
+      if (this.state !== AudioState.URL)
+        window.URL.revokeObjectURL(this.context.url);
       this.context.url = context.url;
     }
     this.createURLs();
@@ -105,7 +126,8 @@ export class AudioFile {
 
   private createURLs() {
     if (this.state === AudioState.URL) return;
-    if (this.context.blob && this.context.url === '') this.context.url = window.URL.createObjectURL(this.context.blob);
+    if (this.context.blob && this.context.url === '')
+      this.context.url = window.URL.createObjectURL(this.context.blob);
   }
 
   private revokeURLs() {
@@ -119,7 +141,7 @@ export class AudioFile {
       name: this.context.name,
       blob: this.context.blob,
       type: this.context.type,
-      url: this.context.url
-    }
+      url: this.context.url,
+    };
   }
 }
