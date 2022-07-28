@@ -9,13 +9,13 @@
     <!--<img *ngIf="myPeer.image" [src]="myPeer.image.url | safe: 'resourceUrl'" />-->
   </div>
   <span
-    >あなたのニックネーム：
+    ><span class="property">あなたのニックネーム</span>：
     <input [(ngModel)]="myPeer.name" placeholder="ニックネーム"
   /></span>
 </div>
 <div>
   <span
-    >あなたのID：<span
+    ><span class="property">あなたのID</span>：<span
       *ngIf="networkService.isOpen"
       style="font-weight: bold"
       >{{ networkService.peerContext.userId }}</span
@@ -28,7 +28,7 @@
 </div>
 <div>
   <span
-    >GMモード：<input
+    ><span class="property">GMモード</span>：<input
       type="checkbox"
       [(ngModel)]="isViewer"
       (change)="output()"
@@ -40,7 +40,9 @@
   <hr />
   <div>
     <span
-      >ルーム名：<span *ngIf="networkService.isOpen" style="font-weight: bold"
+      ><span class="property">ルーム名</span>：<span
+        *ngIf="networkService.isOpen"
+        style="font-weight: bold"
         >{{ networkService.peerContext.roomName }}/{{
           networkService.peerContext.roomId
         }}</span
@@ -49,7 +51,7 @@
   </div>
   <div>
     <span
-      >パスワード：<span
+      ><span class="property">パスワード</span>：<span
         *ngIf="networkService.isOpen"
         style="font-weight: bold"
         >{{ networkService.peerContext.password }}</span

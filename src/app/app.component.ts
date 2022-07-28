@@ -184,7 +184,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.lock).isHidden = true;
     AudioStorage.instance.get(PresetSound.unlock).isHidden = true;
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
+
+    // アラーム
     AudioStorage.instance.get(PresetSound.alerm).isHidden = true;
+    AudioStorage.instance.get(PresetSound.alerm).name = 'アラーム音（電子）';
 
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';
