@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  NgZone,
   Component,
   OnDestroy,
   OnInit,
@@ -8,9 +9,15 @@ import {
 
 import { EventSystem } from '@udonarium/core/system';
 import { PanelService } from 'service/panel.service';
-import { TimerBot } from '@udonarium/timer-bot';
+import { AlermSound, TimerBot } from '@udonarium/timer-bot';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { ModalService } from 'service/modal.service';
+import { AudioFile } from '@udonarium/core/file-storage/audio-file';
+import { AudioStorage } from '@udonarium/core/file-storage/audio-storage';
+import {
+  AudioPlayer,
+  VolumeType,
+} from '@udonarium/core/file-storage/audio-player';
 
 @Component({
   selector: 'timer-modal',
@@ -20,6 +27,8 @@ import { ModalService } from 'service/modal.service';
 export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isAllowedEmpty: boolean = false;
 
+  @Input() alermSound: string;
+
   get minute() {
     return Math.floor(this.timerBot.time / 60);
   }
@@ -28,9 +37,18 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.timerBot.time % 60;
   }
 
+  get audios(): AudioFile[] {
+    return AudioStorage.instance.audios.filter((audio) =>
+      audio.name.startsWith('アラーム')
+    );
+  }
+
+  private audioPlayer: AudioPlayer = new AudioPlayer();
+
   constructor(
     private panelService: PanelService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private ngZone: NgZone
   ) {
     this.isAllowedEmpty =
       this.modalService.option && this.modalService.option.isAllowedEmpty
@@ -46,6 +64,7 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
     Promise.resolve().then(() => {
       this.modalService.title = 'タイマー設定';
       this.panelService.title = 'タイマー設定';
+      this.alermSound = this.timerBot.alerm;
       const modalElm: HTMLElement = document.querySelector('.modal-panel');
       modalElm.style.width = '380px';
       modalElm.style.background = 'rgba(44,44,44,0.8)';
@@ -70,9 +89,16 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setTime = (value: number) => {
-    if (value !== 0) {
-      this.modalService.resolve(value);
-      return;
+    this.modalService.resolve(value);
+  };
+
+  setInfo = () => {
+    const alermElm: HTMLInputElement = <HTMLInputElement>(
+      document.getElementById('alerm-sound')
+    );
+    console.log(alermElm.value);
+    if (alermElm) {
+      this.timerBot.alerm = alermElm.value;
     }
     const minElm: HTMLInputElement = <HTMLInputElement>(
       document.getElementById('minute-input')
@@ -86,5 +112,10 @@ export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
     } catch (e) {
       this.modalService.resolve(0);
     }
+  };
+
+  changeAlerm = (event) => {
+    this.audioPlayer.volumeType = VolumeType.AUDITION;
+    this.audioPlayer.play(AudioStorage.instance.get(event.target.value));
   };
 }

@@ -31,30 +31,48 @@
   <div class="area mt">
     <span class="area-title">詳細設定</span>
     <div class="timer-input">
-      <div class="input-div">
-        <label for="minute-input">分</label
-        ><input
-          type="number"
-          id="minute-input"
-          value="{{ minute }}"
-          min="0"
-          max="300"
-        />
-        <span class="focus_line"></span>
-      </div>
-      <div class="input-div">
-        <label for="second-input">秒</label
-        ><input
-          type="number"
-          id="second-input"
-          value="{{ second }}"
-          min="0"
-          max="59"
-        />
-        <span class="focus_line"></span>
+      <div class="input-div-wrap">
+        <div class="input-div-timer-time">
+          <div class="input-div">
+            <label for="minute-input">分</label
+            ><input
+              type="number"
+              id="minute-input"
+              value="{{ minute }}"
+              min="0"
+              max="300"
+            />
+            <span class="focus_line"></span>
+          </div>
+          <div class="input-div">
+            <label for="second-input">秒</label
+            ><input
+              type="number"
+              id="second-input"
+              value="{{ second }}"
+              min="0"
+              max="59"
+            />
+            <span class="focus_line"></span>
+          </div>
+        </div>
+        <div class="alerm-sound-input-div">
+          <label for="alerm-sound">アラーム音</label>
+          <select
+            (change)="changeAlerm($event)"
+            id="alerm-sound"
+            [(ngModel)]="alermSound"
+          >
+            <option *ngFor="let audio of audios" value="{{ audio.identifier }}">
+              {{ audio.name.substr(5) }}
+            </option>
+          </select>
+          <span class="highlight"></span>
+          <span class="selectbar"></span>
+        </div>
       </div>
       <div class="timer-button">
-        <button (click)="setTime(0)">SET</button>
+        <button (click)="setInfo()">SET</button>
       </div>
     </div>
   </div>
