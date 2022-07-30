@@ -49,9 +49,11 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { AlermSound } from '@udonarium/timer-bot';
 
 // タイマーメニュー
 import { TimerMenuComponent } from 'component/timer/timer-menu.component';
+import { AudioFile } from '@udonarium/core/file-storage/audio-file';
 
 @Component({
   selector: 'app-root',
@@ -165,9 +167,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.sweep = AudioStorage.instance.add(
       './assets/sounds/tm2/tm2_swing003.wav'
     ).identifier;
-    PresetSound.alerm = AudioStorage.instance.add(
-      './assets/sounds/otologic/alerm.mp3'
-    ).identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -186,8 +185,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
 
     // アラーム
-    AudioStorage.instance.get(PresetSound.alerm).isHidden = true;
-    AudioStorage.instance.get(PresetSound.alerm).name = 'アラーム音（電子）';
+    AlermSound.alermFileList.forEach((o) => {
+      const sound: AudioFile = AudioStorage.instance.add(o.path);
+      sound.isHidden = true;
+      sound.name = 'アラーム_' + o.name;
+    });
 
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';

@@ -37,6 +37,7 @@ import { RoomSettingComponent } from 'component/room-setting/room-setting.compon
 import { TerrainComponent } from 'component/terrain/terrain.component';
 import { TextNoteComponent } from 'component/text-note/text-note.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { TimerModalComponent } from 'component/timer-modal/timer-modal.component';
 import { TimerMenuComponent } from 'component/timer/timer-menu.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { DraggableDirective } from 'directive/draggable.directive';
@@ -104,6 +105,7 @@ import { AppComponent } from './app.component';
     ResizableDirective,
     ChatInputComponent,
     TimerMenuComponent,
+    TimerModalComponent,
   ],
   imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule],
   providers: [
