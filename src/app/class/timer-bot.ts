@@ -13,7 +13,14 @@ interface alermFile {
 export class AlermSound {
   static alermFileList: alermFile[] = [
     { path: './assets/sounds/alerm/alerm.mp3', name: 'アラート' },
-    { path: './assets/sounds/alerm/bell.mp3', name: '高い鐘' },
+    { path: './assets/sounds/alerm/voice_ariel.wav', name: 'CoeFont_アリエル' },
+    {
+      path: './assets/sounds/alerm/voice_mirial.wav',
+      name: 'CoeFont_ミリアル',
+    },
+    { path: './assets/sounds/alerm/bell.mp3', name: '鐘の音' },
+    { path: './assets/sounds/alerm/school.mp3', name: '学校のチャイム' },
+    { path: './assets/sounds/alerm/chaim.mp3', name: 'ホラーチャイム' },
   ];
 }
 
