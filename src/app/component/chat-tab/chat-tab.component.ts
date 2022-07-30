@@ -111,6 +111,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: 'タイマー機能を追加しました。',
     },
+    {
+      from: 'System',
+      timestamp: 1659154190743,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: 'タイマーの音量調整をできるようにしましt。また、タイマー音声を選べるようにしました。',
+    },
   ];
 
   private topTimestamp = 0;
