@@ -22,7 +22,7 @@
     >
     <span *ngIf="!networkService.isOpen" style="font-weight: bold">???</span>
   </span>
-  <button *ngIf="networkService.isOpen" (click)="getUrl()" id="geturlbtn">
+  <button *ngIf="networkService.isOpen" (click)="getUrl($event)">
     接続URL取得
   </button>
 </div>
