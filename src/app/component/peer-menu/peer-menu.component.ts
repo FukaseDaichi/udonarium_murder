@@ -100,13 +100,13 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getUrl = () => {
+  getUrl = (event: any) => {
     const url = new URL(window.location.href);
     url.searchParams.delete('id');
     url.searchParams.append('id', this.networkService.peerContext.userId);
     navigator.clipboard.writeText(url.href);
 
-    const btnDom = document.getElementById('geturlbtn');
+    const btnDom = event.target;
     btnDom.classList.remove('clicked');
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {

@@ -64,6 +64,13 @@
   padding: 0;
 }
 
+/* メインパネル */
+.main-panel .title-button > button {
+  display: none;
+}
+
+/* タイマー用 */
+
 .timer-menu-panel {
   border: none;
   color: #fff;
