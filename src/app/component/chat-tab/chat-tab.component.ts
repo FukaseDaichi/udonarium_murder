@@ -53,7 +53,7 @@ export class ChatTabComponent
       imageIdentifier: '',
       tag: '',
       name: 'チュートリアル',
-      text: 'サーバーを使用しないTRPGオンセツールです。本家様(https://udonarium.app/)に対して、非公開カードが見れるGMモードを追加しています。ＧＭの方や観戦者の利用を想定しています。',
+      text: 'サーバーを使用しないTRPGオンセツールです。本家様(https://udonarium.app/)に対して、非公開カードが見れるGMモードを追加しています。GMの方や観戦者の利用を想定しています。',
     },
     {
       from: 'System',
@@ -61,7 +61,7 @@ export class ChatTabComponent
       imageIdentifier: '',
       tag: '',
       name: 'アップデート',
-      text: 'ＧＭモード中、ニックネームの先頭に「【GM】」が付与されるようになりました。手動で文字を取り除くことも可能です。また軽微なバグ修正しました。',
+      text: 'GMモード中、ニックネームの先頭に「【GM】」が付与されるようになりました。手動で文字を取り除くことも可能です。また軽微なバグ修正しました。',
     },
     {
       from: 'System',
