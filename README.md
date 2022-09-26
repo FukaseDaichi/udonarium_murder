@@ -1,3 +1,19 @@
+# ユドナリウムマーダー
+
+このプロジェクトはユドナリウムをマーダーミステリー用にカスタマイズするために作成しました。
+
+[ユドナリウム（Udonarium）][1]は Web ブラウザで動作するボードゲームオンラインセッション支援ツールです。本家ユドナリウムの開発範囲は本家に著作権が有ります。追加下部分は本ソースコードの作成者に著作権があります。
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TK11235/udonarium/blob/master/LICENSE)
+
+## 実際の開発手順コマンド
+
+- git clone https://github.com/TK11235/udonarium.git
+- npm install
+- Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+以下、本家の抜粋です。
+
 # ユドナリウム
 
 [ユドナリウム（Udonarium）][1]は Web ブラウザで動作するボードゲームオンラインセッション支援ツールです。
@@ -88,13 +104,6 @@ ng serve
 WebRTC 向けのシグナリングサーバとして[SkyWay](https://webrtc.ecl.ntt.com/)を利用しているため、動作確認のために SkyWay の API キーが必要です。
 
 取得した API キーの情報は`src/assets/config.yaml`に記述します。
-
-#### 実際の開発手順コマンド
-
-- git clone https://github.com/TK11235/udonarium.git
-- npm install
--
-- Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 
 ## License
 
