@@ -117,7 +117,7 @@ export class ChatTabComponent
       imageIdentifier: '',
       tag: '',
       name: 'アップデート',
-      text: 'タイマーの音量調整をできるようにしましt。また、タイマー音声を選べるようにしました。',
+      text: 'タイマーの音量調整をできるようにしました。また、タイマー音声を選べるようにしました。',
     },
   ];
 
