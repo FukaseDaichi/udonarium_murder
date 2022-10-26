@@ -1,5 +1,13 @@
 <div class="volume-area">
-  <span>ALARM音量</span>：<input
+  <span
+    >ALARM音量
+    <div class="con-tooltip bottom">
+      <p><i class="material-icons" style="font-size: 14px">help_outline</i></p>
+      <div class="tooltip">
+        <p>タイマーのアラーム音量及び、BGMを視聴した時の音量です。</p>
+      </div>
+    </div> </span
+  >：<input
     [(ngModel)]="auditionVolume"
     type="range"
     min="0"
