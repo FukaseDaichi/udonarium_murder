@@ -1,6 +1,6 @@
 .volume-area > span {
   display: inline-block;
-  width: 100px;
+  width: 110px;
 }
 
 .drop-zone {
@@ -25,4 +25,66 @@
 
 .box {
   border-bottom: 1px dotted #888;
+}
+
+/* ツールチップ */
+.con-tooltip {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+  cursor: default;
+}
+.con-tooltip > p {
+  margin: 0;
+}
+
+.tooltip {
+  font-size: 5px;
+  visibility: hidden;
+  z-index: 1;
+  opacity: 0.4;
+  width: 200px;
+  padding: 0px 20px;
+
+  background: #333;
+  color: #ffffff;
+  position: absolute;
+  border-radius: 9px;
+
+  transform: translateY(9px);
+  transition: all 0.3s ease-in-out;
+
+  box-shadow: 0 0 3px rgba(56, 54, 54, 0.86);
+}
+.tooltip::after {
+  content: " ";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 12.5px 0 12.5px;
+  border-color: #333 transparent transparent transparent;
+
+  position: absolute;
+  left: 40%;
+}
+
+.con-tooltip:hover .tooltip {
+  width: 200px;
+  visibility: visible;
+  transform: translateY(-10px);
+  opacity: 1;
+  transition: 0.2s linear;
+}
+
+/*hover ToolTip*/
+
+.bottom .tooltip {
+  top: 115%;
+  left: -20%;
+}
+
+.bottom .tooltip::after {
+  top: -11%;
+  left: 0%;
+  transform: rotate(180deg);
 }

@@ -11,6 +11,7 @@
 - git clone https://github.com/TK11235/udonarium.git
 - npm install
 - Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+- ng serve
 
 以下、本家の抜粋です。
 
