@@ -51,12 +51,22 @@
   </div>
   <div>
     <span
-      ><span class="property">パスワード</span>：<span
-        *ngIf="networkService.isOpen"
-        style="font-weight: bold"
-        >{{ networkService.peerContext.password }}</span
-      ></span
-    >
+      >パスワード：<span *ngIf="networkService.peerContext.hasPassword">
+        <span *ngIf="networkService.isOpen" style="font-weight: bold">{{
+          isPasswordVisible ? networkService.peerContext.password : "●●●●●●●●"
+        }}</span>
+        <button
+          style="padding: 2px; margin-left: 1em; font-size: 1em"
+          (click)="togglePasswordVisibility()"
+        >
+          <span
+            class="material-icons"
+            style="font-size: 1em; vertical-align: text-bottom"
+            >{{ isPasswordVisible ? "visibility" : "visibility_off" }}</span
+          >
+        </button>
+      </span>
+    </span>
   </div>
 </ng-container>
 <hr />
