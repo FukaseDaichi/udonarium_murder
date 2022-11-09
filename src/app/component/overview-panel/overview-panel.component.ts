@@ -142,7 +142,7 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
       this.adjustPositionRoot();
     }, 16);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', -1000, (event) => {
+      .on('UPDATE_GAME_OBJECT', (event) => {
         let object = ObjectStore.instance.get(event.data.identifier);
         if (!this.tabletopObject || !object || !(object instanceof ObjectNode))
           return;
@@ -156,7 +156,7 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
       .on('SYNCHRONIZE_FILE_LIST', (event) => {
         this.changeDetector.markForCheck();
       })
-      .on('UPDATE_FILE_RESOURE', -1000, (event) => {
+      .on('UPDATE_FILE_RESOURE', (event) => {
         this.changeDetector.markForCheck();
       });
   }

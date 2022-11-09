@@ -13,6 +13,11 @@
 - Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 - ng serve
 
+### 本家様の変更反映コマンド
+
+- git fetch upstream
+- git merge upstream/master
+
 以下、本家の抜粋です。
 
 # ユドナリウム

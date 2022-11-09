@@ -12,7 +12,7 @@
   #draggablePanel
 >
   <div class="title">
-    <div class="title-button">
+    <div class="title-button" *ngIf="showTitleButtons">
       <button (click)="toggleFullScreen()">
         <i class="material-icons" style="font-size: 14px">fullscreen</i>
       </button>

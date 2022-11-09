@@ -65,6 +65,8 @@ export class UIPanelComponent implements OnInit {
     this.panelService.className = className;
   }
 
+  @Input() showTitleButtons: boolean = true;
+
   get title(): string {
     return this.panelService.title;
   }
