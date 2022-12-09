@@ -119,6 +119,14 @@ export class ChatTabComponent
       name: 'アップデート',
       text: 'タイマーの音量調整をできるようにしました。また、タイマーの音声を選べるようにしました。',
     },
+    {
+      from: 'System',
+      timestamp: 1670558363000,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: '本家様(https://udonarium.app/)の最新アップデート内容を全て反映し、Chromeの動作等を改善しました。',
+    },
   ];
 
   private topTimestamp = 0;

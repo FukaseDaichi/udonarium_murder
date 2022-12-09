@@ -88,6 +88,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get hasOwner(): boolean {
     return this.card.hasOwner;
   }
+  get ownerIsOnline(): boolean {
+    return this.card.ownerIsOnline;
+  }
   get ownerName(): string {
     return this.card.ownerName;
   }
@@ -245,7 +248,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
       (this.doubleClickPoint.y - this.input.pointer.y) ** 2;
     if (distance < 10 ** 2) {
       console.log('onDoubleClick !!!!');
-      if (this.hasOwner && !this.isHand) return;
+      if (this.ownerIsOnline && !this.isHand) return;
       this.state =
         this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
       this.owner = '';

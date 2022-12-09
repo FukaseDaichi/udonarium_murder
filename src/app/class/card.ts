@@ -40,18 +40,23 @@ export class Card extends TabletopObject {
   get backImage(): ImageFile {
     return this.getImageFile('back');
   }
-
   get imageFile(): ImageFile {
     return this.isVisible ? this.frontImage : this.backImage;
   }
-
   get ownerName(): string {
     let object = PeerCursor.findByUserId(this.owner);
     return object ? object.name : '';
   }
-
   get hasOwner(): boolean {
     return 0 < this.owner.length;
+  }
+  get ownerIsOnline(): boolean {
+    return (
+      this.hasOwner &&
+      Network.peerContexts.some(
+        (context) => context.userId === this.owner && context.isOpen
+      )
+    );
   }
   get isHand(): boolean {
     return Network.peerContext.userId === this.owner;
