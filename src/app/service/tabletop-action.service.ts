@@ -17,11 +17,10 @@ import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TabletopActionService {
-
-  constructor() { }
+  constructor() {}
 
   createGameCharacter(position: PointerCoordinate): GameCharacter {
     let character = GameCharacter.create('新しいキャラクター', 1, '');
@@ -46,7 +45,7 @@ export class TabletopActionService {
 
   createTerrain(position: PointerCoordinate): Terrain {
     let url: string = './assets/images/tex.jpg';
-    let image: ImageFile = ImageStorage.instance.get(url)
+    let image: ImageFile = ImageStorage.instance.get(url);
     if (!image) image = ImageStorage.instance.add(url);
 
     let viewTable = this.getViewTable();
@@ -73,10 +72,12 @@ export class TabletopActionService {
     let diceSymbol = DiceSymbol.create(name, diceType, 1);
     let image: ImageFile = null;
 
-    diceSymbol.faces.forEach(face => {
+    diceSymbol.faces.forEach((face) => {
       let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
       image = ImageStorage.instance.get(url);
-      if (!image) { image = ImageStorage.instance.add(url); }
+      if (!image) {
+        image = ImageStorage.instance.add(url);
+      }
       diceSymbol.imageDataElement.getFirstElementByName(face).value = image.identifier;
     });
 
@@ -102,7 +103,7 @@ export class TabletopActionService {
 
     for (let suit of suits) {
       for (let i = 1; i <= 13; i++) {
-        trumps.push(suit + (('00' + i).slice(-2)));
+        trumps.push(suit + ('00' + i).slice(-2));
       }
     }
 
@@ -205,52 +206,57 @@ export class TabletopActionService {
 
   private getCreateCharacterMenu(position: PointerCoordinate): ContextMenuAction {
     return {
-      name: 'キャラクターを作成', action: () => {
+      name: 'キャラクターを作成',
+      action: () => {
         let character = this.createGameCharacter(position);
         EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: character.identifier, className: character.aliasName });
         SoundEffect.play(PresetSound.piecePut);
-      }
-    }
+      },
+    };
   }
 
   private getCreateTableMaskMenu(position: PointerCoordinate): ContextMenuAction {
     return {
-      name: 'マップマスクを作成', action: () => {
+      name: 'マップマスクを作成',
+      action: () => {
         this.createGameTableMask(position);
         SoundEffect.play(PresetSound.cardPut);
-      }
-    }
+      },
+    };
   }
 
   private getCreateTerrainMenu(position: PointerCoordinate): ContextMenuAction {
     return {
-      name: '地形を作成', action: () => {
+      name: '地形を作成',
+      action: () => {
         this.createTerrain(position);
         SoundEffect.play(PresetSound.blockPut);
-      }
-    }
+      },
+    };
   }
 
   private getCreateTextNoteMenu(position: PointerCoordinate): ContextMenuAction {
     return {
-      name: '共有メモを作成', action: () => {
+      name: '共有メモを作成',
+      action: () => {
         this.createTextNote(position);
         SoundEffect.play(PresetSound.cardPut);
-      }
-    }
+      },
+    };
   }
 
   private getCreateTrumpMenu(position: PointerCoordinate): ContextMenuAction {
     return {
-      name: 'トランプの山札を作成', action: () => {
+      name: 'トランプの山札を作成',
+      action: () => {
         this.createTrump(position);
         SoundEffect.play(PresetSound.cardPut);
-      }
-    }
+      },
+    };
   }
 
   private getCreateDiceSymbolMenu(position: PointerCoordinate): ContextMenuAction {
-    let dices: { menuName: string, diceName: string, type: DiceType, imagePathPrefix: string }[] = [
+    let dices: { menuName: string; diceName: string; type: DiceType; imagePathPrefix: string }[] = [
       { menuName: 'D4', diceName: 'D4', type: DiceType.D4, imagePathPrefix: '4_dice' },
       { menuName: 'D6', diceName: 'D6', type: DiceType.D6, imagePathPrefix: '6_dice' },
       { menuName: 'D8', diceName: 'D8', type: DiceType.D8, imagePathPrefix: '8_dice' },
@@ -261,12 +267,13 @@ export class TabletopActionService {
     ];
     let subMenus: ContextMenuAction[] = [];
 
-    dices.forEach(item => {
+    dices.forEach((item) => {
       subMenus.push({
-        name: item.menuName, action: () => {
+        name: item.menuName,
+        action: () => {
           this.createDiceSymbol(position, item.diceName, item.type, item.imagePathPrefix);
           SoundEffect.play(PresetSound.dicePut);
-        }
+        },
       });
     });
     return { name: 'ダイスを作成', action: null, subActions: subMenus };
