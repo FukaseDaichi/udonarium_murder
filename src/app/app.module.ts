@@ -31,6 +31,7 @@ import { ModalComponent } from 'component/modal/modal.component';
 import { NetworkIndicatorComponent } from 'component/network-indicator/network-indicator.component';
 import { OverviewPanelComponent } from 'component/overview-panel/overview-panel.component';
 import { PasswordCheckComponent } from 'component/password-check/password-check.component';
+import { GamePanelViewerComponent } from 'component/game-panel-viewer/game-panel-viewer.component';
 import { PeerCursorComponent } from 'component/peer-cursor/peer-cursor.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { RoomSettingComponent } from 'component/room-setting/room-setting.component';
@@ -45,6 +46,7 @@ import { MovableDirective } from 'directive/movable.directive';
 import { ResizableDirective } from 'directive/resizable.directive';
 import { RotableDirective } from 'directive/rotable.directive';
 import { TooltipDirective } from 'directive/tooltip.directive';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { SafePipe } from 'pipe/safe.pipe';
 import { AppConfigCustomService } from 'service/app-config-custom.service';
 
@@ -56,8 +58,11 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { GamePanelSettingComponent } from 'component/game-panel-setting/game-panel-setting.component';
 
 import { AppComponent } from './app.component';
+import { GamePanelService } from 'service/game-panel.service';
+import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
 
 @NgModule({
   declarations: [
@@ -106,8 +111,11 @@ import { AppComponent } from './app.component';
     ChatInputComponent,
     TimerMenuComponent,
     TimerModalComponent,
+    GamePanelViewerComponent,
+    GamePanelSettingComponent,
+    UIGamePanelComponent,
   ],
-  imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule],
+  imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule, PdfViewerModule],
   providers: [
     AppConfigService,
     AppConfigCustomService,
@@ -118,6 +126,7 @@ import { AppComponent } from './app.component';
     PanelService,
     PointerDeviceService,
     TabletopService,
+    GamePanelService,
   ],
   bootstrap: [AppComponent],
 })

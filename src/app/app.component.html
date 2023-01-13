@@ -1,18 +1,7 @@
-<div
-  id="app-table-layer"
-  style="position: absolute; width: 100%; height: 100%; overflow: hidden"
->
+<div id="app-table-layer" style="position: absolute; width: 100%; height: 100%; overflow: hidden">
   <game-table></game-table>
 </div>
-<ui-panel
-  [top]="0"
-  [left]="0"
-  [width]="100"
-  [height]="510"
-  [title]="'メニュー'"
-  [className]="'main-panel'"
-  [showTitleButtons]="false"
->
+<ui-panel [top]="0" [left]="0" [width]="100" [height]="560" [title]="'メニュー'" [className]="'main-panel'" [showTitleButtons]="false">
   <nav>
     <ul>
       <li (click)="open('PeerMenuComponent')">
@@ -56,13 +45,7 @@
           <label>
             <div><i class="material-icons">open_in_browser</i></div>
             <div>ZIP読込</div>
-            <input
-              type="file"
-              style="display: none"
-              (change)="handleFileSelect($event)"
-              multiple
-              accept="application/xml,text/xml,application/zip"
-            />
+            <input type="file" style="display: none" (change)="handleFileSelect($event)" multiple accept="application/xml,text/xml,application/zip" />
           </label>
         </a>
       </li>
@@ -82,6 +65,12 @@
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">access_alarm</i></div>
           <div>タイマー</div>
+        </a>
+      </li>
+      <li (click)="open('GamePanelSettingComponent')">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">access_alarm</i></div>
+          <div>パネル</div>
         </a>
       </li>
     </ul>

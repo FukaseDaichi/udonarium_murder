@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.game-panel {
+  border: none;
+}
+
+.draggable-panel {
+  box-sizing: border-box;
+  overflow: visible;
+  position: absolute;
+  color: #444;
+  background: linear-gradient(-30deg, rgba(240, 218, 189, 0.9), rgba(255, 244, 232, 0.9));
+  border: solid 1px #999;
+  padding: 0px;
+  top: 200px;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.game-panel-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.scrollable-panel {
+  box-sizing: border-box;
+  overflow: auto;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-size: 12px;
+  height: 25px;
+  padding: 2px 5px;
+  width: 100%;
+  background-color: #555;
+  color: #ccc;
+  user-select: none;
+}
+
+.title-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.title button {
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  color: #ccc;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+  padding: 0;
+}

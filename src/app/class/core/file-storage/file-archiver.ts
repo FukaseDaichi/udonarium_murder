@@ -6,15 +6,16 @@ import { XmlUtil } from '../system/util/xml-util';
 import { AudioStorage } from './audio-storage';
 import { FileReaderUtil } from './file-reader-util';
 import { ImageStorage } from './image-storage';
+import { PdfStorage } from './pdf-storage';
 import { MimeType } from './mime-type';
 
-type MetaData = { percent: number, currentFile: string };
+type MetaData = { percent: number; currentFile: string };
 type UpdateCallback = (metadata: MetaData) => void;
 
 const MEGA_BYTE = 1024 * 1024;
 
 export class FileArchiver {
-  private static _instance: FileArchiver
+  private static _instance: FileArchiver;
   static get instance(): FileArchiver {
     if (!FileArchiver._instance) FileArchiver._instance = new FileArchiver();
     return FileArchiver._instance;
@@ -61,22 +62,22 @@ export class FileArchiver {
 
   private onDragEnter(event: DragEvent) {
     event.preventDefault();
-  };
+  }
 
   private onDragOver(event: DragEvent) {
     event.preventDefault();
-  };
+  }
 
   private onDrop(event: DragEvent) {
     event.preventDefault();
 
     console.log('onDrop', event.dataTransfer);
-    let files = event.dataTransfer.files
+    let files = event.dataTransfer.files;
     this.load(files);
-  };
+  }
 
-  async load(files: File[]): Promise<void>
-  async load(files: FileList): Promise<void>
+  async load(files: File[]): Promise<void>;
+  async load(files: FileList): Promise<void>;
   async load(files: any): Promise<void> {
     if (!files) return;
     let loadFiles: File[] = files instanceof FileList ? toArrayOfFileList(files) : files;
@@ -86,6 +87,7 @@ export class FileArchiver {
       await this.handleAudio(file);
       await this.handleText(file);
       await this.handleZip(file);
+      await this.handlePdf(file);
       EventSystem.trigger('FILE_LOADED', { file: file });
     }
   }
@@ -121,8 +123,22 @@ export class FileArchiver {
     }
   }
 
+  private async handlePdf(file: File) {
+    if (file.type.indexOf('application/pdf') < 0) return;
+    if (this.maxImageSize < file.size) {
+      console.warn(`File size limit exceeded. -> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+      return;
+    }
+    console.log(file.name + ' type:' + file.type);
+    await PdfStorage.instance.addAsync(file);
+  }
+
   private async handleZip(file: File) {
     if (!(0 <= file.type.indexOf('application/') || file.type.length < 1)) return;
+
+    //pdfチェック
+    if (file.type.indexOf('application/pdf') >= 0) return;
+
     let zip = new JSZip();
     try {
       zip = await zip.loadAsync(file);
@@ -142,9 +158,8 @@ export class FileArchiver {
       }
     }
   }
-
-  async saveAsync(files: File[], zipName: string, updateCallback?: UpdateCallback): Promise<void>
-  async saveAsync(files: FileList, zipName: string, updateCallback?: UpdateCallback): Promise<void>
+  async saveAsync(files: File[], zipName: string, updateCallback?: UpdateCallback): Promise<void>;
+  async saveAsync(files: FileList, zipName: string, updateCallback?: UpdateCallback): Promise<void>;
   async saveAsync(files: any, zipName: string, updateCallback?: UpdateCallback): Promise<void> {
     if (!files) return;
     let saveFiles: File[] = files instanceof FileList ? toArrayOfFileList(files) : files;
@@ -154,13 +169,16 @@ export class FileArchiver {
       zip.file(file.name, file);
     }
 
-    let blob = await zip.generateAsync({
-      type: 'blob',
-      compression: 'DEFLATE',
-      compressionOptions: {
-        level: 6
-      }
-    }, updateCallback);
+    let blob = await zip.generateAsync(
+      {
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6,
+        },
+      },
+      updateCallback
+    );
     saveAs(blob, zipName + '.zip');
   }
 }
@@ -168,6 +186,8 @@ export class FileArchiver {
 function toArrayOfFileList(fileList: FileList): File[] {
   let files: File[] = [];
   let length = fileList.length;
-  for (let i = 0; i < length; i++) { files.push(fileList[i]); }
+  for (let i = 0; i < length; i++) {
+    files.push(fileList[i]);
+  }
   return files;
 }

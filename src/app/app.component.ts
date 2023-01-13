@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  NgZone,
-  OnDestroy,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -54,6 +47,12 @@ import { AlermSound } from '@udonarium/timer-bot';
 // タイマーメニュー
 import { TimerMenuComponent } from 'component/timer/timer-menu.component';
 import { AudioFile } from '@udonarium/core/file-storage/audio-file';
+import { GamePanelSettingComponent } from 'component/game-panel-setting/game-panel-setting.component';
+import { GamePanelSelecter } from '@udonarium/game-panel-selecter';
+import { GamePanelService } from 'service/game-panel.service';
+import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
+import { PdfSharingSystem } from '@udonarium/core/file-storage/pdf-sharing-system';
+import { PdfStorage } from '@udonarium/core/file-storage/pdf-storage';
 
 @Component({
   selector: 'app-root',
@@ -90,13 +89,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       ObjectSerializer.instance;
       ObjectStore.instance;
       ObjectSynchronizer.instance.initialize();
+
+      // pdf処理
+      PdfSharingSystem.instance.initialize();
+      PdfStorage.instance;
     });
+
     this.appConfigService.initialize();
     this.pointerDeviceService.initialize();
 
     TableSelecter.instance.initialize();
     ChatTabList.instance.initialize();
     DataSummarySetting.instance.initialize();
+    GamePanelSelecter.instance.initialize();
 
     let diceBot: DiceBot = new DiceBot('DiceBot');
     diceBot.initialize();
@@ -122,51 +127,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let noneIconImage = ImageStorage.instance.add(fileContext);
 
     AudioPlayer.resumeAudioContext();
-    PresetSound.dicePick = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
-    ).identifier;
-    PresetSound.dicePut = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/book-stack1.mp3'
-    ).identifier;
-    PresetSound.diceRoll1 = AudioStorage.instance.add(
-      './assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3'
-    ).identifier;
-    PresetSound.diceRoll2 = AudioStorage.instance.add(
-      './assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3'
-    ).identifier;
-    PresetSound.cardDraw = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/card-turn-over1.mp3'
-    ).identifier;
-    PresetSound.cardPick = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
-    ).identifier;
-    PresetSound.cardPut = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/book-stack1.mp3'
-    ).identifier;
-    PresetSound.cardShuffle = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/card-open1.mp3'
-    ).identifier;
-    PresetSound.piecePick = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/shoulder-touch1.mp3'
-    ).identifier;
-    PresetSound.piecePut = AudioStorage.instance.add(
-      './assets/sounds/soundeffect-lab/book-stack1.mp3'
-    ).identifier;
-    PresetSound.blockPick = AudioStorage.instance.add(
-      './assets/sounds/tm2/tm2_pon002.wav'
-    ).identifier;
-    PresetSound.blockPut = AudioStorage.instance.add(
-      './assets/sounds/tm2/tm2_pon002.wav'
-    ).identifier;
-    PresetSound.lock = AudioStorage.instance.add(
-      './assets/sounds/tm2/tm2_switch001.wav'
-    ).identifier;
-    PresetSound.unlock = AudioStorage.instance.add(
-      './assets/sounds/tm2/tm2_switch001.wav'
-    ).identifier;
-    PresetSound.sweep = AudioStorage.instance.add(
-      './assets/sounds/tm2/tm2_swing003.wav'
-    ).identifier;
+    PresetSound.dicePick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
+    PresetSound.dicePut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
+    PresetSound.diceRoll1 = AudioStorage.instance.add('./assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3').identifier;
+    PresetSound.diceRoll2 = AudioStorage.instance.add('./assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3').identifier;
+    PresetSound.cardDraw = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/card-turn-over1.mp3').identifier;
+    PresetSound.cardPick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
+    PresetSound.cardPut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
+    PresetSound.cardShuffle = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/card-open1.mp3').identifier;
+    PresetSound.piecePick = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/shoulder-touch1.mp3').identifier;
+    PresetSound.piecePut = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/book-stack1.mp3').identifier;
+    PresetSound.blockPick = AudioStorage.instance.add('./assets/sounds/tm2/tm2_pon002.wav').identifier;
+    PresetSound.blockPut = AudioStorage.instance.add('./assets/sounds/tm2/tm2_pon002.wav').identifier;
+    PresetSound.lock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
+    PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
+    PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -241,13 +216,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.ngZone.run(async () => {
           //SKyWayエラーハンドリング
           let quietErrorTypes = ['peer-unavailable'];
-          let reconnectErrorTypes = [
-            'disconnected',
-            'socket-error',
-            'unavailable-id',
-            'authentication',
-            'server-error',
-          ];
+          let reconnectErrorTypes = ['disconnected', 'socket-error', 'unavailable-id', 'authentication', 'server-error'];
 
           if (quietErrorTypes.includes(errorType)) return;
           await this.modalService.open(TextViewComponent, {
@@ -273,10 +242,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    PanelService.defaultParentViewContainerRef =
-      ModalService.defaultParentViewContainerRef =
-      ContextMenuService.defaultParentViewContainerRef =
-        this.modalLayerViewContainerRef;
+    PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
+
+    // ゲームパネル設定
+    GamePanelService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, {
         width: 500,
@@ -335,6 +304,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         component = GameObjectInventoryComponent;
         break;
 
+      // ゲームパネル
+      case 'GamePanelSettingComponent':
+        component = GamePanelSettingComponent;
+        option = { width: 630, height: 400, left: 100 };
+        break;
+
       // タイマーメニュー(特殊処理)
       case 'TimerMenuComponent':
         component = TimerMenuComponent;
@@ -363,10 +338,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.isSaveing = true;
     this.progresPercent = 0;
 
-    let roomName =
-      Network.peerContext && 0 < Network.peerContext.roomName.length
-        ? Network.peerContext.roomName
-        : 'ルームデータ';
+    let roomName = Network.peerContext && 0 < Network.peerContext.roomName.length ? Network.peerContext.roomName : 'ルームデータ';
     await this.saveDataService.saveRoomAsync(roomName, (percent) => {
       this.progresPercent = percent;
     });
@@ -410,5 +382,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;
+GamePanelService.UIGamePanelComponentClass = UIGamePanelComponent;
 ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;
