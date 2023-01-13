@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { PdfStorage } from '@udonarium/core/file-storage/pdf-storage';
 import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
@@ -13,7 +12,6 @@ import { GamePanelService } from 'service/game-panel.service';
 import { ImageService } from 'service/image.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
-import { PdfService } from 'service/pdf.service';
 
 @Component({
   selector: 'game-panel-setting',
@@ -71,7 +69,7 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
-  constructor(private modalService: ModalService, private imageService: ImageService, private gamePanelService: GamePanelService, private panelService: PanelService, private pdfService: PdfService) {}
+  constructor(private modalService: ModalService, private imageService: ImageService, private gamePanelService: GamePanelService, private panelService: PanelService) {}
 
   ngOnInit() {
     Promise.resolve().then(() => {
@@ -111,7 +109,6 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   openGamePanel() {
-    console.log(PdfStorage.instance.pdfs);
     this.gamePanelService.open(GamePanelViewerComponent, {
       param: { className: 'game-panel', identifierData: this.selectedPanel.identifier },
     });

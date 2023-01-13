@@ -7,7 +7,7 @@ import { CatalogItem, ImageStorage } from './image-storage';
 import { MimeType } from './mime-type';
 
 export class ImageSharingSystem {
-  private static _instance: ImageSharingSystem
+  private static _instance: ImageSharingSystem;
   static get instance(): ImageSharingSystem {
     if (!ImageSharingSystem._instance) ImageSharingSystem._instance = new ImageSharingSystem();
     return ImageSharingSystem._instance;
@@ -24,23 +24,25 @@ export class ImageSharingSystem {
 
   initialize() {
     EventSystem.register(this)
-      .on('CONNECT_PEER', 1, event => {
+      .on('CONNECT_PEER', 1, (event) => {
         if (!event.isSendFromSelf) return;
         console.log('CONNECT_PEER ImageStorageService !!!', event.data.peerId);
         ImageStorage.instance.synchronize();
       })
-      .on('XML_LOADED', event => {
+      .on('XML_LOADED', (event) => {
         convertUrlImage(event.data.xmlElement);
       })
-      .on('SYNCHRONIZE_FILE_LIST', event => {
+      .on('SYNCHRONIZE_FILE_LIST', (event) => {
         if (event.isSendFromSelf) return;
         console.log('SYNCHRONIZE_FILE_LIST ImageStorageService ' + event.sendFrom);
+        console.log(event.data);
 
         let otherCatalog: CatalogItem[] = event.data;
         let request: CatalogItem[] = [];
 
         for (let item of otherCatalog) {
           let image: ImageFile = ImageStorage.instance.get(item.identifier);
+          console.log(image);
           if (image === null) {
             image = ImageFile.createEmpty(item.identifier);
             ImageStorage.instance.add(image);
@@ -60,7 +62,7 @@ export class ImageSharingSystem {
         }
         this.request(request, event.sendFrom);
       })
-      .on('REQUEST_FILE_RESOURE', async event => {
+      .on('REQUEST_FILE_RESOURE', async (event) => {
         if (event.isSendFromSelf) return;
 
         let request: CatalogItem[] = event.data.identifiers;
@@ -68,8 +70,7 @@ export class ImageSharingSystem {
 
         for (let item of request) {
           let image: ImageFile = ImageStorage.instance.get(item.identifier);
-          if (image && item.state < image.state)
-            randomRequest.push({ identifier: item.identifier, state: item.state });
+          if (image && item.state < image.state) randomRequest.push({ identifier: item.identifier, state: item.state });
         }
 
         if (this.isLimitSendTask() === false && 0 < randomRequest.length && !this.existsSendTask(event.data.receiver)) {
@@ -91,7 +92,7 @@ export class ImageSharingSystem {
           console.log('REQUEST_FILE_RESOURE ImageStorageService あぶれた...' + event.data.receiver, randomRequest.length);
         }
       })
-      .on('UPDATE_FILE_RESOURE', 1000, event => {
+      .on('UPDATE_FILE_RESOURE', 1000, (event) => {
         let updateImages: ImageContext[] = event.data.updateImages;
         console.log('UPDATE_FILE_RESOURE ImageStorageService ' + event.sendFrom + ' -> ', updateImages);
         for (let context of updateImages) {
@@ -100,7 +101,7 @@ export class ImageSharingSystem {
           ImageStorage.instance.add(context);
         }
       })
-      .on('START_FILE_TRANSMISSION', event => {
+      .on('START_FILE_TRANSMISSION', (event) => {
         console.log('START_FILE_TRANSMISSION ' + event.data.taskIdentifier);
         let identifier = event.data.taskIdentifier;
         let image: ImageFile = ImageStorage.instance.get(identifier);
@@ -128,7 +129,11 @@ export class ImageSharingSystem {
       if (context.thumbnail.blob) {
         context.thumbnail.blob = <any>await FileReaderUtil.readAsArrayBufferAsync(context.thumbnail.blob);
       } else if (context.blob) {
+        console.log(context.name + ':');
+        console.log(context.blob);
         context.blob = <any>await FileReaderUtil.readAsArrayBufferAsync(context.blob);
+        console.log(context.blob);
+        console.log('★★★★★★★★★★★★★★★★★★★');
       }
     }
     /* */
@@ -136,7 +141,7 @@ export class ImageSharingSystem {
     task.onfinish = (task, data) => {
       this.stopSendTask(task.identifier);
       ImageStorage.instance.synchronize();
-    }
+    };
 
     task.start(updateImages);
   }
@@ -148,7 +153,7 @@ export class ImageSharingSystem {
       this.stopReceiveTask(task.identifier);
       if (data) EventSystem.trigger('UPDATE_FILE_RESOURE', { identifier: task.identifier, updateImages: data });
       ImageStorage.instance.synchronize();
-    }
+    };
 
     task.start();
     console.log('startReceiveTask => ', this.receiveTaskMap.size);
@@ -156,7 +161,9 @@ export class ImageSharingSystem {
 
   private stopSendTask(identifier: string) {
     let task = this.sendTaskMap.get(identifier);
-    if (task) { task.cancel(); }
+    if (task) {
+      task.cancel();
+    }
     this.sendTaskMap.delete(identifier);
 
     console.log('stopSendTask => ', this.sendTaskMap.size);
@@ -164,7 +171,9 @@ export class ImageSharingSystem {
 
   private stopReceiveTask(identifier: string) {
     let task = this.receiveTaskMap.get(identifier);
-    if (task) { task.cancel(); }
+    if (task) {
+      task.cancel();
+    }
     this.receiveTaskMap.delete(identifier);
 
     console.log('stopReceiveTask => ', this.receiveTaskMap.size);
@@ -194,7 +203,7 @@ export class ImageSharingSystem {
     });
 
     for (let i = 0; i < catalog.length; i++) {
-      let item: { identifier: string, state: number } = catalog[i];
+      let item: { identifier: string; state: number } = catalog[i];
       let image: ImageFile = ImageStorage.instance.get(item.identifier);
 
       let context: ImageContext = {
@@ -203,24 +212,20 @@ export class ImageSharingSystem {
         type: '',
         blob: null,
         url: null,
-        thumbnail: { type: '', blob: null, url: null, }
+        thumbnail: { type: '', blob: null, url: null },
       };
 
       if (image.state === ImageState.URL) {
         context.url = image.url;
       } else if (item.state === ImageState.NULL) {
-        context.thumbnail.blob = image.thumbnail.blob;//
+        context.thumbnail.blob = image.thumbnail.blob; //
         context.thumbnail.type = image.thumbnail.type;
       } else {
-        context.blob = image.blob;//
+        context.blob = image.blob; //
         context.type = image.blob.type;
       }
 
-      let size = context.blob
-        ? context.blob.size
-        : context.thumbnail.blob
-          ? context.thumbnail.blob.size
-          : 100;
+      let size = context.blob ? context.blob.size : context.thumbnail.blob ? context.thumbnail.blob.size : 100;
 
       updateImages.push(context);
       byteSize += size;
@@ -268,6 +273,6 @@ function convertUrlImage(xmlElement: Element) {
     }
   }
   for (let url of urls) {
-    ImageStorage.instance.add(url)
+    ImageStorage.instance.add(url);
   }
 }

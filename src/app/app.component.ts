@@ -51,8 +51,6 @@ import { GamePanelSettingComponent } from 'component/game-panel-setting/game-pan
 import { GamePanelSelecter } from '@udonarium/game-panel-selecter';
 import { GamePanelService } from 'service/game-panel.service';
 import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
-import { PdfSharingSystem } from '@udonarium/core/file-storage/pdf-sharing-system';
-import { PdfStorage } from '@udonarium/core/file-storage/pdf-storage';
 
 @Component({
   selector: 'app-root',
@@ -89,10 +87,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       ObjectSerializer.instance;
       ObjectStore.instance;
       ObjectSynchronizer.instance.initialize();
-
-      // pdf処理
-      PdfSharingSystem.instance.initialize();
-      PdfStorage.instance;
     });
 
     this.appConfigService.initialize();

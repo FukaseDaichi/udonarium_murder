@@ -6,7 +6,6 @@ import { XmlUtil } from '../system/util/xml-util';
 import { AudioStorage } from './audio-storage';
 import { FileReaderUtil } from './file-reader-util';
 import { ImageStorage } from './image-storage';
-import { PdfStorage } from './pdf-storage';
 import { MimeType } from './mime-type';
 
 type MetaData = { percent: number; currentFile: string };
@@ -23,6 +22,7 @@ export class FileArchiver {
 
   private maxImageSize = 2 * MEGA_BYTE;
   private maxAudioeSize = 10 * MEGA_BYTE;
+  private maxPdfSize = 10 * MEGA_BYTE;
 
   private callbackOnDragEnter;
   private callbackOnDragOver;
@@ -84,10 +84,10 @@ export class FileArchiver {
 
     for (let file of loadFiles) {
       await this.handleImage(file);
+      await this.handlePdf(file);
       await this.handleAudio(file);
       await this.handleText(file);
       await this.handleZip(file);
-      await this.handlePdf(file);
       EventSystem.trigger('FILE_LOADED', { file: file });
     }
   }
@@ -114,7 +114,6 @@ export class FileArchiver {
 
   private async handleText(file: File): Promise<void> {
     if (file.type.indexOf('text/') < 0) return;
-    console.log(file.name + ' type:' + file.type);
     try {
       let xmlElement: Element = XmlUtil.xml2element(await FileReaderUtil.readAsTextAsync(file));
       if (xmlElement) EventSystem.trigger('XML_LOADED', { xmlElement: xmlElement });
@@ -125,19 +124,19 @@ export class FileArchiver {
 
   private async handlePdf(file: File) {
     if (file.type.indexOf('application/pdf') < 0) return;
-    if (this.maxImageSize < file.size) {
-      console.warn(`File size limit exceeded. -> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+    if (this.maxPdfSize < file.size) {
+      alert('ファイルサイズが10Mb以上のものはアップロードできません');
       return;
     }
     console.log(file.name + ' type:' + file.type);
-    await PdfStorage.instance.addAsync(file);
+    await ImageStorage.instance.addAsync(file);
   }
 
   private async handleZip(file: File) {
     if (!(0 <= file.type.indexOf('application/') || file.type.length < 1)) return;
-
-    //pdfチェック
     if (file.type.indexOf('application/pdf') >= 0) return;
+    console.log('zip判断');
+    console.log(file);
 
     let zip = new JSZip();
     try {
