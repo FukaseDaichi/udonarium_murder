@@ -35,14 +35,12 @@ export class ImageSharingSystem {
       .on('SYNCHRONIZE_FILE_LIST', (event) => {
         if (event.isSendFromSelf) return;
         console.log('SYNCHRONIZE_FILE_LIST ImageStorageService ' + event.sendFrom);
-        console.log(event.data);
 
         let otherCatalog: CatalogItem[] = event.data;
         let request: CatalogItem[] = [];
 
         for (let item of otherCatalog) {
           let image: ImageFile = ImageStorage.instance.get(item.identifier);
-          console.log(image);
           if (image === null) {
             image = ImageFile.createEmpty(item.identifier);
             ImageStorage.instance.add(image);
@@ -129,11 +127,7 @@ export class ImageSharingSystem {
       if (context.thumbnail.blob) {
         context.thumbnail.blob = <any>await FileReaderUtil.readAsArrayBufferAsync(context.thumbnail.blob);
       } else if (context.blob) {
-        console.log(context.name + ':');
-        console.log(context.blob);
         context.blob = <any>await FileReaderUtil.readAsArrayBufferAsync(context.blob);
-        console.log(context.blob);
-        console.log('★★★★★★★★★★★★★★★★★★★');
       }
     }
     /* */

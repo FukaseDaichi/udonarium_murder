@@ -1,5 +1,3 @@
-import { GamePanel } from '@udonarium/game-panel';
-import { ObjectStore } from '../synchronize-object/object-store';
 import { EventSystem } from '../system';
 import { ResettableTimeout } from '../system/util/resettable-timeout';
 import { ImageContext, ImageFile, ImageState } from './image-file';

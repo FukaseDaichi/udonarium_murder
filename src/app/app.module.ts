@@ -63,6 +63,7 @@ import { GamePanelSettingComponent } from 'component/game-panel-setting/game-pan
 import { AppComponent } from './app.component';
 import { GamePanelService } from 'service/game-panel.service';
 import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
+import { GamePanelStoreComponent } from './component/game-panel-store/game-panel-store.component';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.comp
     GamePanelViewerComponent,
     GamePanelSettingComponent,
     UIGamePanelComponent,
+    GamePanelStoreComponent,
   ],
   imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule, PdfViewerModule],
   providers: [

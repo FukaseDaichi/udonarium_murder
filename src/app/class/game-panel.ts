@@ -19,4 +19,9 @@ export class GamePanel extends ObjectNode {
     super.onStoreAdded();
     if (this.selected) EventSystem.trigger('SELECT_GAME_PANEL', { identifier: this.identifier });
   }
+
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
+  }
 }

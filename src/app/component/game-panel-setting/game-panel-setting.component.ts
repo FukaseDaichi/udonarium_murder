@@ -75,13 +75,22 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
     Promise.resolve().then(() => {
       this.modalService.title = this.panelService.title = 'パネル設定';
     });
-    EventSystem.register(this).on('DELETE_GAME_OBJECT', 2000, (event) => {
-      if (!this.selectedPanel || event.data.identifier !== this.selectedPanel.identifier) return;
-      let object = ObjectStore.instance.get(event.data.identifier);
-      if (object !== null) {
-        this.selectedPanelXml = object.toXml();
-      }
-    });
+    EventSystem.register(this)
+      .on('DELETE_GAME_OBJECT', 2000, (event) => {
+        if (!this.selectedPanel || event.data.identifier !== this.selectedPanel.identifier) return;
+        let object = ObjectStore.instance.get(event.data.identifier);
+        if (object !== null) {
+          this.selectedPanelXml = object.toXml();
+        }
+      })
+      .on('OPEN_GAME_PANEL', (event) => {
+        if (event.data?.identifier) {
+          console.log(event.data?.identifier + 'を開くぞ');
+          this.gamePanelService.open(GamePanelViewerComponent, {
+            param: { className: 'game-panel', identifierData: event.data.identifier },
+          });
+        }
+      });
   }
 
   ngAfterViewInit() {}
@@ -91,6 +100,7 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   selectGamePanel(identifier: string) {
+    console.log(identifier + 'を選択');
     EventSystem.call('SELECT_GAME_PANEL', { identifier: identifier }, Network.peerId);
     this.selectedPanel = ObjectStore.instance.get<GamePanel>(identifier);
     this.selectedPanelXml = '';
@@ -112,6 +122,15 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
     this.gamePanelService.open(GamePanelViewerComponent, {
       param: { className: 'game-panel', identifierData: this.selectedPanel.identifier },
     });
+  }
+
+  openGamePanelForAllUser() {
+    EventSystem.call('OPEN_GAME_PANEL', { identifier: this.selectedPanel.identifier });
+  }
+
+  closeGamePanelForAllUser() {
+    if (!this.selectedPanel) return;
+    EventSystem.call('CLOSE_GAME_PANEL', { identifier: this.selectedPanel.identifier });
   }
 
   delete() {

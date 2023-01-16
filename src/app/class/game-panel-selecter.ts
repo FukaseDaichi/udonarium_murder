@@ -21,7 +21,6 @@ export class GamePanelSelecter extends GameObject {
   onStoreAdded() {
     super.onStoreAdded();
     EventSystem.register(this).on('SELECT_GAME_PANEL', (event) => {
-      console.log('セレクト対象が変更' + this.selectedPanel.identifier + ' ⇒ ' + event.data.identifier);
       if (this.selectedPanel) this.selectedPanel.selected = false;
       this.selectPanelIdentifier = event.data.identifier;
       if (this.selectedPanel) this.selectedPanel.selected = true;

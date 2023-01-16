@@ -86,6 +86,7 @@ export class UIGamePanelComponent implements OnInit {
   constructor(public gamePanelService: GamePanelService, private pointerDeviceService: PointerDeviceService) {}
 
   ngOnInit() {
+    console.log('パネルの初期化');
     this.gamePanel = ObjectStore.instance.get<GamePanel>(this.gamePanelService.param.identifierData);
     this.gamePanelService.scrollablePanel = this.scrollablePanel.nativeElement;
   }

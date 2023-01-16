@@ -116,8 +116,6 @@ export class ImageFile {
         imageFile.context.thumbnail = await ImageFile.createThumbnailAsync(imageFile.context);
         if (imageFile.context.name != null) imageFile.context.name = imageFile.context.identifier;
       }
-
-      if (imageFile.context.name != null) imageFile.context.name = imageFile.context.identifier;
     } catch (e) {
       throw e;
     }

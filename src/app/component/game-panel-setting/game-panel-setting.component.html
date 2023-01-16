@@ -51,6 +51,16 @@
       </div>
       <hr />
       <div>
+        <button *ngIf="!isDeleted" (click)="openGamePanelForAllUser()">
+          <div style="position: relative">
+            <div>全員のパネルを開く</div>
+          </div>
+        </button>
+        <button *ngIf="!isDeleted" (click)="closeGamePanelForAllUser()">
+          <div style="position: relative">
+            <div>全員のパネルを閉じる</div>
+          </div>
+        </button>
         <button *ngIf="!isDeleted" (click)="openGamePanel()">
           <div style="position: relative">
             <div>開く</div>
@@ -67,5 +77,5 @@
   </div>
 </div>
 <ng-container *ngIf="isEmpty">
-  <div style="font-size: 12px">※パネルが１つも作成されていません。「新しいテーブルを作る」から新しいテーブルを作成することができます。</div>
+  <div style="font-size: 12px">※パネルが１つも作成されていません。pdfファイルのドロップから新しいパネルを作成することができます。</div>
 </ng-container>
