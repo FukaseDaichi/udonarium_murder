@@ -12,8 +12,12 @@ export class GamePanel extends ObjectNode {
   @SyncVar() imageIdentifier: string = 'imageIdentifier';
   @SyncVar() backgroundImageIdentifier: string = 'imageIdentifier';
   @SyncVar() selected: boolean = false;
-  @SyncVar() isView: boolean = false;
+  @SyncVar() isAllView: boolean = false;
   @SyncVar() isCenter: boolean = true;
+  @SyncVar() isShortcutAble: boolean = true;
+
+  isSelfView: boolean = false;
+  isOwner: boolean = false;
 
   onStoreAdded() {
     super.onStoreAdded();

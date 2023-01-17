@@ -49,8 +49,6 @@ import { TimerMenuComponent } from 'component/timer/timer-menu.component';
 import { AudioFile } from '@udonarium/core/file-storage/audio-file';
 import { GamePanelSettingComponent } from 'component/game-panel-setting/game-panel-setting.component';
 import { GamePanelSelecter } from '@udonarium/game-panel-selecter';
-import { GamePanelService } from 'service/game-panel.service';
-import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
 
 @Component({
   selector: 'app-root',
@@ -238,8 +236,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
 
-    // ゲームパネル設定
-    GamePanelService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, {
         width: 500,
@@ -301,7 +297,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       // ゲームパネル
       case 'GamePanelSettingComponent':
         component = GamePanelSettingComponent;
-        option = { width: 630, height: 400, left: 100 };
+        option = { width: 630, height: 320, left: 100 };
         break;
 
       // タイマーメニュー(特殊処理)
@@ -376,6 +372,5 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;
-GamePanelService.UIGamePanelComponentClass = UIGamePanelComponent;
 ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;

@@ -1,15 +1,16 @@
 <div class="flex-container">
-  <div class="flex-item no-grow">
-    <div>
+  <div class="flex-item panel-list">
+    <!-- <div>
       <button (click)="createGamePanel()">新しいパネルを作る</button>
     </div>
-    <select style="width: 10em" size="10" (change)="selectGamePanel($event.target.value)" [ngModel]="selectedPanel?.identifier">
+   -->
+    <select size="10" (change)="selectGamePanel($event.target.value)" [ngModel]="selectedPanel?.identifier">
       <option *ngFor="let gamePanel of getGamePanels()" value="{{ gamePanel.identifier }}">{{ gamePanel.title }}</option>
     </select>
   </div>
-  <div class="flex-item">
+  <div class="flex-item input-box">
     <ng-container *ngIf="selectedPanel">
-      <div class="images-select">
+      <!-- <div class="images-select">
         <div>
           画像
           <div *ngIf="!panelBackgroundImage.url">
@@ -28,53 +29,51 @@
             <img height="120" [src]="panelDistanceviewImage.url | safe : 'resourceUrl'" />
           </div>
         </div>
+      </div> -->
+      <div class="textBox">
+        <input class="text" placeholder="title" [(ngModel)]="panelName" placeholder="Title" [disabled]="!isEditable" />
+        <label class="label">Title</label>
       </div>
-      <div>
-        Name :
-        <input [(ngModel)]="panelName" placeholder="Name" [disabled]="!isEditable" />
+      <div class="textBox">
+        <input class="number text" [(ngModel)]="panelWidth" type="number" min="{{ minSize }}" max="{{ maxSize }}" [disabled]="!isEditable" />
+        <label class="label">Width</label>
+        <input class="bar" [(ngModel)]="panelWidth" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableWidth" [disabled]="!isEditable" />
       </div>
-      <div>
-        <input [(ngModel)]="panelWidth" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableWidth" [disabled]="!isEditable" /> Width :
-        <input [(ngModel)]="panelWidth" type="number" min="{{ minSize }}" max="{{ maxSize }}" style="width: 5em" [disabled]="!isEditable" />
+      <div class="textBox">
+        <input class="number text" [(ngModel)]="panelHeight" type="number" min="{{ minSize }}" max="{{ maxSize }}" [disabled]="!isEditable" />
+        <label class="label">Height</label>
+        <input class="bar" [(ngModel)]="panelHeight" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableHeight" [disabled]="!isEditable" />
       </div>
-      <div>
-        <input [(ngModel)]="panelHeight" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableHeight" [disabled]="!isEditable" /> Height :
-        <input [(ngModel)]="panelHeight" type="number" min="{{ minSize }}" max="{{ maxSize }}" style="width: 5em" [disabled]="!isEditable" />
-      </div>
-      <div>
-        背景フィルタ
-        <select [(ngModel)]="panelDistanceviewFilter" name="panelDistanceviewFilter" [disabled]="!isEditable">
-          <option value="">なし</option>
-          <option value="white">ホワイト</option>
-          <option value="black">ブラック</option>
-        </select>
-      </div>
-      <hr />
-      <div>
-        <button *ngIf="!isDeleted" (click)="openGamePanelForAllUser()">
-          <div style="position: relative">
-            <div>全員のパネルを開く</div>
-          </div>
-        </button>
-        <button *ngIf="!isDeleted" (click)="closeGamePanelForAllUser()">
-          <div style="position: relative">
-            <div>全員のパネルを閉じる</div>
-          </div>
-        </button>
-        <button *ngIf="!isDeleted" (click)="openGamePanel()">
-          <div style="position: relative">
-            <div>開く</div>
-          </div>
-        </button>
-        <ng-container *ngIf="!isDeleted">
-          <button class="danger" (click)="delete()" [disabled]="isEmpty">削除</button>
-        </ng-container>
-        <ng-container *ngIf="isDeleted">
-          <button (click)="restore()">元に戻す</button>
-        </ng-container>
+      <div class="checkbox">
+        <input type="checkbox" id="shortcut-able" [(ngModel)]="isShortcutAble" />
+        <label for="shortcut-able">ショートカット有</label>
       </div>
     </ng-container>
   </div>
+</div>
+<hr *ngIf="selectedPanel" />
+<div *ngIf="selectedPanel">
+  <button *ngIf="!isDeleted" (click)="openGamePanelForAllUser()">
+    <div style="position: relative">
+      <div>全員のパネルを開く</div>
+    </div>
+  </button>
+  <button *ngIf="!isDeleted" (click)="closeGamePanelForAllUser()">
+    <div style="position: relative">
+      <div>全員のパネルを閉じる</div>
+    </div>
+  </button>
+  <button *ngIf="!isDeleted" (click)="openGamePanel()">
+    <div style="position: relative">
+      <div>開く</div>
+    </div>
+  </button>
+  <ng-container *ngIf="!isDeleted">
+    <button class="danger" (click)="delete()" [disabled]="isEmpty">削除</button>
+  </ng-container>
+  <ng-container *ngIf="isDeleted">
+    <button (click)="restore()">元に戻す</button>
+  </ng-container>
 </div>
 <ng-container *ngIf="isEmpty">
   <div style="font-size: 12px">※パネルが１つも作成されていません。pdfファイルのドロップから新しいパネルを作成することができます。</div>

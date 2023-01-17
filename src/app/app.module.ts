@@ -61,7 +61,6 @@ import { TabletopService } from 'service/tabletop.service';
 import { GamePanelSettingComponent } from 'component/game-panel-setting/game-panel-setting.component';
 
 import { AppComponent } from './app.component';
-import { GamePanelService } from 'service/game-panel.service';
 import { UIGamePanelComponent } from 'component/ui-game-panel/ui-game-panel.component';
 import { GamePanelStoreComponent } from './component/game-panel-store/game-panel-store.component';
 
@@ -118,18 +117,7 @@ import { GamePanelStoreComponent } from './component/game-panel-store/game-panel
     GamePanelStoreComponent,
   ],
   imports: [BrowserModule, BrowserAnimationsModule, CommonModule, FormsModule, PdfViewerModule],
-  providers: [
-    AppConfigService,
-    AppConfigCustomService,
-    ChatMessageService,
-    ContextMenuService,
-    ModalService,
-    GameObjectInventoryService,
-    PanelService,
-    PointerDeviceService,
-    TabletopService,
-    GamePanelService,
-  ],
+  providers: [AppConfigService, AppConfigCustomService, ChatMessageService, ContextMenuService, ModalService, GameObjectInventoryService, PanelService, PointerDeviceService, TabletopService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

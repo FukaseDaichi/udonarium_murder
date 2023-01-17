@@ -8,7 +8,6 @@ import { GamePanel } from '@udonarium/game-panel';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { GamePanelViewerComponent } from 'component/game-panel-viewer/game-panel-viewer.component';
-import { GamePanelService } from 'service/game-panel.service';
 import { ImageService } from 'service/image.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
@@ -51,6 +50,13 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.isEditable) this.selectedPanel.height = panelHeight;
   }
 
+  get isShortcutAble(): boolean {
+    return this.selectedPanel.isShortcutAble;
+  }
+  set isShortcutAble(isShortcutAble: boolean) {
+    if (this.isEditable) this.selectedPanel.isShortcutAble = isShortcutAble;
+  }
+
   selectedPanel: GamePanel = null;
   selectedPanelXml: string = '';
 
@@ -69,28 +75,19 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
-  constructor(private modalService: ModalService, private imageService: ImageService, private gamePanelService: GamePanelService, private panelService: PanelService) {}
+  constructor(private modalService: ModalService, private imageService: ImageService, private panelService: PanelService) {}
 
   ngOnInit() {
     Promise.resolve().then(() => {
       this.modalService.title = this.panelService.title = 'パネル設定';
     });
-    EventSystem.register(this)
-      .on('DELETE_GAME_OBJECT', 2000, (event) => {
-        if (!this.selectedPanel || event.data.identifier !== this.selectedPanel.identifier) return;
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (object !== null) {
-          this.selectedPanelXml = object.toXml();
-        }
-      })
-      .on('OPEN_GAME_PANEL', (event) => {
-        if (event.data?.identifier) {
-          console.log(event.data?.identifier + 'を開くぞ');
-          this.gamePanelService.open(GamePanelViewerComponent, {
-            param: { className: 'game-panel', identifierData: event.data.identifier },
-          });
-        }
-      });
+    EventSystem.register(this).on('DELETE_GAME_OBJECT', 2000, (event) => {
+      if (!this.selectedPanel || event.data.identifier !== this.selectedPanel.identifier) return;
+      let object = ObjectStore.instance.get(event.data.identifier);
+      if (object !== null) {
+        this.selectedPanelXml = object.toXml();
+      }
+    });
   }
 
   ngAfterViewInit() {}
@@ -119,18 +116,33 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   openGamePanel() {
-    this.gamePanelService.open(GamePanelViewerComponent, {
-      param: { className: 'game-panel', identifierData: this.selectedPanel.identifier },
-    });
+    this.selectedPanel.isSelfView = true;
   }
 
   openGamePanelForAllUser() {
-    EventSystem.call('OPEN_GAME_PANEL', { identifier: this.selectedPanel.identifier });
+    // エラーチェック
+    if (!this.selectedPanel) return;
+
+    // オーナーになる
+    this.selectedPanel.isOwner = true;
+
+    // 自分のを閉じる
+    this.selectedPanel.isSelfView = false;
+    this.selectedPanel.isAllView = true;
+    EventSystem.call('OPEN_GAME_PANEL', { gamePanelidentifier: this.selectedPanel.identifier });
   }
 
   closeGamePanelForAllUser() {
+    // エラーチェック
     if (!this.selectedPanel) return;
-    EventSystem.call('CLOSE_GAME_PANEL', { identifier: this.selectedPanel.identifier });
+    // オーナーではなくなる
+    this.selectedPanel.isOwner = false;
+
+    // 自分のを閉じる
+    this.selectedPanel.isSelfView = false;
+    this.selectedPanel.isAllView = false;
+
+    EventSystem.call('CLOSE_GAME_PANEL', { gamePanelidentifier: this.selectedPanel.identifier });
   }
 
   delete() {
