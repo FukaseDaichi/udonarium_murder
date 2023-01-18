@@ -6,9 +6,9 @@
 <div class="panel-shortcut-area">
   <div class="panel-shortcut-flex-box">
     <ng-container *ngFor="let gamePanel of getGamePanels()">
-      <div class="shortcut-box con-tooltip slide-in" (click)="openPanel($event, gamePanel)" *ngIf="isVisibleShurtcut(gamePanel)">
+      <div class="shortcut-box con-tooltip slide-in" (click)="openPanel($event, gamePanel)" *ngIf="gamePanel.isShortcutView(myPeer.name)">
         <i class="material-icons">import_contacts</i>
-        <span>{{ shortCutName(gamePanel.title) }}</span>
+        <span>{{ gamePanel.shortCutName() }}</span>
         <div class="tooltip">
           <p>{{ gamePanel.title }}</p>
         </div>

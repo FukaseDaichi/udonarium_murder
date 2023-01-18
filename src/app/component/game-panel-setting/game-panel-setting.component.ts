@@ -57,6 +57,13 @@ export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.isEditable) this.selectedPanel.isShortcutAble = isShortcutAble;
   }
 
+  get nicknameFillter(): string {
+    return this.selectedPanel.nicknameFillter;
+  }
+  set nicknameFillter(nicknameFillter: string) {
+    this.selectedPanel.nicknameFillter = nicknameFillter;
+  }
+
   selectedPanel: GamePanel = null;
   selectedPanelXml: string = '';
 

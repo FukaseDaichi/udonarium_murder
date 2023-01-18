@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { GamePanel } from '@udonarium/game-panel';
-
-const SHORTCUT_LIMIT_TITLE_LENGTH: number = 5;
+import { PeerCursor } from '@udonarium/peer-cursor';
 
 @Component({
   selector: 'app-game-panel-store',
@@ -19,23 +18,8 @@ export class GamePanelStoreComponent implements OnInit {
     return gamePanel.isAllView || gamePanel.isSelfView;
   }
 
-  isVisibleShurtcut(gamePanel: GamePanel): boolean {
-    if (!gamePanel.isShortcutAble) {
-      return false;
-    }
-    return !gamePanel.isAllView && !gamePanel.isSelfView;
-  }
-
-  shortCutName(title: string): string {
-    if (!title) {
-      return '名無し';
-    }
-
-    if (title.length <= SHORTCUT_LIMIT_TITLE_LENGTH) {
-      return title;
-    }
-
-    return title.slice(0, SHORTCUT_LIMIT_TITLE_LENGTH);
+  get myPeer(): PeerCursor {
+    return PeerCursor.myCursor;
   }
 
   openPanel(event: any, gamePanel: GamePanel): void {

@@ -325,7 +325,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       // ゲームパネル
       case 'GamePanelSettingComponent':
         component = GamePanelSettingComponent;
-        option = { width: 630, height: 320, left: 100 };
+        option = { width: 600, height: 440, left: 100 };
         break;
 
       // タイマーメニュー(特殊処理)

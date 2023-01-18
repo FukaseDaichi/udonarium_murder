@@ -44,13 +44,39 @@
         <label class="label">Height</label>
         <input class="bar" [(ngModel)]="panelHeight" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableHeight" [disabled]="!isEditable" />
       </div>
-      <div class="checkbox">
-        <input type="checkbox" id="shortcut-able" [(ngModel)]="isShortcutAble" />
-        <label for="shortcut-able">ショートカット有</label>
+      <div class="checkbox con-tooltip">
+        <input type="checkbox" id="shortcut-able" [(ngModel)]="isShortcutAble" [disabled]="!isEditable" />
+        <label for="shortcut-able">
+          <i class="material-icons">import_contacts</i>
+          <span>ショートカット有</span>
+        </label>
+        <div class="tooltip" style="width: 240px; left: 25px; padding: 9px">
+          左下にパネルのショートカットを表示します。<br />
+          「接続」のGMモードで「パネル設定」を非表示にすることで、参加者のパネルの表示をショートカットのみに限定することができます。
+        </div>
       </div>
     </ng-container>
   </div>
 </div>
+
+<hr *ngIf="selectedPanel && isShortcutAble" />
+<div *ngIf="selectedPanel && isShortcutAble" class="detail-shortcut">
+  <div class="textBox">
+    <input class="text" placeholder="Filter" placeholder="ニックネームフィルター" [(ngModel)]="nicknameFillter" [disabled]="!isEditable" [disabled]="!isEditable" />
+    <label class="label">ニックネームフィルター</label>
+    <div class="con-tooltip" style="left: 120px">
+      <p><i class="material-icons" style="font-size: 14px">help_outline</i></p>
+      <div class="tooltip">
+        <p>
+          ショートカットを個別に表示非表示する時に利用します。<br />
+          「執事@」がフィルターの場合、ニックネームに「執事@」を含むプレイヤーはショートカットが表示されます。 <br />
+          応用として「執事@,探偵」など「,」を用いることで複数のプレイヤーを対象とできます。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <hr *ngIf="selectedPanel" />
 <div *ngIf="selectedPanel">
   <button *ngIf="!isDeleted" (click)="openGamePanelForAllUser()">
