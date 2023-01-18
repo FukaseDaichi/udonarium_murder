@@ -89,6 +89,7 @@ export class FileArchiver {
 
     for (let file of loadFiles) {
       await this.handleImage(file);
+      const filename: string = file.name;
       const pdfFile: ImageFile = await this.handlePdf(file);
       await this.handleAudio(file);
       await this.handleText(file);
@@ -98,7 +99,7 @@ export class FileArchiver {
       // pdfFileに該当するパネル追加
       if (this.isFirstDrop && pdfFile) {
         let gamePanel = new GamePanel();
-        gamePanel.title = pdfFile.name;
+        gamePanel.title = filename;
         gamePanel.imageIdentifier = pdfFile.identifier;
         gamePanel.initialize();
         ObjectStore.instance.add(gamePanel);
