@@ -49,6 +49,11 @@ import { TimerMenuComponent } from 'component/timer/timer-menu.component';
 import { AudioFile } from '@udonarium/core/file-storage/audio-file';
 import { GamePanelSettingComponent } from 'component/game-panel-setting/game-panel-setting.component';
 import { GamePanelSelecter } from '@udonarium/game-panel-selecter';
+import { RoomSetting } from '@udonarium/room-setting';
+import { Observable, Subscription } from 'rxjs';
+import { AppConfigCustomService } from 'service/app-config-custom.service';
+
+const MENU_LENGTH: number = 10;
 
 @Component({
   selector: 'app-root',
@@ -64,6 +69,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
+  roomSetting: RoomSetting;
+
+  // GMフラグ
+  obs: Observable<boolean>;
+  subs: Subscription;
+  isGM: boolean = false;
+
+  get menuHeight(): number {
+    if (this.isGM) return MENU_LENGTH * 50 + 60;
+    return this.roomSetting.getMenuHeight();
+  }
+
   constructor(
     private modalService: ModalService,
     private panelService: PanelService,
@@ -71,7 +88,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private appCustomService: AppConfigCustomService
   ) {
     this.ngZone.runOutsideAngular(() => {
       EventSystem;
@@ -110,6 +128,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let timerBot: TimerBot = new TimerBot('timer-bot');
     timerBot.initialize();
+
+    this.roomSetting = new RoomSetting('room-setting');
+    this.roomSetting.initialize();
 
     ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
     ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
@@ -231,6 +252,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .on('DISCONNECT_PEER', (event) => {
         this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
+
+    //GMフラグ管理
+    this.obs = this.appCustomService.isViewer$;
+    this.subs = this.obs.subscribe((flg) => {
+      this.isGM = flg;
+    });
+    this.isGM = this.appCustomService.dataViewer;
   }
 
   ngAfterViewInit() {
