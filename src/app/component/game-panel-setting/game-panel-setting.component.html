@@ -44,16 +44,18 @@
         <label class="label">Height</label>
         <input class="bar" [(ngModel)]="panelHeight" type="range" min="{{ minSize }}" max="{{ maxSize }}" name="tableHeight" [disabled]="!isEditable" />
       </div>
-      <div class="checkbox con-tooltip">
+      <div class="checkbox">
         <input type="checkbox" id="shortcut-able" [(ngModel)]="isShortcutAble" [disabled]="!isEditable" />
         <label for="shortcut-able">
           <i class="material-icons">import_contacts</i>
-          <span>ショートカット有</span>
+          <div class="con-tooltip" style="top: -3px">
+            <p><i class="material-icons" style="font-size: 14px">help_outline</i></p>
+            <div class="tooltip" style="width: 240px; top: 30px; left: -5px; padding: 9px">
+              左下にパネルのショートカットを表示します。<br />
+              「接続」のGMモードで「パネル設定」を非表示にすることで、参加者のパネルの表示をショートカットのみに限定することができます。
+            </div>
+          </div>
         </label>
-        <div class="tooltip" style="width: 240px; left: 25px; padding: 9px">
-          左下にパネルのショートカットを表示します。<br />
-          「接続」のGMモードで「パネル設定」を非表示にすることで、参加者のパネルの表示をショートカットのみに限定することができます。
-        </div>
       </div>
     </ng-container>
   </div>

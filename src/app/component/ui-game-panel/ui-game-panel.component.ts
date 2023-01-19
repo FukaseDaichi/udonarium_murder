@@ -24,43 +24,17 @@ export class UIGamePanelComponent implements OnInit {
 
   @Input() gamePanel: GamePanel = null;
 
-  @Input() set title(title: string) {
-    this.gamePanel.title = title;
-  }
-  @Input() set left(left: number) {
-    this.gamePanel.left = left;
-  }
-  @Input() set top(top: number) {
-    this.gamePanel.top = top;
-  }
-  @Input() set width(width: number) {
-    this.gamePanel.width = width;
-  }
-  @Input() set height(height: number) {
-    this.gamePanel.height = height;
-  }
   @Input() showTitleButtons: boolean = true;
 
-  get title(): string {
-    return this.gamePanel.title;
-  }
-  get width() {
-    return this.gamePanel.width;
-  }
-  get height() {
-    return this.gamePanel.height;
-  }
+  title: string = '';
+  width: number = 1000;
+  height: number = 500;
 
   get isCenter(): boolean {
     return this.gamePanel.isCenter;
   }
 
-  get positionStyle(): any {
-    if (this.gamePanel.isCenter) {
-      return { top: `calc(50% - ${this.gamePanel.height / 2}px`, left: `calc(50% - ${this.gamePanel.width / 2}px` };
-    }
-    return { top: this.gamePanel.top + 'px', left: this.gamePanel.left + 'px' };
-  }
+  positionStyle: any;
 
   get pdfFile(): ImageFile {
     return this.imageService.getEmptyOr(this.gamePanel.imageIdentifier);
@@ -68,8 +42,8 @@ export class UIGamePanelComponent implements OnInit {
 
   private preLeft: number = 0;
   private preTop: number = 0;
-  private preWidth: number = 100;
-  private preHeight: number = 100;
+  private preWidth: number = 1000;
+  private preHeight: number = 500;
   private isFullScreen: boolean = false;
 
   get isPointerDragging(): boolean {
@@ -78,7 +52,16 @@ export class UIGamePanelComponent implements OnInit {
 
   constructor(private pointerDeviceService: PointerDeviceService, private imageService: ImageService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.width = this.gamePanel.width;
+    this.height = this.gamePanel.height;
+
+    if (this.gamePanel.isCenter) {
+      this.positionStyle = { top: `calc(50% - ${this.gamePanel.height / 2}px`, left: `calc(50% - ${this.gamePanel.width / 2}px` };
+    } else {
+      this.positionStyle = { top: this.gamePanel.top + 'px', left: this.gamePanel.left + 'px' };
+    }
+  }
 
   toggleFullScreen() {
     let panel = this.draggablePanel.nativeElement;
@@ -94,20 +77,20 @@ export class UIGamePanelComponent implements OnInit {
       this.preWidth = panel.offsetWidth;
       this.preHeight = panel.offsetHeight;
 
-      this.left = 0;
-      this.top = 0;
+      console.log(this.preLeft + 'px と' + this.preTop);
       this.width = window.innerWidth;
       this.height = window.innerHeight;
 
-      panel.style.left = this.left + 'px';
-      panel.style.top = this.top + 'px';
+      panel.style.left = 0 + 'px';
+      panel.style.top = 0 + 'px';
       panel.style.width = this.width + 'px';
       panel.style.height = this.height + 'px';
     } else {
-      this.left = this.preLeft;
-      this.top = this.preTop;
       this.width = this.preWidth;
       this.height = this.preHeight;
+
+      panel.style.left = this.preLeft + 'px';
+      panel.style.top = this.preTop + 'px';
     }
   }
 

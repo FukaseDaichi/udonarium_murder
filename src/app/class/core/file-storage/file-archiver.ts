@@ -143,7 +143,6 @@ export class FileArchiver {
       alert('ファイルサイズが10Mb以上のものはアップロードできません');
       return;
     }
-    console.log(file.name + ' type:' + file.type);
     return await ImageStorage.instance.addAsync(file);
   }
 

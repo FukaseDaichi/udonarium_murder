@@ -10,7 +10,6 @@ import { GamePanel } from '@udonarium/game-panel';
 })
 export class GamePanelViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() gamePanel: GamePanel = null;
-
   @Input() pdfFile: ImageFile = null;
 
   get pdfSrc() {
@@ -20,7 +19,11 @@ export class GamePanelViewerComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnInit() {}
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.gamePanel.resize();
+    }, 500);
+  }
 
   ngOnDestroy(): void {
     EventSystem.unregister(this);

@@ -2,6 +2,9 @@
   display: block;
 }
 
+.relative {
+  position: relative;
+}
 .flex-container {
   display: flex;
   display: -webkit-flex; /* Safari */

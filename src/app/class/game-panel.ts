@@ -18,6 +18,7 @@ export class GamePanel extends ObjectNode {
   @SyncVar() isCenter: boolean = true;
   @SyncVar() isShortcutAble: boolean = true;
   @SyncVar() nicknameFillter: string = '';
+  @SyncVar() isOriginalSize: boolean = true;
 
   isSelfView: boolean = false;
   isOwner: boolean = false;
@@ -52,6 +53,12 @@ export class GamePanel extends ObjectNode {
       return true;
     }
     return false;
+  }
+
+  resize(): void {
+    if (this.isOriginalSize) return;
+    const e = new Event('resize');
+    window.dispatchEvent(e);
   }
 
   onStoreAdded() {

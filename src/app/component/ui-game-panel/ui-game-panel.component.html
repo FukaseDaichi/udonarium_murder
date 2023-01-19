@@ -9,6 +9,8 @@
   appResizable
   #draggablePanel
   [id]="gamePanel.identifier"
+  (mousedown)="gamePanel.resize()"
+  (mouseup)="gamePanel.resize()"
 >
   <div class="title">
     <div class="title-button" *ngIf="showTitleButtons">
