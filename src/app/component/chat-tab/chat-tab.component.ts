@@ -122,6 +122,14 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
       name: 'アップデート',
       text: '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、Chromeの動作等を改善しました。',
     },
+    {
+      from: 'System',
+      timestamp: 1674185818132,
+      imageIdentifier: '',
+      tag: '',
+      name: 'アップデート',
+      text: 'PDF閲覧機能を追加しました。詳しい使い方は<a href="https://whitefranc.fanbox.cc/posts/5140230" target="_blank" >こちら</a>を参照してください。',
+    },
   ];
 
   private topTimestamp = 0;
