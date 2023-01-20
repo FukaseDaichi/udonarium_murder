@@ -15,4 +15,4 @@ platformBrowserDynamic()
   .catch((err) => console.error(err));
 
 // デバッグログの削除
-//console.log = function () {};
+console.log = function () {};
