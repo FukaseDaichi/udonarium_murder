@@ -18,13 +18,8 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.css"],
             "scripts": [],
             "allowedCommonJsDependencies": [
               "bcdice",
@@ -34,7 +29,9 @@
               "file-saver",
               "msgpack-lite",
               "lzbase62",
-              "pako"
+              "pako",
+              "pdfjs-dist/build/pdf",
+              "pdfjs-dist/web/pdf_viewer"
             ]
           },
           "configurations": {
@@ -95,13 +92,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.css"],
             "scripts": []
           }
         }

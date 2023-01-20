@@ -1,0 +1,241 @@
+:host {
+  display: block;
+}
+
+.relative {
+  position: relative;
+}
+.flex-container {
+  display: flex;
+  display: -webkit-flex; /* Safari */
+
+  justify-content: flex-start;
+  -webkit-justify-content: flex-start; /* Safari */
+}
+
+.flex-item {
+  margin: 5px;
+  -webkit-flex: 1 0 auto; /* Safari */
+  flex: 1 0 auto;
+  box-sizing: border-box;
+  -webkit-flex-grow: 1; /* Safari */
+  flex-grow: 1;
+}
+
+.panel-list {
+  width: 38%;
+  position: relative;
+}
+
+.panel-list select {
+  width: 100%;
+  height: 200px;
+}
+
+.input-box {
+  width: 55%;
+  position: relative;
+}
+
+.images-select {
+  display: flex;
+}
+
+.is-hidden {
+  visibility: hidden;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.9em;
+}
+
+.textBox {
+  position: relative;
+  width: 100%;
+  padding-top: 5px;
+  height: 45px;
+  display: inline-flex;
+}
+
+.textBox .text {
+  width: calc(100% - 2vw);
+  height: 27px;
+  padding-left: 0.5vw;
+  background-color: transparent;
+  color: #444;
+  position: absolute;
+  bottom: 0px;
+  outline: none;
+  border-style: solid;
+  border-color: #505873;
+  border-width: 0px 0px 2px 0px;
+  -webkit-transition: border-color 0.45s linear;
+  transition: border-color 0.45s linear;
+}
+
+.textBox .number {
+  width: 70px;
+}
+
+.textBox .bar {
+  position: relative;
+  left: 30%;
+  top: 5px;
+  width: 60%;
+}
+
+.textBox > input.text:focus ~ .label,
+.textBox > input.text:not([value=""]) ~ .label {
+  opacity: 1;
+  z-index: 1;
+  bottom: 55%;
+}
+
+.textBox > input.text:focus {
+  border-color: #3c5dc7;
+}
+.textBox .label {
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
+  color: #444;
+  position: absolute;
+  padding-left: 0.5vw;
+  bottom: 3px;
+  font-size: 10px;
+  -webkit-transition-property: opacity bottom font-size;
+  transition-property: opacity bottom font-size;
+  -webkit-transition-duration: 0.45s;
+  transition-duration: 0.45s;
+  -webkit-transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.textBox > input.text:focus ~ .label {
+  color: #3c5dc7;
+}
+
+.checkbox input {
+  display: none;
+}
+.checkbox label {
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 30px;
+  position: relative;
+  width: auto;
+  font-size: 12px;
+}
+.checkbox label > span {
+  position: relative;
+  top: -6px;
+}
+
+.checkbox label::before {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  content: "";
+  display: block;
+  height: 16px;
+  left: 5px;
+  margin-top: -8px;
+  position: absolute;
+  top: 50%;
+  width: 16px;
+}
+.checkbox label::after {
+  border-right: 6px solid #3b76ff;
+  border-bottom: 3px solid #3b76ff;
+  content: "";
+  display: block;
+  height: 20px;
+  left: 7px;
+  margin-top: -16px;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  transform: rotate(45deg) translate3d(0, 2px, 0) scale3d(0.7, 0.7, 1);
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  width: 9px;
+}
+
+.checkbox input:checked + label::before {
+  border-color: #666;
+}
+
+.checkbox input:checked + label::after {
+  opacity: 1;
+  transform: rotate(45deg) scale3d(1, 1, 1);
+}
+
+/* ツールチップ */
+.con-tooltip {
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+  cursor: default;
+}
+.con-tooltip > p {
+  margin: 0;
+}
+.tooltip {
+  font-size: 5px;
+  visibility: hidden;
+  z-index: 1;
+  opacity: 0.4;
+  width: 340px;
+  padding: 0px 20px;
+
+  background: #333;
+  color: #ffffff;
+  position: absolute;
+  border-radius: 9px;
+
+  transform: translateY(9px);
+  transition: all 0.3s ease-in-out;
+
+  box-shadow: 0 0 3px rgba(56, 54, 54, 0.86);
+}
+.tooltip::after {
+  content: " ";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 12.5px 0 12.5px;
+  border-color: #333 transparent transparent transparent;
+
+  position: absolute;
+  left: 40%;
+}
+
+.con-tooltip:hover .tooltip {
+  width: 340px;
+  visibility: visible;
+  transform: translateY(-10px);
+  opacity: 1;
+  transition: 0.2s linear;
+}
+
+.con-tooltip .tooltip {
+  top: 115%;
+  left: -20%;
+}
+
+.con-tooltip .tooltip::after {
+  top: -11%;
+  left: 0%;
+  transform: rotate(180deg);
+}
+
+.invalid {
+  background-color: rgba(56, 54, 54, 0.2) !important;
+}

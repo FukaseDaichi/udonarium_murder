@@ -1,0 +1,35 @@
+<div
+  [ngClass]="{ 'pointer-events-none': isPointerDragging, 'fade-in-fwd': isVisible }"
+  class="draggable-panel"
+  [style.width.px]="width"
+  [style.height.px]="height"
+  [draggable.stack]="'.draggable-panel'"
+  [style]="positionStyle"
+  appDraggable
+  appResizable
+  #draggablePanel
+  [id]="gamePanel.identifier"
+  (mousedown)="gamePanel.resize()"
+  (mouseup)="gamePanel.resize()"
+>
+  <div class="title">
+    <div class="title-button" *ngIf="showTitleButtons">
+      <button (click)="toggleFullScreen()">
+        <i class="material-icons" style="font-size: 14px">fullscreen</i>
+      </button>
+      <button (click)="close()" *ngIf="!gamePanel.isAllView">
+        <i class="material-icons" style="font-size: 14px">close</i>
+      </button>
+      <!-- <div class="spinner-grow" *ngIf="gamePanel.isAllView && gamePanel.isOwner">
+        <span> </span>
+      </div> -->
+      <button (click)="closeGamePanelForAllUser()" *ngIf="gamePanel.isAllView && gamePanel.isOwner">
+        <i class="material-icons" style="font-size: 14px; color: red">close</i>
+      </button>
+    </div>
+    {{ gamePanel.title }}
+  </div>
+  <div class="scrollable-panel" #scrollablePanel>
+    <game-panel-viewer [pdfFile]="pdfFile" [gamePanel]="gamePanel"></game-panel-viewer>
+  </div>
+</div>

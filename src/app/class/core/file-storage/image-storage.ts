@@ -2,10 +2,10 @@ import { EventSystem } from '../system';
 import { ResettableTimeout } from '../system/util/resettable-timeout';
 import { ImageContext, ImageFile, ImageState } from './image-file';
 
-export type CatalogItem = { readonly identifier: string, readonly state: number };
+export type CatalogItem = { readonly identifier: string; readonly state: number };
 
 export class ImageStorage {
-  private static _instance: ImageStorage
+  private static _instance: ImageStorage;
   static get instance(): ImageStorage {
     if (!ImageStorage._instance) ImageStorage._instance = new ImageStorage();
     return ImageStorage._instance;
@@ -33,17 +33,17 @@ export class ImageStorage {
     }
   }
 
-  async addAsync(file: File): Promise<ImageFile>
-  async addAsync(blob: Blob): Promise<ImageFile>
+  async addAsync(file: File): Promise<ImageFile>;
+  async addAsync(blob: Blob): Promise<ImageFile>;
   async addAsync(arg: any): Promise<ImageFile> {
     let image: ImageFile = await ImageFile.createAsync(arg);
 
     return this._add(image);
   }
 
-  add(url: string): ImageFile
-  add(image: ImageFile): ImageFile
-  add(context: ImageContext): ImageFile
+  add(url: string): ImageFile;
+  add(image: ImageFile): ImageFile;
+  add(context: ImageContext): ImageFile;
   add(arg: any): ImageFile {
     let image: ImageFile;
     if (typeof arg === 'string') {
@@ -65,8 +65,8 @@ export class ImageStorage {
     return image;
   }
 
-  private update(image: ImageFile): boolean
-  private update(image: ImageContext): boolean
+  private update(image: ImageFile): boolean;
+  private update(image: ImageContext): boolean;
   private update(image: any): boolean {
     let context: ImageContext;
     if (image instanceof ImageFile) {

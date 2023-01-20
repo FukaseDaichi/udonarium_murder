@@ -1,20 +1,23 @@
+import { GamePanel } from '@udonarium/game-panel';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
+import { ObjectStore } from '../synchronize-object/object-store';
 
 import { EventSystem } from '../system';
 import { XmlUtil } from '../system/util/xml-util';
 import { AudioStorage } from './audio-storage';
 import { FileReaderUtil } from './file-reader-util';
+import { ImageFile } from './image-file';
 import { ImageStorage } from './image-storage';
 import { MimeType } from './mime-type';
 
-type MetaData = { percent: number, currentFile: string };
+type MetaData = { percent: number; currentFile: string };
 type UpdateCallback = (metadata: MetaData) => void;
 
 const MEGA_BYTE = 1024 * 1024;
 
 export class FileArchiver {
-  private static _instance: FileArchiver
+  private static _instance: FileArchiver;
   static get instance(): FileArchiver {
     if (!FileArchiver._instance) FileArchiver._instance = new FileArchiver();
     return FileArchiver._instance;
@@ -22,10 +25,12 @@ export class FileArchiver {
 
   private maxImageSize = 2 * MEGA_BYTE;
   private maxAudioeSize = 10 * MEGA_BYTE;
+  private maxPdfSize = 10 * MEGA_BYTE;
 
   private callbackOnDragEnter;
   private callbackOnDragOver;
   private callbackOnDrop;
+  private isFirstDrop: boolean;
 
   private constructor() {
     console.log('FileArchiver ready...');
@@ -61,32 +66,44 @@ export class FileArchiver {
 
   private onDragEnter(event: DragEvent) {
     event.preventDefault();
-  };
+  }
 
   private onDragOver(event: DragEvent) {
     event.preventDefault();
-  };
+  }
 
   private onDrop(event: DragEvent) {
     event.preventDefault();
 
     console.log('onDrop', event.dataTransfer);
-    let files = event.dataTransfer.files
+    let files = event.dataTransfer.files;
+    this.isFirstDrop = true;
     this.load(files);
-  };
+  }
 
-  async load(files: File[]): Promise<void>
-  async load(files: FileList): Promise<void>
+  async load(files: File[]): Promise<void>;
+  async load(files: FileList): Promise<void>;
   async load(files: any): Promise<void> {
     if (!files) return;
     let loadFiles: File[] = files instanceof FileList ? toArrayOfFileList(files) : files;
 
     for (let file of loadFiles) {
       await this.handleImage(file);
+      const filename: string = file.name;
+      const pdfFile: ImageFile = await this.handlePdf(file);
       await this.handleAudio(file);
       await this.handleText(file);
       await this.handleZip(file);
       EventSystem.trigger('FILE_LOADED', { file: file });
+
+      // pdfFileに該当するパネル追加
+      if (this.isFirstDrop && pdfFile) {
+        let gamePanel = new GamePanel();
+        gamePanel.title = filename;
+        gamePanel.imageIdentifier = pdfFile.identifier;
+        gamePanel.initialize();
+        ObjectStore.instance.add(gamePanel);
+      }
     }
   }
 
@@ -112,7 +129,6 @@ export class FileArchiver {
 
   private async handleText(file: File): Promise<void> {
     if (file.type.indexOf('text/') < 0) return;
-    console.log(file.name + ' type:' + file.type);
     try {
       let xmlElement: Element = XmlUtil.xml2element(await FileReaderUtil.readAsTextAsync(file));
       if (xmlElement) EventSystem.trigger('XML_LOADED', { xmlElement: xmlElement });
@@ -121,8 +137,20 @@ export class FileArchiver {
     }
   }
 
+  private async handlePdf(file: File): Promise<ImageFile> {
+    if (file.type.indexOf('application/pdf') < 0) return;
+    if (this.maxPdfSize < file.size) {
+      alert('ファイルサイズが10Mb以上のものはアップロードできません');
+      return;
+    }
+    return await ImageStorage.instance.addAsync(file);
+  }
+
   private async handleZip(file: File) {
     if (!(0 <= file.type.indexOf('application/') || file.type.length < 1)) return;
+    if (file.type.indexOf('application/pdf') >= 0) return;
+    this.isFirstDrop = false;
+
     let zip = new JSZip();
     try {
       zip = await zip.loadAsync(file);
@@ -142,9 +170,8 @@ export class FileArchiver {
       }
     }
   }
-
-  async saveAsync(files: File[], zipName: string, updateCallback?: UpdateCallback): Promise<void>
-  async saveAsync(files: FileList, zipName: string, updateCallback?: UpdateCallback): Promise<void>
+  async saveAsync(files: File[], zipName: string, updateCallback?: UpdateCallback): Promise<void>;
+  async saveAsync(files: FileList, zipName: string, updateCallback?: UpdateCallback): Promise<void>;
   async saveAsync(files: any, zipName: string, updateCallback?: UpdateCallback): Promise<void> {
     if (!files) return;
     let saveFiles: File[] = files instanceof FileList ? toArrayOfFileList(files) : files;
@@ -154,13 +181,16 @@ export class FileArchiver {
       zip.file(file.name, file);
     }
 
-    let blob = await zip.generateAsync({
-      type: 'blob',
-      compression: 'DEFLATE',
-      compressionOptions: {
-        level: 6
-      }
-    }, updateCallback);
+    let blob = await zip.generateAsync(
+      {
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6,
+        },
+      },
+      updateCallback
+    );
     saveAs(blob, zipName + '.zip');
   }
 }
@@ -168,6 +198,8 @@ export class FileArchiver {
 function toArrayOfFileList(fileList: FileList): File[] {
   let files: File[] = [];
   let length = fileList.length;
-  for (let i = 0; i < length; i++) { files.push(fileList[i]); }
+  for (let i = 0; i < length; i++) {
+    files.push(fileList[i]);
+  }
   return files;
 }

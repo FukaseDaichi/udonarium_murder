@@ -1,72 +1,55 @@
-<div
-  id="app-table-layer"
-  style="position: absolute; width: 100%; height: 100%; overflow: hidden"
->
+<div id="app-table-layer" style="position: absolute; width: 100%; height: 100%; overflow: hidden">
   <game-table></game-table>
 </div>
-<ui-panel
-  [top]="0"
-  [left]="0"
-  [width]="100"
-  [height]="510"
-  [title]="'メニュー'"
-  [className]="'main-panel'"
-  [showTitleButtons]="false"
->
+<ui-panel [top]="0" [left]="0" [width]="100" [height]="menuHeight" [title]="'メニュー'" [className]="'main-panel'" [showTitleButtons]="false">
   <nav>
     <ul>
-      <li (click)="open('PeerMenuComponent')">
+      <li (click)="open('PeerMenuComponent')" *ngIf="isGM || roomSetting.peerMenuAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">people</i></div>
           <div>接続</div>
         </a>
       </li>
-      <li (click)="open('ChatWindowComponent')">
+      <li (click)="open('ChatWindowComponent')" *ngIf="isGM || roomSetting.chatWindowAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">speaker_notes</i></div>
           <div>チャット画面</div>
         </a>
       </li>
-      <li (click)="open('GameTableSettingComponent')">
+      <li (click)="open('GameTableSettingComponent')" *ngIf="isGM || roomSetting.gameTableSettingAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">layers</i></div>
           <div>テーブル設定</div>
         </a>
       </li>
-      <li (click)="open('FileStorageComponent')">
+      <li (click)="open('FileStorageComponent')" *ngIf="isGM || roomSetting.fileStorageAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">photo_library</i></div>
           <div>画像</div>
         </a>
       </li>
-      <li (click)="open('JukeboxComponent')">
+      <li (click)="open('JukeboxComponent')" *ngIf="isGM || roomSetting.jukeboxAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">queue_music</i></div>
           <div>音楽</div>
         </a>
       </li>
-      <li (click)="open('GameObjectInventoryComponent')">
+      <li (click)="open('GameObjectInventoryComponent')" *ngIf="isGM || roomSetting.gameObjectInventoryAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">folder_shared</i></div>
           <div>インベントリ</div>
         </a>
       </li>
-      <li>
+      <li *ngIf="isGM || roomSetting.fileSelectAuthority">
         <a routerLink="/" routerLinkActive="active">
           <label>
             <div><i class="material-icons">open_in_browser</i></div>
             <div>ZIP読込</div>
-            <input
-              type="file"
-              style="display: none"
-              (change)="handleFileSelect($event)"
-              multiple
-              accept="application/xml,text/xml,application/zip"
-            />
+            <input type="file" style="display: none" (change)="handleFileSelect($event)" multiple accept="application/xml,text/xml,application/zip" />
           </label>
         </a>
       </li>
-      <li *ngIf="!isSaveing" (click)="save()">
+      <li *ngIf="!isSaveing && (isGM || roomSetting.fileSaveAuthority)" (click)="save()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">sd_storage</i></div>
           <div>保存</div>
@@ -78,10 +61,16 @@
           <div>{{ progresPercent }}%</div>
         </a>
       </li>
-      <li (click)="open('TimerMenuComponent')">
+      <li (click)="open('TimerMenuComponent')" *ngIf="isGM || roomSetting.timerAuthority">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">access_alarm</i></div>
           <div>タイマー</div>
+        </a>
+      </li>
+      <li (click)="open('GamePanelSettingComponent')" *ngIf="isGM || roomSetting.gamePanelSettingAuthority">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">import_contacts</i></div>
+          <div>パネル設定</div>
         </a>
       </li>
     </ul>
@@ -89,3 +78,5 @@
 </ui-panel>
 <div #modalLayer></div>
 <network-indicator class="networkIndicator"></network-indicator>
+<!-- ゲームパネル用 -->
+<app-game-panel-store></app-game-panel-store>

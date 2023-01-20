@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
@@ -18,6 +11,7 @@ import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { AppConfigCustomService } from 'service/app-config-custom.service';
+import { RoomSetting } from '@udonarium/room-setting';
 
 @Component({
   selector: 'peer-menu',
@@ -33,8 +27,70 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() isViewer: boolean = false;
 
+  roomSetting: RoomSetting;
+
   get myPeer(): PeerCursor {
     return PeerCursor.myCursor;
+  }
+
+  get isChatWindowAble(): boolean {
+    return this.roomSetting.chatWindowAuthority;
+  }
+  set isChatWindowAble(checkbox: boolean) {
+    this.roomSetting.chatWindowAuthority = checkbox;
+  }
+  get isGameTableSettingAble(): boolean {
+    return this.roomSetting.gameTableSettingAuthority;
+  }
+  set isGameTableSettingAble(checkbox: boolean) {
+    this.roomSetting.gameTableSettingAuthority = checkbox;
+  }
+  get isFileStorageAble(): boolean {
+    return this.roomSetting.fileStorageAuthority;
+  }
+  set isFileStorageAble(checkbox: boolean) {
+    this.roomSetting.fileStorageAuthority = checkbox;
+  }
+
+  get isJukeboxAble(): boolean {
+    return this.roomSetting.jukeboxAuthority;
+  }
+  set isJukeboxAble(checkbox: boolean) {
+    this.roomSetting.jukeboxAuthority = checkbox;
+  }
+  get isGameObjectInventoryAble(): boolean {
+    return this.roomSetting.gameObjectInventoryAuthority;
+  }
+  set isGameObjectInventoryAble(checkbox: boolean) {
+    this.roomSetting.gameObjectInventoryAuthority = checkbox;
+  }
+  get isFileSelectAble(): boolean {
+    return this.roomSetting.fileSelectAuthority;
+  }
+  set isFileSelectAble(checkbox: boolean) {
+    this.roomSetting.fileSelectAuthority = checkbox;
+  }
+
+  get isFileSaveAble(): boolean {
+    return this.roomSetting.fileSaveAuthority;
+  }
+  set isFileSaveAble(checkbox: boolean) {
+    this.roomSetting.fileSaveAuthority = checkbox;
+  }
+
+  get isTimerAble(): boolean {
+    return this.roomSetting.timerAuthority;
+  }
+  set isTimerAble(checkbox: boolean) {
+    this.roomSetting.timerAuthority = checkbox;
+  }
+
+  get isGamePanelSettingAble(): boolean {
+    return this.roomSetting.gamePanelSettingAuthority;
+  }
+
+  set isGamePanelSettingAble(checkbox: boolean) {
+    this.roomSetting.gamePanelSettingAuthority = checkbox;
   }
 
   constructor(
@@ -53,10 +109,8 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.isViewer = this.appCustomService.dataViewer;
+    this.roomSetting = ObjectStore.instance.get<RoomSetting>('room-setting');
     Promise.resolve().then(() => (this.panelService.title = '接続情報'));
-    Promise.resolve().then(() => {
-      console.log;
-    });
   }
 
   ngAfterViewInit() {
@@ -157,17 +211,11 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
       if (conectPeers.length < 1) {
-        this.help =
-          '前回接続していたルームが見つかりませんでした。既に解散しているかもしれません。';
+        this.help = '前回接続していたルームが見つかりませんでした。既に解散しているかもしれません。';
         console.warn('Room is already closed...');
         return;
       }
-      Network.open(
-        PeerContext.generateId(),
-        conectPeers[0].roomId,
-        conectPeers[0].roomName,
-        conectPeers[0].password
-      );
+      Network.open(PeerContext.generateId(), conectPeers[0].roomId, conectPeers[0].roomName, conectPeers[0].password);
     } else {
       console.warn('connectPeers ' + conectPeers.length);
       Network.open();

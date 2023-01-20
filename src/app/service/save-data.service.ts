@@ -16,14 +16,12 @@ import * as Beautify from 'vkbeautify';
 type UpdateCallback = (percent: number) => void;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SaveDataService {
   private static queue: PromiseQueue = new PromiseQueue('SaveDataServiceQueue');
 
-  constructor(
-    private ngZone: NgZone
-  ) { }
+  constructor(private ngZone: NgZone) {}
 
   saveRoomAsync(fileName: string = 'ルームデータ', updateCallback?: UpdateCallback): Promise<void> {
     return SaveDataService.queue.add((resolve, reject) => resolve(this._saveRoomAsync(fileName, updateCallback)));
@@ -60,7 +58,7 @@ export class SaveDataService {
 
   private saveAsync(files: File[], zipName: string, updateCallback?: UpdateCallback): Promise<void> {
     let progresPercent = -1;
-    return FileArchiver.instance.saveAsync(files, zipName, meta => {
+    return FileArchiver.instance.saveAsync(files, zipName, (meta) => {
       let percent = meta.percent | 0;
       if (percent <= progresPercent) return;
       progresPercent = percent;
