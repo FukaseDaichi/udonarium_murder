@@ -235,3 +235,7 @@
   left: 0%;
   transform: rotate(180deg);
 }
+
+.invalid {
+  background-color: rgba(56, 54, 54, 0.2) !important;
+}
