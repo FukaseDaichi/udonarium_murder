@@ -1,18 +1,5 @@
-import {
-  animate,
-  keyframes,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
@@ -24,17 +11,9 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   animations: [
     trigger('flyInOut', [
       transition('void => *', [
-        animate(
-          '100ms ease-out',
-          keyframes([
-            style({ transform: 'scale(0.8, 0.8)', opacity: '0', offset: 0 }),
-            style({ transform: 'scale(1.0, 1.0)', opacity: '1', offset: 1.0 }),
-          ])
-        ),
+        animate('100ms ease-out', keyframes([style({ transform: 'scale(0.8, 0.8)', opacity: '0', offset: 0 }), style({ transform: 'scale(1.0, 1.0)', opacity: '1', offset: 1.0 })])),
       ]),
-      transition('* => void', [
-        animate(100, style({ transform: 'scale(0, 0)' })),
-      ]),
+      transition('* => void', [animate(100, style({ transform: 'scale(0, 0)' }))]),
     ]),
   ],
 })
@@ -95,13 +74,10 @@ export class UIPanelComponent implements OnInit {
   private isFullScreen: boolean = false;
 
   get isPointerDragging(): boolean {
-    return this.pointerDeviceService.isDragging;
+    return this.pointerDeviceService.isDragging || this.pointerDeviceService.isTablePickGesture;
   }
 
-  constructor(
-    public panelService: PanelService,
-    private pointerDeviceService: PointerDeviceService
-  ) {}
+  constructor(public panelService: PanelService, private pointerDeviceService: PointerDeviceService) {}
 
   ngOnInit() {
     this.panelService.scrollablePanel = this.scrollablePanel.nativeElement;
@@ -109,12 +85,7 @@ export class UIPanelComponent implements OnInit {
 
   toggleFullScreen() {
     let panel = this.draggablePanel.nativeElement;
-    if (
-      panel.offsetLeft <= 0 &&
-      panel.offsetTop <= 0 &&
-      panel.offsetWidth >= window.innerWidth &&
-      panel.offsetHeight >= window.innerHeight
-    ) {
+    if (panel.offsetLeft <= 0 && panel.offsetTop <= 0 && panel.offsetWidth >= window.innerWidth && panel.offsetHeight >= window.innerHeight) {
       this.isFullScreen = false;
     } else {
       this.isFullScreen = true;

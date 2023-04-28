@@ -1,23 +1,5 @@
-import {
-  animate,
-  keyframes,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
-import { Card } from '@udonarium/card';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
-import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
@@ -33,30 +15,13 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('fadeInOut', [
-      transition('void => *', [
-        animate(
-          '100ms ease-out',
-          keyframes([
-            style({ opacity: 0, offset: 0 }),
-            style({ opacity: 1, offset: 1.0 }),
-          ])
-        ),
-      ]),
-      transition('* => void', [
-        animate(
-          '100ms ease-in',
-          keyframes([
-            style({ opacity: 1, offset: 0 }),
-            style({ opacity: 0, offset: 1.0 }),
-          ])
-        ),
-      ]),
+      transition('void => *', [animate('100ms ease-out', keyframes([style({ opacity: 0, offset: 0 }), style({ opacity: 1, offset: 1.0 })]))]),
+      transition('* => void', [animate('100ms ease-in', keyframes([style({ opacity: 1, offset: 0 }), style({ opacity: 0, offset: 1.0 })]))]),
     ]),
   ],
 })
-export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('draggablePanel', { static: true })
-  draggablePanel: ElementRef<HTMLElement>;
+export class OverviewPanelComponent implements OnChanges, AfterViewInit, OnDestroy {
+  @ViewChild('draggablePanel', { static: true }) draggablePanel: ElementRef<HTMLElement>;
   @Input() tabletopObject: TabletopObject = null;
 
   @Input() left: number = 0;
@@ -68,35 +33,25 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
   isGM: boolean;
 
   get frontUrl(): string {
-    return this.tabletopObject && this.tabletopObject.imageFile
-      ? this.tabletopObject.frontImage.url
-      : '';
+    return this.tabletopObject && this.tabletopObject.imageFile ? this.tabletopObject.frontImage.url : '';
   }
 
   get backUrl(): string {
-    return this.tabletopObject && this.tabletopObject.imageFile
-      ? this.tabletopObject.backImage.url
-      : '';
+    return this.tabletopObject && this.tabletopObject.imageFile ? this.tabletopObject.backImage.url : '';
   }
 
   get imageUrl(): string {
-    return this.tabletopObject && this.tabletopObject.imageFile
-      ? this.tabletopObject.imageFile.url
-      : '';
+    return this.tabletopObject && this.tabletopObject.imageFile ? this.tabletopObject.imageFile.url : '';
   }
   get hasImage(): boolean {
     return 0 < this.imageUrl.length;
   }
 
   get inventoryDataElms(): DataElement[] {
-    return this.tabletopObject
-      ? this.getInventoryTags(this.tabletopObject)
-      : [];
+    return this.tabletopObject ? this.getInventoryTags(this.tabletopObject) : [];
   }
   get dataElms(): DataElement[] {
-    return this.tabletopObject && this.tabletopObject.detailDataElement
-      ? (this.tabletopObject.detailDataElement.children as DataElement[])
-      : [];
+    return this.tabletopObject && this.tabletopObject.detailDataElement ? (this.tabletopObject.detailDataElement.children as DataElement[]) : [];
   }
   get hasDataElms(): boolean {
     return 0 < this.dataElms.length;
@@ -106,7 +61,7 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
     return this.inventoryService.newLineString;
   }
   get isPointerDragging(): boolean {
-    return this.pointerDeviceService.isDragging;
+    return this.pointerDeviceService.isDragging || this.pointerDeviceService.isTablePickGesture;
   }
 
   get pointerEventsStyle(): any {
@@ -136,22 +91,14 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
     this.isGM = this.appCustomService.dataViewer;
   }
 
-  ngAfterViewInit() {
-    this.initPanelPosition();
-    setTimeout(() => {
-      this.adjustPositionRoot();
-    }, 16);
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', (event) => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.tabletopObject || !object || !(object instanceof ObjectNode))
-          return;
-        if (
-          this.tabletopObject === object ||
-          this.tabletopObject.contains(object)
-        ) {
-          this.changeDetector.markForCheck();
-        }
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.tabletopObject?.identifier}`, (event) => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.tabletopObject?.identifier}`, (event) => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', (event) => {
         this.changeDetector.markForCheck();
@@ -161,11 +108,23 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
       });
   }
 
+  ngAfterViewInit() {
+    this.initPanelPosition();
+    setTimeout(() => {
+      this.adjustPositionRoot();
+    }, 16);
+  }
+
   ngOnDestroy() {
     if (this.subs) {
       this.subs.unsubscribe();
     }
     EventSystem.unregister(this);
+  }
+
+  @HostListener('document:draggingstate', ['$event'])
+  onChangeDragging(e: Event) {
+    this.changeDetector.markForCheck();
   }
 
   private initPanelPosition() {
@@ -231,8 +190,6 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
   }
 
   private getInventoryTags(gameObject: TabletopObject): DataElement[] {
-    return this.inventoryService.tableInventory.dataElementMap.get(
-      gameObject.identifier
-    );
+    return this.inventoryService.tableInventory.dataElementMap.get(gameObject.identifier);
   }
 }

@@ -4,7 +4,7 @@ import { Network } from './core/system';
 import { DataElement } from './data-element';
 import { PeerCursor } from './peer-cursor';
 import { TabletopObject } from './tabletop-object';
-import { moveToTopmost } from './tabletop-object-util';
+import { moveToBackmost, moveToTopmost } from './tabletop-object-util';
 
 export enum CardState {
   FRONT,
@@ -19,10 +19,7 @@ export class Card extends TabletopObject {
   @SyncVar() zindex: number = 0;
 
   get isVisibleOnTable(): boolean {
-    return (
-      this.location.name === 'table' &&
-      (!this.parentIsAssigned || this.parentIsDestroyed)
-    );
+    return this.location.name === 'table' && (!this.parentIsAssigned || this.parentIsDestroyed);
   }
 
   get name(): string {
@@ -51,15 +48,10 @@ export class Card extends TabletopObject {
     return 0 < this.owner.length;
   }
   get ownerIsOnline(): boolean {
-    return (
-      this.hasOwner &&
-      Network.peerContexts.some(
-        (context) => context.userId === this.owner && context.isOpen
-      )
-    );
+    return this.hasOwner && Network.peers.some((context) => context.userId === this.owner && context.isOpen);
   }
   get isHand(): boolean {
-    return Network.peerContext.userId === this.owner;
+    return Network.peer.userId === this.owner;
   }
   get isFront(): boolean {
     return this.state === CardState.FRONT;
@@ -82,13 +74,11 @@ export class Card extends TabletopObject {
     moveToTopmost(this, ['card-stack']);
   }
 
-  static create(
-    name: string,
-    fornt: string,
-    back: string,
-    size: number = 2,
-    identifier?: string
-  ): Card {
+  toBackmost() {
+    moveToBackmost(this, ['card-stack']);
+  }
+
+  static create(name: string, fornt: string, back: string, size: number = 2, identifier?: string): Card {
     let object: Card = null;
 
     if (identifier) {
@@ -98,28 +88,10 @@ export class Card extends TabletopObject {
     }
     object.createDataElements();
 
-    object.commonDataElement.appendChild(
-      DataElement.create('name', name, {}, 'name_' + object.identifier)
-    );
-    object.commonDataElement.appendChild(
-      DataElement.create('size', size, {}, 'size_' + object.identifier)
-    );
-    object.imageDataElement.appendChild(
-      DataElement.create(
-        'front',
-        fornt,
-        { type: 'image' },
-        'front_' + object.identifier
-      )
-    );
-    object.imageDataElement.appendChild(
-      DataElement.create(
-        'back',
-        back,
-        { type: 'image' },
-        'back_' + object.identifier
-      )
-    );
+    object.commonDataElement.appendChild(DataElement.create('name', name, {}, 'name_' + object.identifier));
+    object.commonDataElement.appendChild(DataElement.create('size', size, {}, 'size_' + object.identifier));
+    object.imageDataElement.appendChild(DataElement.create('front', fornt, { type: 'image' }, 'front_' + object.identifier));
+    object.imageDataElement.appendChild(DataElement.create('back', back, { type: 'image' }, 'back_' + object.identifier));
     object.initialize();
 
     return object;

@@ -86,16 +86,11 @@ export class AudioFile {
     }
   }
 
-  private static async _createAsync(
-    blob: Blob,
-    name?: string
-  ): Promise<AudioFile> {
+  private static async _createAsync(blob: Blob, name?: string): Promise<AudioFile> {
     let arrayBuffer = await FileReaderUtil.readAsArrayBufferAsync(blob);
 
     let audio = new AudioFile();
-    audio.context.identifier = await FileReaderUtil.calcSHA256Async(
-      arrayBuffer
-    );
+    audio.context.identifier = await FileReaderUtil.calcSHA256Async(arrayBuffer);
     audio.context.name = name;
     audio.context.blob = new Blob([arrayBuffer], { type: blob.type });
     audio.context.type = audio.context.blob.type;
@@ -111,23 +106,18 @@ export class AudioFile {
   }
 
   apply(context: AudioFileContext) {
-    if (!this.context.identifier && context.identifier)
-      this.context.identifier = context.identifier;
+    if (!this.context.identifier && context.identifier) this.context.identifier = context.identifier;
     if (context.name) this.context.name = context.name;
     if (!this.context.blob && context.blob) this.context.blob = context.blob;
     if (!this.context.type && context.type) this.context.type = context.type;
-    if (!this.context.url && context.url) {
-      if (this.state !== AudioState.URL)
-        window.URL.revokeObjectURL(this.context.url);
-      this.context.url = context.url;
-    }
+    if (!this.context.url && context.url) this.context.url = context.url;
+
     this.createURLs();
   }
 
   private createURLs() {
     if (this.state === AudioState.URL) return;
-    if (this.context.blob && this.context.url === '')
-      this.context.url = window.URL.createObjectURL(this.context.blob);
+    if (this.context.blob && this.context.url === '') this.context.url = window.URL.createObjectURL(this.context.blob);
   }
 
   private revokeURLs() {

@@ -1,9 +1,4 @@
-import {
-  ComponentFactoryResolver,
-  ComponentRef,
-  Injectable,
-  ViewContainerRef,
-} from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Injectable, OnChanges, ViewContainerRef } from '@angular/core';
 
 declare var Type: FunctionConstructor;
 interface Type<T> extends Function {
@@ -41,11 +36,7 @@ export class PanelService {
     return this.panelComponentRef ? true : false;
   }
 
-  open<T>(
-    childComponent: Type<T>,
-    option?: PanelOption,
-    parentViewContainerRef?: ViewContainerRef
-  ): T {
+  open<T>(childComponent: Type<T>, option?: PanelOption, parentViewContainerRef?: ViewContainerRef): T {
     if (!parentViewContainerRef) {
       parentViewContainerRef = PanelService.defaultParentViewContainerRef;
     }
@@ -53,23 +44,13 @@ export class PanelService {
 
     const injector = parentViewContainerRef.injector;
 
-    const panelComponentFactory =
-      this.componentFactoryResolver.resolveComponentFactory(
-        PanelService.UIPanelComponentClass
-      );
-    const bodyComponentFactory =
-      this.componentFactoryResolver.resolveComponentFactory(childComponent);
+    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(PanelService.UIPanelComponentClass);
+    const bodyComponentFactory = this.componentFactoryResolver.resolveComponentFactory(childComponent);
 
-    panelComponentRef = parentViewContainerRef.createComponent(
-      panelComponentFactory,
-      parentViewContainerRef.length,
-      injector
-    );
-    let bodyComponentRef: ComponentRef<any> =
-      panelComponentRef.instance.content.createComponent(bodyComponentFactory);
+    panelComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
+    let bodyComponentRef: ComponentRef<any> = panelComponentRef.instance.content.createComponent(bodyComponentFactory);
 
-    const childPanelService: PanelService =
-      panelComponentRef.injector.get(PanelService);
+    const childPanelService: PanelService = panelComponentRef.injector.get(PanelService);
 
     childPanelService.panelComponentRef = panelComponentRef;
     if (option) {
@@ -82,7 +63,21 @@ export class PanelService {
     }
     panelComponentRef.onDestroy(() => {
       childPanelService.panelComponentRef = null;
+      panelComponentRef = null;
     });
+
+    bodyComponentRef.onDestroy(() => {
+      bodyComponentRef = null;
+    });
+
+    let panelOnChanges = panelComponentRef.instance as OnChanges;
+    let bodyOnChanges = bodyComponentRef.instance as OnChanges;
+    if (panelOnChanges?.ngOnChanges != null || bodyOnChanges?.ngOnChanges != null) {
+      queueMicrotask(() => {
+        if (bodyComponentRef && bodyOnChanges?.ngOnChanges != null) bodyOnChanges?.ngOnChanges({});
+        if (panelComponentRef && panelOnChanges?.ngOnChanges != null) panelOnChanges?.ngOnChanges({});
+      });
+    }
 
     return <T>bodyComponentRef.instance;
   }
