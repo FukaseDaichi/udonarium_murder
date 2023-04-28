@@ -131,7 +131,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private resetPeerIfNeeded() {
-    if (Network.peerContexts.length < 1) {
+    if (Network.peers.length < 1) {
       Network.open();
       PeerCursor.myCursor.peerId = Network.peerId;
     }
@@ -158,7 +158,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   getUrl = (event: any) => {
     const url = new URL(window.location.href);
     url.searchParams.delete('id');
-    url.searchParams.append('id', this.networkService.peerContext.userId);
+    url.searchParams.append('id', this.networkService.peer.userId);
     navigator.clipboard.writeText(url.href);
 
     const btnDom = event.target;
@@ -176,10 +176,10 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     this.targetUserId = '';
     if (targetUserId.length < 1) return;
     this.help = '';
-    let context = PeerContext.create(targetUserId);
-    if (context.isRoom) return;
+    let peer = PeerContext.create(targetUserId);
+    if (peer.isRoom) return;
     ObjectStore.instance.clearDeleteHistory();
-    Network.connect(context.peerId);
+    Network.connect(peer);
   }
 
   async connectPeerHistory() {
@@ -229,7 +229,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
       EventSystem.unregisterListener(listener);
       ObjectStore.instance.clearDeleteHistory();
       for (let context of conectPeers) {
-        Network.connect(context.peerId);
+        Network.connect(context);
       }
     });
   }

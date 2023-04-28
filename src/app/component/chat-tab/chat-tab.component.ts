@@ -15,7 +15,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { ChatMessage, ChatMessageContext } from '@udonarium/chat-message';
+import { ChatMessage } from '@udonarium/chat-message';
 import { ChatTab } from '@udonarium/chat-tab';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
@@ -41,95 +41,61 @@ const isiOS = ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || (ua.indexO
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges, AfterViewChecked {
-  sampleMessages: ChatMessageContext[] = [
-    {
-      from: 'System',
-      timestamp: 1641862204880,
-      imageIdentifier: '',
-      tag: '',
-      name: 'チュートリアル',
-      text: 'サーバーを使用しないTRPGオンセツールです。<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>に対して、非公開カードが見れるGMモードを追加しています。GMの方や観戦者の利用を想定しています。',
-    },
-    {
-      from: 'System',
-      timestamp: 1641862204880,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: 'GMモード中、ニックネームの先頭に「【GM】」が付与されるようになりました。手動で文字を取り除くことも可能です。また軽微なバグ修正しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1646033256138,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: 'BGMの音量調整をより詳細に変更できるようにしました。変更前(1/100)⇒(1/500)',
-    },
-    {
-      from: 'System',
-      timestamp: 1647335205714,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: '「音楽」にSE機能を追加しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1648624385000,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: '接続URL取得機能を追加しました。これにより、プライベート接続の手間が省けます。',
-    },
-    {
-      from: 'System',
-      timestamp: 1651330800000,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>のアップデート内容を全て反映し、Chromeにおける3Dレンダリング速度を改善しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1656992583725,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>のアップデート内容を全て反映し、Chromeのレンダリング速度を改善しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1658890863000,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: 'タイマー機能を追加しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1659154190743,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: 'タイマーの音量調整をできるようにしました。また、タイマーの音声を選べるようにしました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1670558363000,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、Chromeの動作等を改善しました。',
-    },
-    {
-      from: 'System',
-      timestamp: 1674185818132,
-      imageIdentifier: '',
-      tag: '',
-      name: 'アップデート',
-      text: 'PDF閲覧機能を追加しました。詳しい使い方は<a href="https://whitefranc.fanbox.cc/posts/5140230" target="_blank" >こちら</a>を参照してください。',
-    },
+  sampleMessages: ChatMessage[] = [
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      'サーバーを使用しないTRPGオンセツールです。<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>に対して、非公開カードが見れるGMモードを追加しています。GMの方や観戦者の利用を想定しています。',
+      1641862204880
+    ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      'GMモード中、ニックネームの先頭に「【GM】」が付与されるようになりました。手動で文字を取り除くことも可能です。また軽微なバグ修正しました。',
+      1641862204880
+    ),
+    this.makeSampleMessage('System', null, 'アップデート', 'BGMの音量調整をより詳細に変更できるようにしました。変更前(1/100)⇒(1/500)', 1646033256138),
+    this.makeSampleMessage('System', null, 'アップデート', '「音楽」にSE機能を追加しました。', 1647335205714),
+    this.makeSampleMessage('System', null, 'アップデート', '接続URL取得機能を追加しました。これにより、プライベート接続の手間が省けます。', 1648624385000),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>のアップデート内容を全て反映し、Chromeにおける3Dレンダリング速度を改善しました。',
+      1651330800000
+    ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>のアップデート内容を全て反映し、Chromeのレンダリング速度を改善しました。',
+      1656992583725
+    ),
+    this.makeSampleMessage('System', null, 'アップデート', 'タイマー機能を追加しました。', 1658890863000),
+    this.makeSampleMessage('System', null, 'アップデート', 'タイマーの音量調整をできるようにしました。また、タイマーの音声を選べるようにしました。', 1659154190743),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、Chromeの動作等を改善しました。',
+      1670558363000
+    ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      'PDF閲覧機能を追加しました。詳しい使い方は<a href="https://whitefranc.fanbox.cc/posts/5140230" target="_blank" >こちら</a>を参照してください。',
+      1674185818132
+    ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、複数選択に対応しました。',
+      1682676361000
+    ),
   ];
 
   private topTimestamp = 0;
@@ -195,23 +161,6 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
   constructor(private ngZone: NgZone, private changeDetector: ChangeDetectorRef, private panelService: PanelService) {}
 
   ngOnInit() {
-    let messages: ChatMessage[] = [];
-    for (let context of this.sampleMessages) {
-      let message = new ChatMessage();
-      for (let key in context) {
-        if (key === 'identifier') continue;
-        if (key === 'tabIdentifier') continue;
-        if (key === 'text') {
-          message.value = context[key];
-          continue;
-        }
-        if (context[key] == null || context[key] === '') continue;
-        message.setAttribute(key, context[key]);
-      }
-      messages.push(message);
-    }
-    this.sampleMessages = messages;
-
     EventSystem.register(this)
       .on('MESSAGE_ADDED', (event) => {
         let message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
@@ -223,9 +172,9 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
           this.onMessageInit();
         }
       })
-      .on('UPDATE_GAME_OBJECT', (event) => {
-        let message = ObjectStore.instance.get(event.data.identifier);
-        if (message && message instanceof ChatMessage && this.topTimestamp <= message.timestamp && message.timestamp <= this.botomTimestamp && this.chatTab.contains(message)) {
+      .on(`UPDATE_GAME_OBJECT/aliasName/${ChatMessage.aliasName}`, (event) => {
+        let message = ObjectStore.instance.get<ChatMessage>(event.data.identifier);
+        if (message && this.topTimestamp <= message.timestamp && message.timestamp <= this.botomTimestamp && this.chatTab.contains(message)) {
           this.changeDetector.markForCheck();
         }
       });
@@ -480,5 +429,17 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
       }
     }
     this.adjustIndex();
+  }
+
+  private makeSampleMessage(from: string, to: string, name: string, text: string, timestamp?: number): ChatMessage {
+    let message = new ChatMessage();
+    message.from = from;
+    message.to = to;
+    message.name = name;
+    message.value = text;
+    if (timestamp) {
+      message.setAttribute('timestamp', timestamp);
+    }
+    return message;
   }
 }

@@ -1,19 +1,7 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnChanges, OnDestroy } from '@angular/core';
 import { Card, CardState } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerCursor } from '@udonarium/peer-cursor';
@@ -24,13 +12,11 @@ import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
 import { Observable, Subscription } from 'rxjs';
 import { AppConfigCustomService } from 'service/app-config-custom.service';
-import {
-  ContextMenuSeparator,
-  ContextMenuService,
-} from 'service/context-menu.service';
+import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { TabletopService } from 'service/tabletop.service';
 
 @Component({
@@ -39,7 +25,7 @@ import { TabletopService } from 'service/tabletop.service';
   styleUrls: ['./card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
   @Input() card: Card = null;
   @Input() is3D: boolean = false;
 
@@ -105,6 +91,16 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.imageService.getSkeletonOr(this.card.backImage);
   }
 
+  get selectionState(): SelectionState {
+    return this.selectionService.state(this.card);
+  }
+  get isSelected(): boolean {
+    return this.selectionState !== SelectionState.NONE;
+  }
+  get isMagnetic(): boolean {
+    return this.selectionState === SelectionState.MAGNETIC;
+  }
+
   private iconHiddenTimer: NodeJS.Timer = null;
   get isIconHidden(): boolean {
     return this.iconHiddenTimer != null;
@@ -127,12 +123,13 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
+    private selectionService: TabletopSelectionService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService,
     private appCustomService: AppConfigCustomService
   ) {}
 
-  ngOnInit() {
+  ngOnChanges(): void {
     //GMフラグ管理
     this.obs = this.appCustomService.isViewer$;
     this.subs = this.obs.subscribe((flg) => {
@@ -142,17 +139,19 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.isGM = this.appCustomService.dataViewer;
 
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', (event) => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.card || !object) return;
-        if (
-          this.card === object ||
-          (object instanceof ObjectNode && this.card.contains(object)) ||
-          (object instanceof PeerCursor && object.userId === this.card.owner)
-        ) {
+      .on(`UPDATE_GAME_OBJECT/aliasName/${PeerCursor.aliasName}`, (event) => {
+        let object = ObjectStore.instance.get<PeerCursor>(event.data.identifier);
+        if (this.card && object && object.userId === this.card.owner) {
           this.changeDetector.markForCheck();
         }
+      })
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.card?.identifier}`, (event) => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.card?.identifier}`, (event) => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', (event) => {
         this.changeDetector.markForCheck();
@@ -160,10 +159,12 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
       .on('UPDATE_FILE_RESOURE', (event) => {
         this.changeDetector.markForCheck();
       })
+      .on(`UPDATE_SELECTION/identifier/${this.card?.identifier}`, (event) => {
+        this.changeDetector.markForCheck();
+      })
       .on('DISCONNECT_PEER', (event) => {
         let cursor = PeerCursor.findByPeerId(event.data.peerId);
-        if (!cursor || this.card.owner === cursor.userId)
-          this.changeDetector.markForCheck();
+        if (!cursor || this.card.owner === cursor.userId) this.changeDetector.markForCheck();
       });
     this.movableOption = {
       tabletopObject: this.card,
@@ -192,11 +193,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('carddrop', ['$event'])
   onCardDrop(e) {
-    if (
-      this.card === e.detail ||
-      (e.detail instanceof Card === false &&
-        e.detail instanceof CardStack === false)
-    ) {
+    if (this.card === e.detail || (e.detail instanceof Card === false && e.detail instanceof CardStack === false)) {
       return;
     }
     e.stopPropagation();
@@ -204,10 +201,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (e.detail instanceof CardStack) {
       let cardStack: CardStack = e.detail;
-      let distance: number =
-        (cardStack.location.x - this.card.location.x) ** 2 +
-        (cardStack.location.y - this.card.location.y) ** 2 +
-        (cardStack.posZ - this.card.posZ) ** 2;
+      let distance: number = (cardStack.location.x - this.card.location.x) ** 2 + (cardStack.location.y - this.card.location.y) ** 2 + (cardStack.posZ - this.card.posZ) ** 2;
       if (distance < 25 ** 2) {
         cardStack.location.x = this.card.location.x;
         cardStack.location.y = this.card.location.y;
@@ -220,10 +214,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   startDoubleClickTimer(e) {
     if (!this.doubleClickTimer) {
       this.stopDoubleClickTimer();
-      this.doubleClickTimer = setTimeout(
-        () => this.stopDoubleClickTimer(),
-        e.touches ? 500 : 300
-      );
+      this.doubleClickTimer = setTimeout(() => this.stopDoubleClickTimer(), e.touches ? 500 : 300);
       this.doubleClickPoint = this.input.pointer;
       return;
     }
@@ -243,14 +234,11 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onDoubleClick() {
     this.stopDoubleClickTimer();
-    let distance =
-      (this.doubleClickPoint.x - this.input.pointer.x) ** 2 +
-      (this.doubleClickPoint.y - this.input.pointer.y) ** 2;
+    let distance = (this.doubleClickPoint.x - this.input.pointer.x) ** 2 + (this.doubleClickPoint.y - this.input.pointer.y) ** 2;
     if (distance < 10 ** 2) {
       console.log('onDoubleClick !!!!');
       if (this.ownerIsOnline && !this.isHand) return;
-      this.state =
-        this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
+      this.state = this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
       this.owner = '';
       SoundEffect.play(PresetSound.cardDraw);
     }
@@ -263,6 +251,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    if (e instanceof MouseEvent && (e.button !== 0 || e.ctrlKey || e.shiftKey)) return;
     this.startDoubleClickTimer(e);
     this.card.toTopmost();
     this.startIconHiddenTimer();
@@ -274,79 +263,16 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
     let position = this.pointerDeviceService.pointers[0];
-    this.contextMenuService.open(
-      position,
-      [
-        !this.isVisible || this.isHand
-          ? {
-              name: '表にする',
-              action: () => {
-                this.card.faceUp();
-                SoundEffect.play(PresetSound.cardDraw);
-              },
-            }
-          : {
-              name: '裏にする',
-              action: () => {
-                this.card.faceDown();
-                SoundEffect.play(PresetSound.cardDraw);
-              },
-            },
-        this.isHand
-          ? {
-              name: '裏にする',
-              action: () => {
-                this.card.faceDown();
-                SoundEffect.play(PresetSound.cardDraw);
-              },
-            }
-          : {
-              name: '自分だけ見る',
-              action: () => {
-                SoundEffect.play(PresetSound.cardDraw);
-                this.card.faceDown();
-                this.owner = Network.peerContext.userId;
-              },
-            },
-        ContextMenuSeparator,
-        {
-          name: '重なったカードで山札を作る',
-          action: () => {
-            this.createStack();
-            SoundEffect.play(PresetSound.cardPut);
-          },
-        },
-        ContextMenuSeparator,
-        {
-          name: 'カードを編集',
-          action: () => {
-            this.showDetail(this.card);
-          },
-        },
-        {
-          name: 'コピーを作る',
-          action: () => {
-            let cloneObject = this.card.clone();
-            cloneObject.location.x += this.gridSize;
-            cloneObject.location.y += this.gridSize;
-            cloneObject.toTopmost();
-            SoundEffect.play(PresetSound.cardPut);
-          },
-        },
-        {
-          name: '削除する',
-          action: () => {
-            this.card.destroy();
-            SoundEffect.play(PresetSound.sweep);
-          },
-        },
-      ],
-      this.isVisible ? this.name : 'カード'
-    );
+    let menuActions: ContextMenuAction[] = [];
+    menuActions = menuActions.concat(this.makeSelectionContextMenu());
+    menuActions = menuActions.concat(this.makeContextMenu());
+
+    this.contextMenuService.open(position, menuActions, this.isVisible ? this.name : 'カード');
   }
 
   onMove() {
     this.input.cancel();
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.cardPick);
   }
 
@@ -365,10 +291,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     cardStack.zindex = this.card.zindex;
 
     let cards: Card[] = this.tabletopService.cards.filter((card) => {
-      let distance: number =
-        (card.location.x - this.card.location.x) ** 2 +
-        (card.location.y - this.card.location.y) ** 2 +
-        (card.posZ - this.card.posZ) ** 2;
+      let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
       return distance < 100 ** 2;
     });
 
@@ -395,6 +318,130 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let i = 0; i < children.length; i++) {
       children[i].dispatchEvent(event);
     }
+  }
+
+  private makeSelectionContextMenu(): ContextMenuAction[] {
+    let actions: ContextMenuAction[] = [];
+
+    if (this.selectionService.objects.length) {
+      let objectPosition = {
+        x: this.card.location.x + (this.card.size * this.gridSize) / 2,
+        y: this.card.location.y + (this.card.size * this.gridSize) / 2,
+        z: this.card.posZ,
+      };
+      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
+    }
+
+    if (this.isSelected) {
+      let selectedCards = () => this.selectionService.objects.filter((object) => object.aliasName === this.card.aliasName) as Card[];
+      actions.push({
+        name: '選択したカード',
+        action: null,
+        subActions: [
+          {
+            name: 'すべて表にする',
+            action: () => {
+              selectedCards().forEach((card) => card.faceUp());
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          },
+          {
+            name: 'すべて裏にする',
+            action: () => {
+              selectedCards().forEach((card) => card.faceDown());
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          },
+          {
+            name: 'すべて自分だけ見る',
+            action: () => {
+              selectedCards().forEach((card) => {
+                card.faceDown();
+                card.owner = Network.peer.userId;
+              });
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          },
+        ],
+      });
+    }
+    if (this.selectionService.objects.length) {
+      actions.push(ContextMenuSeparator);
+    }
+    return actions;
+  }
+
+  private makeContextMenu(): ContextMenuAction[] {
+    let actions: ContextMenuAction[] = [];
+
+    actions.push(
+      !this.isVisible || this.isHand
+        ? {
+            name: '表にする',
+            action: () => {
+              this.card.faceUp();
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          }
+        : {
+            name: '裏にする',
+            action: () => {
+              this.card.faceDown();
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          }
+    );
+    actions.push(
+      this.isHand
+        ? {
+            name: '裏にする',
+            action: () => {
+              this.card.faceDown();
+              SoundEffect.play(PresetSound.cardDraw);
+            },
+          }
+        : {
+            name: '自分だけ見る',
+            action: () => {
+              SoundEffect.play(PresetSound.cardDraw);
+              this.card.faceDown();
+              this.owner = Network.peer.userId;
+            },
+          }
+    );
+    actions.push(ContextMenuSeparator);
+    actions.push({
+      name: '重なったカードで山札を作る',
+      action: () => {
+        this.createStack();
+        SoundEffect.play(PresetSound.cardPut);
+      },
+    });
+    actions.push(ContextMenuSeparator);
+    actions.push({
+      name: 'カードを編集',
+      action: () => {
+        this.showDetail(this.card);
+      },
+    });
+    actions.push({
+      name: 'コピーを作る',
+      action: () => {
+        let cloneObject = this.card.clone();
+        cloneObject.location.x += this.gridSize;
+        cloneObject.location.y += this.gridSize;
+        cloneObject.toTopmost();
+        SoundEffect.play(PresetSound.cardPut);
+      },
+    });
+    actions.push({
+      name: '削除する',
+      action: () => {
+        this.card.destroy();
+        SoundEffect.play(PresetSound.sweep);
+      },
+    });
+    return actions;
   }
 
   private startIconHiddenTimer() {
@@ -425,10 +472,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
       width: 600,
       height: 600,
     };
-    let component = this.panelService.open<GameCharacterSheetComponent>(
-      GameCharacterSheetComponent,
-      option
-    );
+    let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }
 }

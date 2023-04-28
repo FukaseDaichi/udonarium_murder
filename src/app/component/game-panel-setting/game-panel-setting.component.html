@@ -4,7 +4,7 @@
       <button (click)="createGamePanel()">新しいパネルを作る</button>
     </div>
    -->
-    <select size="10" (change)="selectGamePanel($event.target.value)" [ngModel]="selectedPanel?.identifier">
+    <select #select size="10" (change)="selectGamePanel(select.value)" [ngModel]="selectedPanel?.identifier">
       <option *ngFor="let gamePanel of getGamePanels()" value="{{ gamePanel.identifier }}">{{ gamePanel.title }}</option>
     </select>
   </div>
