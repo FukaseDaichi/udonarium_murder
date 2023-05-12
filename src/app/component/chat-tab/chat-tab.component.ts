@@ -96,6 +96,13 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
       '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、複数選択に対応しました。',
       1682676361000
     ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、軽微不良の修正をしました。',
+      1683901516000
+    ),
   ];
 
   private topTimestamp = 0;
