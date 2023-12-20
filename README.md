@@ -13,6 +13,15 @@
 - Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 - ng serve
 
+## バージョンアップ方法
+
+[参考](https://chaika.hatenablog.com/entry/2022/12/19/083000)
+[参考](https://zenn.dev/yoshii0110/articles/820187fd237b44)
+
+- npm i -g npm-check-updates
+- ncu
+- ncu -u
+
 ### 本家様の変更反映コマンド
 
 - git fetch upstream
