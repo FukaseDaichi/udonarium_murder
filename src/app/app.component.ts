@@ -60,10 +60,9 @@ const MENU_LENGTH: number = 10;
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('modalLayer', { read: ViewContainerRef, static: true })
-  modalLayerViewContainerRef: ViewContainerRef;
-  private immediateUpdateTimer: NodeJS.Timer = null;
-  private lazyUpdateTimer: NodeJS.Timer = null;
+  @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
+  private immediateUpdateTimer: NodeJS.Timeout = null;
+  private lazyUpdateTimer: NodeJS.Timeout = null;
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;

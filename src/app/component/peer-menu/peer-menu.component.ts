@@ -3,6 +3,7 @@ import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit } from '@ang
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { PeerSessionGrade } from '@udonarium/core/system/network/peer-session-state';
 import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
@@ -28,10 +29,6 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isViewer: boolean = false;
 
   roomSetting: RoomSetting;
-
-  get myPeer(): PeerCursor {
-    return PeerCursor.myCursor;
-  }
 
   get isChatWindowAble(): boolean {
     return this.roomSetting.chatWindowAuthority;
@@ -92,6 +89,11 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   set isGamePanelSettingAble(checkbox: boolean) {
     this.roomSetting.gamePanelSettingAuthority = checkbox;
   }
+  private interval: NodeJS.Timeout;
+
+  get myPeer(): PeerCursor {
+    return PeerCursor.myCursor;
+  }
 
   constructor(
     private ngZone: NgZone,
@@ -117,10 +119,12 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     EventSystem.register(this).on('OPEN_NETWORK', (event) => {
       this.ngZone.run(() => {});
     });
+    this.interval = setInterval(() => {}, 1000);
   }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+    clearInterval(this.interval);
   }
 
   changeIcon() {
@@ -245,6 +249,10 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  stringFromSessionGrade(grade: PeerSessionGrade): string {
+    return PeerSessionGrade[grade] ?? PeerSessionGrade[PeerSessionGrade.UNSPECIFIED];
   }
 
   findUserId(peerId: string) {
