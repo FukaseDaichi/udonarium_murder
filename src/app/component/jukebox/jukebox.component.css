@@ -43,7 +43,7 @@
 }
 
 .tooltip {
-  font-size: 5px;
+  font-size: 10px;
   visibility: hidden;
   z-index: 1;
   opacity: 0.4;

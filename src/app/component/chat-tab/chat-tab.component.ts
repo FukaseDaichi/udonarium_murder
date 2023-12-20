@@ -12,7 +12,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 
 import { ChatMessage } from '@udonarium/chat-message';
@@ -103,6 +103,13 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
       '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、軽微不良の修正をしました。',
       1683901516000
     ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、軽微不良の修正をしました。',
+      1703069578000
+    ),
   ];
 
   private topTimestamp = 0;
@@ -157,7 +164,7 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
 
   private scrollEventShortTimer: ResettableTimeout = null;
   private scrollEventLongTimer: ResettableTimeout = null;
-  private addMessageEventTimer: NodeJS.Timer = null;
+  private addMessageEventTimer: NodeJS.Timeout = null;
 
   private callbackOnScroll: any = () => this.onScroll();
   private callbackOnScrollToBottom: any = () => this.resetMessages();
