@@ -113,9 +113,11 @@ export class RotableDirective implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.input.isGrabbing) this.cancel();
     this.dispose();
     this.synchronizer.destroy();
     this.input.destroy();
+    this.batchService.remove(this);
     this.batchService.remove(this.onstart);
   }
 
