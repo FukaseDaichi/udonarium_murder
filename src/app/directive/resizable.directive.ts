@@ -92,6 +92,7 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
 
     this.removeSelectionRanges();
     this.removeFocus();
+    if (e.cancelable) e.preventDefault();
     e.stopPropagation();
   }
 
@@ -167,6 +168,8 @@ export class ResizableDirective implements AfterViewInit, OnDestroy {
 
     this.prevTrans = trans;
 
+    this.removeSelectionRanges();
+    this.removeFocus();
     if (e.cancelable) e.preventDefault();
     e.stopPropagation();
   }
