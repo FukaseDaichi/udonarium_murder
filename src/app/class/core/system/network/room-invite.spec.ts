@@ -27,6 +27,21 @@ describe('room-invite', () => {
     expect(decodeRoomInvite(token)).toBeNull();
   });
 
+  it('returns null when the decoded object violates room constraints', () => {
+    const invalidPayloads = [
+      { r: '', n: 'Room', p: '' },
+      { r: 'ab', n: 'Room', p: '' },
+      { r: 'ab_', n: 'Room', p: '' },
+      { r: 'abc', n: '', p: '' },
+      { r: 'abc', n: 'Room', p: 'x'.repeat(13) },
+    ];
+
+    for (const payload of invalidPayloads) {
+      const token = lzbase62.compress(JSON.stringify(payload));
+      expect(decodeRoomInvite(token)).toBeNull();
+    }
+  });
+
   it('builds an invite URL that carries only the room token', () => {
     const url = buildRoomInviteUrl({ r: 'abc', n: 'Room', p: 'secret' }, 'https://example.app/play?id=old&foo=bar');
     const parsed = new URL(url);

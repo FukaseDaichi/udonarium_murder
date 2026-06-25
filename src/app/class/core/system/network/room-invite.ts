@@ -10,6 +10,10 @@ export interface RoomInvitePayload {
   p: string;
 }
 
+const roomIdPattern = /^[A-Za-z0-9]{3}$/;
+const maxRoomNameLength = 128;
+const maxPasswordLength = 12;
+
 /** ルーム情報をURLセーフな単一トークンへエンコードする（lzbase62 = base62 出力）。 */
 export function encodeRoomInvite(payload: RoomInvitePayload): string {
   return lzbase62.compress(JSON.stringify({ r: payload.r, n: payload.n, p: payload.p }));
@@ -19,7 +23,7 @@ export function encodeRoomInvite(payload: RoomInvitePayload): string {
 export function decodeRoomInvite(token: string): RoomInvitePayload | null {
   try {
     const obj = JSON.parse(lzbase62.decompress(token));
-    if (typeof obj?.r !== 'string' || typeof obj?.n !== 'string' || typeof obj?.p !== 'string') return null;
+    if (!isRoomInvitePayload(obj)) return null;
     return { r: obj.r, n: obj.n, p: obj.p };
   } catch {
     return null;
@@ -32,4 +36,12 @@ export function buildRoomInviteUrl(payload: RoomInvitePayload, base: string = wi
   url.search = '';
   url.searchParams.set('room', encodeRoomInvite(payload));
   return url.href;
+}
+
+function isRoomInvitePayload(obj: any): obj is RoomInvitePayload {
+  if (typeof obj?.r !== 'string' || typeof obj?.n !== 'string' || typeof obj?.p !== 'string') return false;
+  if (!roomIdPattern.test(obj.r)) return false;
+  if (obj.n.length < 1 || maxRoomNameLength < obj.n.length) return false;
+  if (maxPasswordLength < obj.p.length) return false;
+  return true;
 }

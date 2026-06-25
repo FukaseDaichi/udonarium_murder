@@ -124,7 +124,7 @@ sequenceDiagram
 
 接続イベントとエラーは `AppComponent`（`app.component.ts`）が受けます。
 
-- `OPEN_NETWORK`: 自分の `PeerCursor` に peerId/userId を設定。URL に `?id=` があればそのルーム/ピアへ `Network.connect()`。
+- `OPEN_NETWORK`: 自分の `PeerCursor` に peerId/userId を設定。URL に `?room=<token>` があれば招待情報をデコードし、同じ `roomId` / `roomName` / `password` で `Network.open()` してルームへ入る。
 - `NETWORK_ERROR`: エラー種別で出し分け。
   - `peer-unavailable` などは無視（quiet）。
   - `disconnected` / `socket-error` / `authentication` / `server-error` などは、モーダル表示後に `Network.open()` で **再接続** を試みる。

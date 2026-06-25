@@ -76,7 +76,8 @@ sequenceDiagram
     Net->>Net: dynamicImport(backend.mode)<br/>既定は 'skyway2023'
     Net->>SW: 接続（トークン取得 → Context 作成 → Room/Lobby 参加）
     SW-->>ES: OPEN_NETWORK
-    ES->>App: URL の ?id= があれば Network.connect()
+    ES->>App: URL の ?room= があれば招待 token をデコード
+    App->>Net: Network.open(userId, roomId, roomName, password)
 ```
 
 ポイント:
@@ -84,6 +85,7 @@ sequenceDiagram
 - `AppComponent` の **コンストラクタが事実上のアプリ初期化処理** です（多数のシングルトンと既定オブジェクトをここで立ち上げます）。
 - 設定は `index.html` の `<script type="text/yaml" src="./assets/config.yaml">` を `AppConfigService` が読み、`LOAD_CONFIG` イベントで配ります。
 - ネットワークの口開けは `LOAD_CONFIG` 受信後の `Network.configure()` → `Network.open()` です。`backend.mode`（既定 `skyway2023`）に応じて接続実装が動的に選択されます。
+- 参加用URL（`?room=<token>`）から起動した場合は、最初の `OPEN_NETWORK` 後に token を読み取り、同じ `roomId` / `roomName` / `password` でルームへ入り直します。
 
 ## データ同期の全体フロー
 

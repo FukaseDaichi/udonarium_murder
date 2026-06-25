@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test, { afterEach, mock } from 'node:test';
 
-import handler from './udonarium-backend.ts';
+import handler from '../functions/udonarium-backend.ts';
 
 const envKeys = ['ACCESS_CONTROL_ALLOW_ORIGIN', 'SKYWAY_APP_ID', 'SKYWAY_SECRET', 'SKYWAY_UDONARIUM_LOBBY_SIZE', 'SKYWAY_TOKEN_TTL_SECONDS'];
 const originalEnv = new Map(envKeys.map((key) => [key, process.env[key]]));

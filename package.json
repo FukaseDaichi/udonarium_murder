@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:backend": "node --experimental-strip-types --test netlify/functions/*.test.ts"
+    "test:backend": "node --experimental-strip-types --test netlify/functions-test/*.test.ts"
   },
   "private": true,
   "dependencies": {

@@ -232,10 +232,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           return;
         }
 
-        if (Network.peer.isRoom && Network.peer.roomId === invite.r) return; // 既に同じ部屋にいる
+        if (this.isCurrentRoomInvite(invite)) return; // 既に同じ部屋にいる
 
-        // 別の部屋に接続中なら、退出して移動してよいか確認
-        if (0 < Network.peers.length && !window.confirm(`別の部屋「${invite.n}」に移動しますか？\n現在の部屋からは退出します。`)) return;
+        // 別の部屋に入室中なら、退出して移動してよいか確認
+        if (Network.peer.isRoom && !window.confirm(`別の部屋「${invite.n}」に移動しますか？\n現在の部屋からは退出します。`)) return;
 
         this.joinRoomFromInvite(invite);
       })
@@ -278,6 +278,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     });
     this.isGM = this.appCustomService.dataViewer;
     workaroundForMobileSafari();
+  }
+
+  private isCurrentRoomInvite(invite: RoomInvitePayload): boolean {
+    const peer = Network.peer;
+    return peer.isRoom && peer.roomId === invite.r && peer.roomName === invite.n && peer.password === invite.p;
   }
 
   private joinRoomFromInvite(invite: RoomInvitePayload) {
