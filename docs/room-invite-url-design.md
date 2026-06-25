@@ -122,7 +122,7 @@ private joinRoomFromInvite(invite: RoomInvitePayload) {
 
 新 SkyWay のルーム接続では、パスワード付きルームの Channel 名を `roomId + roomName + password` の SHA-256（Base64URL）から作ります。招待URLから同じ3要素を復元して `Network.open()` すれば同じ Channel に入れます。
 
-入室後のピア接続は `skyway2023` の購読コールバックとユーザーリスト交換で自動的に作られます。参加者側で `Network.connect()` を呼ぶ必要はありません。
+入室後のピア接続は `skyway2023` 接続層が作ります。ルーム参加直後に同じ Channel の既存 Member の data stream を購読し、その後の追加参加者は購読コールバックとユーザーリスト交換で接続します。招待URL側で `Network.connect()` を呼ぶ必要はありません。
 
 ## エッジケース
 

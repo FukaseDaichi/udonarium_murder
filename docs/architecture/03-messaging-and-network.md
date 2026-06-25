@@ -108,9 +108,11 @@ sequenceDiagram
     F->>SDK: joinRoom()（実ルーム Channel に参加）
     F->>SDK: joinLobby()（udonarium-lobby-*-of-N に参加）
     F-->>F: onOpen → OPEN_NETWORK
+    F->>SDK: 既存 Room Member の data stream を購読
 ```
 
 - **チャンネル名のハッシュ化**: パスワード付きルームは `roomId + roomName + password` の SHA-256（Base64URL）を Channel 名にします。これによりパスワードを知る者だけが同じ Channel に入れます。
+- **既存メンバーへの初回接続**: ルーム入室後、同じ Channel に既にいる Member の `udonarium-data-stream` Publication を購読します。招待URLや履歴復帰でロビー検索を経由しない場合でも、入室直後から同期用の DataChannel を張ります。
 - **トークン自動更新**: `context.onTokenUpdateReminder` でトークン失効前にバックエンドへ再取得します（再ログイン不要）。
 - **ロビー**: 新 SkyWay には旧 `Peer.listAllPeers()` 相当がないため、`udonarium-lobby-*-of-N` という共有 Channel の Member 一覧でロビー（公開ルーム一覧）を代替します。
 

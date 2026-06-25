@@ -234,7 +234,16 @@ export class SkyWayConnection implements Connection {
     }
 
     await this.skyWay.open(peer);
+    this.connectRoomMembers();
     return;
+  }
+
+  private connectRoomMembers() {
+    if (!this.peer.isRoom) return;
+    for (let member of this.skyWay.room?.members ?? []) {
+      if (member.name == null) continue;
+      this.connect(PeerContext.parse(member.name));
+    }
   }
 
   private connectStream(stream: SkyWayDataStream) {
