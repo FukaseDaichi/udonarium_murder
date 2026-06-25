@@ -1,9 +1,7 @@
+backend:
+  mode: skyway2023
+  url: "" # 空文字ならNetlifyの同一オリジン /v1 を使用
 webrtc:
-  key: 3541648b-0d4c-41b7-9d96-6cc3cdf5e554 #Your SkyWay API key
-  config: #未使用
-    iceServers: #未使用
-      - url: stun:stun.skyway.io:3478
-      - url: turn:homeo@turn.bistri.com:80
-        credential: homeo
+  key: "" # 非推奨: backend.modeをskywayに戻す場合のみ旧SkyWay API keyを設定
 app: #未使用
 dice: #未使用

@@ -11,7 +11,8 @@
 - git clone https://github.com/TK11235/udonarium.git
 - npm install
 - Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-- ng serve
+- `.env.example` を参考に `.env` を作成
+- npx netlify dev
 
 ## バージョンアップ方法
 
@@ -26,6 +27,30 @@
 
 - git fetch upstream
 - git merge upstream/master
+
+## 新 SkyWay + Netlify Functions
+
+このフォークは新 SkyWay と Netlify Functions を前提にしています。SkyWay の Secret Key はフロントエンドに置かず、Netlify Function が `/v1/skyway2023/token` で SkyWay Auth Token を発行します。
+
+ローカルで通信まで確認する場合は、`.env.example` をコピーして以下を設定してください。
+
+```bash
+SKYWAY_APP_ID=your-skyway-application-id
+SKYWAY_SECRET=your-skyway-secret-key
+SKYWAY_UDONARIUM_LOBBY_SIZE=4
+ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:8888
+```
+
+起動は `npx netlify dev` を使います。`src/assets/config.yaml` の `backend.url` は空文字なら同一オリジンを使うため、Netlify Dev / Netlify本番のどちらでも `/v1/*` を参照します。
+
+Netlify本番では環境変数に以下を設定します。
+
+- `SKYWAY_APP_ID`
+- `SKYWAY_SECRET`
+- `ACCESS_CONTROL_ALLOW_ORIGIN=https://your-site.netlify.app`
+- `SKYWAY_UDONARIUM_LOBBY_SIZE=4` 任意
+
+SkyWay Free Plan は開発・検証用途なら無料枠で利用できます。ただし商用利用不可の条件があるため、恒常的な公開サービスとして運用する場合はSkyWayの契約条件を確認してください。
 
 以下、本家の抜粋です。
 
@@ -73,17 +98,15 @@
 
 ## サーバ設置
 
-ユーザ自身で Web サーバを用意し、そのサーバにユドナリウムを設置して利用することができます。
+ユーザ自身で Netlify サイトを用意し、そのサイトにユドナリウムを設置して利用することができます。
 
-1. [リリース版（**udonarium.zip**）](../../releases/latest)をダウンロードして解凍し、Web サーバに配置してください。  
-   **開発者向けのソースコードをダウンロードしないように注意して下さい。**
-1. [旧 SkyWay](https://support.skyway.io/hc/)の API キーを`assets/config.yaml`に記述します。
-   - [旧 SkyWay](https://support.skyway.io/hc/)の Community Edition(無料版)の新規登録は終了しています。
-   - [新 SkyWay](https://skyway.ntt.com/)への対応はユドナリウム 1.16.0 時点では実装途中です。
-1. サーバに配置したユドナリウムの`index.html`にアクセスして動作することを確認してみてください。  
-   上手く動作しない時は付属の`上手くサーバで動かない時Q&A.txt`を参照してください。
+1. Netlifyでこのリポジトリを連携します。
+1. Build command は `npm run build`、Publish directory は `dist/udonarium` です。`netlify.toml` にも同じ設定があります。
+1. NetlifyのEnvironment variablesに `SKYWAY_APP_ID`、`SKYWAY_SECRET`、`ACCESS_CONTROL_ALLOW_ORIGIN` を設定します。
+1. `src/assets/config.yaml` は通常そのまま使えます。`backend.mode: skyway2023`、`backend.url: ""` の場合、同一オリジンのNetlify Functions `/v1/*` を使用します。
+1. NetlifyのURLにアクセスして、ルーム作成とロビー表示を確認してください。
 
-ユドナリウムはサーバーサイドの処理を持たないため CGI やデータベースは必要はありません。
+このフォークではSkyWay Auth Token発行のためにNetlify Functionsを使用します。データベースは必要ありません。
 
 ## 開発者クイックスタート
 
@@ -106,10 +129,10 @@
 ```bash
 cd "ソースコードを展開したディレクトリの場所"
 npm install
-ng serve
+npx netlify dev
 ```
 
-`ng serve`を実行すると`http://localhost:4200/`で開発用サーバが起動します。  
+`npx netlify dev`を実行すると通常`http://localhost:8888/`で開発用サーバが起動し、Netlify Functionsも同時に動作します。
 いずれかのソースコードを変更すると、アプリケーションは自動的にリロードされます。
 
 `ng build`でプロジェクトのビルドを実行します。ビルド成果物は`dist/`ディレクトリに格納されます。
@@ -118,17 +141,11 @@ ng serve
 
 **[旧 SkyWay](https://support.skyway.io/hc/)の Community Edition(無料版)の新規登録は終了しています。**
 
-このアプリケーションは通信処理に WebRTC を使用しています。  
-WebRTC 向けのシグナリングサーバとして[旧 SkyWay](https://support.skyway.io/hc/ja)を利用しているため、動作確認のために旧 SkyWay の API キーが必要です。
-
-取得した API キーの情報は`src/assets/config.yaml`に記述します。
+旧SkyWayのCDN読み込みは削除済みです。通常は `backend.mode: skyway2023` の新SkyWay構成を使用してください。
 
 #### 新 SkyWay
 
-**[新 SkyWay](https://skyway.ntt.com/)を使用した通信処理はユドナリウム 1.16.0 時点では実装途中です。**
-
-開発者向けのプレビュー版機能として実装しています。本番環境では使用しないでください。  
-開発者自身でコード修正やセキュリティ対応を実施してプライベートな動作確認を行う場合のみ、[commit: 1bf7d86](https://github.com/TK11235/udonarium/commit/1bf7d866d97b791d226dc9b8c23de0357bf478b4) を参考にコードを書き替えてビルドを行ってください。
+新SkyWayは `backend.mode: skyway2023` で有効になります。SkyWay Auth TokenはNetlify Functionsで発行するため、SkyWay Secret Keyを `src/assets/config.yaml` やフロントエンドコードに記述しないでください。
 
 ## 開発に寄与する
 

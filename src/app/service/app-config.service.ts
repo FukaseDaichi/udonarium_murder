@@ -5,6 +5,10 @@ import { EventSystem } from '@udonarium/core/system';
 import * as yaml from 'js-yaml';
 
 export interface AppConfig {
+  backend: {
+    mode: string,
+    url: string
+  },
   webrtc: {
     key: string,
     config?: {
@@ -30,6 +34,10 @@ export class AppConfigService {
   isOpen: boolean = false;
 
   static appConfig: AppConfig = {
+    backend: {
+      mode: 'skyway2023',
+      url: ''
+    },
     webrtc: {
       key: ''
     },

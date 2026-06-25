@@ -169,6 +169,10 @@ export class SkyWayConnection implements Connection {
     this.key = key;
   }
 
+  configure(config: any) {
+    this.setApiKey(config?.webrtc?.key ?? '');
+  }
+
   listAllPeers(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       if (!this.skyWay) return resolve([]);
