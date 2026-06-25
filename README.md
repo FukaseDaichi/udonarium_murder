@@ -16,9 +16,6 @@
 
 ## バージョンアップ方法
 
-[参考](https://chaika.hatenablog.com/entry/2022/12/19/083000)
-[参考](https://zenn.dev/yoshii0110/articles/820187fd237b44)
-
 - npm i -g npm-check-updates
 - ncu
 - ncu -u
@@ -31,6 +28,8 @@
 ## 新 SkyWay + Netlify Functions
 
 このフォークは新 SkyWay と Netlify Functions を前提にしています。SkyWay の Secret Key はフロントエンドに置かず、Netlify Function が `/v1/skyway2023/token` で SkyWay Auth Token を発行します。
+
+環境変数とブラウザ上での設定手順は [docs/skyway-netlify-env-setup.md](docs/skyway-netlify-env-setup.md) を参照してください。
 
 ローカルで通信まで確認する場合は、`.env.example` をコピーして以下を設定してください。
 
