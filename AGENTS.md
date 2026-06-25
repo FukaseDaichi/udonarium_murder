@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-This repo (`FukaseDaichi/udonarium_murder`) is a **fork of [TK11235/udonarium](https://github.com/TK11235/udonarium)** — a browser-based, serverless online tabletop (TRPG) tool — customized for **murder mystery (マーダーミステリー)** sessions. The app is pure client-side Angular: all game logic runs in the browser and peers sync directly over WebRTC. There is no application server (the in-progress SkyWay migration adds only a thin token-issuing function; see below).
+This repo (`FukaseDaichi/udonarium_murder`) is a **fork of [TK11235/udonarium](https://github.com/TK11235/udonarium)** — a browser-based, serverless online tabletop (TRPG) tool — customized for **murder mystery (マーダーミステリー)** sessions. The app is pure client-side Angular: all game logic runs in the browser and peers sync directly over WebRTC. The only server-side piece is a thin Netlify Function that issues SkyWay auth tokens (see Networking below).
 
 ### Staying in sync with upstream
 
@@ -16,11 +16,16 @@ git remote add upstream https://github.com/TK11235/udonarium.git
 
 When resolving merge conflicts, **preserve fork-specific additions**: murder-mystery UI, the PDF viewer (`ng2-pdf-viewer`), `AppConfigCustomService` (viewer mode), and OGP/README customizations.
 
+## Design docs
+
+Full Japanese design docs live in [`docs/`](docs/README.md) — start with [`docs/README.md`](docs/README.md). The core abstraction (the synchronized-object model) is [`docs/architecture/02-synchronized-object-model.md`](docs/architecture/02-synchronized-object-model.md); networking is [`03`](docs/architecture/03-messaging-and-network.md)/[`04`](docs/architecture/04-backend.md). Known issues and cleanups are tracked in [`docs/improvements.md`](docs/improvements.md). This file is the short summary; `docs/` is the detail.
+
 ## Commands
 
 ```bash
 npm install              # install deps
-ng serve                 # dev server at http://localhost:4200 (live reload); needs a SkyWay key in config.yaml
+ng serve                 # dev server at http://localhost:4200 (live reload; no token backend)
+netlify dev              # app + Netlify Functions together (needed for real P2P locally)
 ng build                 # production build → dist/udonarium/
 npm run watch            # development build, rebuild on change
 ng test                  # Karma + Jasmine in Chrome (watch mode)
@@ -28,7 +33,7 @@ ng test                  # Karma + Jasmine in Chrome (watch mode)
 
 Running a **single test**: focus with `fdescribe`/`fit` in the `.spec.ts` file, or scope by path: `ng test --include='**/object-store.spec.ts'`. For a one-shot headless run: `ng test --watch=false --browsers=ChromeHeadless`.
 
-**To actually run the app you need a SkyWay signaling key** in `src/assets/config.yaml` (`webrtc.key`). Without it the app loads but peers cannot connect. The committed key may be expired — the old SkyWay Community Edition is shut down (see migration below).
+**To actually connect peers you need the SkyWay token backend.** The app defaults to new SkyWay (`backend.mode: skyway2023` in `src/assets/config.yaml`); the browser fetches an auth token from a Netlify Function (`/v1/skyway2023/token`), which needs `SKYWAY_APP_ID` / `SKYWAY_SECRET` / `ACCESS_CONTROL_ALLOW_ORIGIN` env vars. Run `netlify dev` (or set `backend.url` to a deployed backend); plain `ng serve` loads the UI but has no token endpoint, so peers cannot connect. The legacy `webrtc.key` path survives only as a `backend.mode: skyway` fallback, and the old SkyWay is shut down.
 
 ## Architecture
 
@@ -69,9 +74,9 @@ Angular components (`src/app/component/`) render and mutate game objects and sub
 - `@udonarium/*` → `src/app/class/*`
 - `component/*`, `service/*`, `directive/*`, `pipe/*` → corresponding `src/app/*` dirs
 
-## Active work: new SkyWay migration
+## Networking: new SkyWay (skyway2023) + Netlify Functions
 
-`docs/new-skyway-migration-plan.md` is the working spec for migrating off the dead legacy SkyWay (CDN-loaded, `webrtc.key`) to the new SkyWay (`skyway2023`), which requires a backend to issue auth tokens. The plan hosts the app on **Netlify + Netlify Functions** (a `/v1/skyway2023/token` endpoint), following upstream v1.17.4's `backend.mode`/`backend.url` approach. A `skyway2023/` connection layer exists under `core/system/network/` but is incomplete; `Network.initializeConnection()` still hardcodes the legacy `skyway/skyway-connection`. Read that doc before touching the network layer.
+The migration off legacy SkyWay is **done**. `Network` picks the connection layer at runtime from `backend.mode` (default `skyway2023`) via `dynamicImport()`; new SkyWay needs an auth token, fetched from a Netlify Function at `/v1/skyway2023/token` (`netlify/functions/udonarium-backend.ts`). Config is in `src/assets/config.yaml` (`backend.mode` / `backend.url`, empty URL = same-origin `/v1`); `@skyway-sdk/core` is `^1.9.2`. The legacy `skyway/` layer and `webrtc.key` remain only as a `backend.mode: skyway` fallback. `docs/new-skyway-migration-plan.md` records the rationale; the current design is in [`docs/architecture/03-messaging-and-network.md`](docs/architecture/03-messaging-and-network.md) and [`04-backend.md`](docs/architecture/04-backend.md). Read those before touching the network layer.
 
 ## Conventions
 

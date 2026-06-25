@@ -6,11 +6,20 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TK11235/udonarium/blob/master/LICENSE)
 
+## 設計ドキュメント
+
+アーキテクチャの詳細は [docs/](docs/README.md) にまとめています（日本語）。
+
+- [docs/README.md](docs/README.md) … ドキュメント索引と読む順番
+- [docs/architecture/02-synchronized-object-model.md](docs/architecture/02-synchronized-object-model.md) … このアプリの核となる同期オブジェクトモデル
+- [docs/architecture/04-backend.md](docs/architecture/04-backend.md) … 新 SkyWay 認証トークン発行（Netlify Functions）
+- [docs/improvements.md](docs/improvements.md) … 既知の改善点
+
 ## 実際の開発手順コマンド
 
-- git clone https://github.com/TK11235/udonarium.git
+- git clone https://github.com/FukaseDaichi/udonarium_murder.git
 - npm install
-- Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+- （Windows PowerShell のみ）Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 - `.env.example` を参考に `.env` を作成
 - npx netlify dev
 
@@ -172,9 +181,8 @@ PR のコードが完全ではない場合でも作業中 PR として送るこ�
 
 ## 今後の開発
 
-最低限必要となる機能は実装されていますが、作業すべき課題が残されています。
-
-取得した API キーの情報は`src/assets/config.yaml`に記述します。
+最低限必要となる機能は実装されていますが、作業すべき課題が残されています。  
+このフォークで認識している改善点は [docs/improvements.md](docs/improvements.md) にまとめています。
 
 ## License
 

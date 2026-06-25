@@ -2,6 +2,9 @@
 
 作成日: 2026-06-25
 
+> **ステータス: おおむね完了済み（計画/背景の記録として保持）。**
+> 本書は移行の計画と設計判断を残すための文書です。現行コードはすでに `backend.mode: skyway2023` + Netlify Functions で動作しており、本書中の「現状との差分」（旧 CDN 読み込み、`Network` が旧 skyway 固定 等）は**過去の前提**です。現行の設計は [architecture/03-messaging-and-network.md](architecture/03-messaging-and-network.md) と [architecture/04-backend.md](architecture/04-backend.md) を正としてください。未消化のフォローアップは [improvements.md](improvements.md) にまとめています。
+
 対象: `udonarium_murder` の旧SkyWay依存を、新SkyWayへ移行する。Netlify Hosting + Netlify Functionsを前提にする。
 
 ## 結論
