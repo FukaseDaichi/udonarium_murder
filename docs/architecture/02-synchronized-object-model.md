@@ -126,7 +126,3 @@ sequenceDiagram
 - 新しい共有状態を足す → `@SyncObject('一意なalias')` + `@SyncVar()` フィールドのクラスを作り、`initialize()` で登録する。
 - alias は **XML タグ名 = セーブ互換** に直結する。既存 alias の変更や `@SyncVar` 名のリネームは過去セーブデータを壊すので避ける（やむを得ない場合は移行を用意）。
 - 高頻度更新（ドラッグ中の座標など）は setter が毎回 `update()`→ネットワーク予約を行う点に注意。`ObjectStore` 側で 1 ティックにバッチ化されるが、UI 側でも間引き（[06 章](06-ui-and-services.md) の変更検知戦略）を併用している。
-
-## 既知の注意点
-
-- `ObjectStore._garbageCollection()` のループ条件には不具合があり、削除履歴の自動回収が実質機能していません（本家由来。10 万件規模でのみ顕在化）。詳細は [improvements.md](../improvements.md)。

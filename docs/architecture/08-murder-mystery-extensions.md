@@ -68,7 +68,7 @@ GM 進行用のタイマー。
 
 ## ブランディング / OGP
 
-- `src/index.html` … タイトル「ユドナリウムマーダー」、OGP/Twitter カード、Google Search Console 認証、説明文（GM モード・タイマー・PDF 閲覧を訴求）。本家由来の旧 SkyWay CDN 読み込みは**既に削除済み**。
+- `src/index.html` … タイトル「ユドナリウムマーダー」、OGP/Twitter カード、Google Search Console 認証、説明文（GM モード・タイマー・PDF 閲覧を訴求）。
 - 公開先は Netlify（`https://udonarium-murder.netlify.app`）。
 
 ## マージ時に保持すべきフォーク差分（チェックリスト）

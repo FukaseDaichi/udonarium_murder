@@ -29,11 +29,12 @@ netlify dev              # app + Netlify Functions together (needed for real P2P
 ng build                 # production build → dist/udonarium/
 npm run watch            # development build, rebuild on change
 ng test                  # Karma + Jasmine in Chrome (watch mode)
+npm run test:backend     # Node tests for Netlify Functions
 ```
 
 Running a **single test**: focus with `fdescribe`/`fit` in the `.spec.ts` file, or scope by path: `ng test --include='**/object-store.spec.ts'`. For a one-shot headless run: `ng test --watch=false --browsers=ChromeHeadless`.
 
-**To actually connect peers you need the SkyWay token backend.** The app defaults to new SkyWay (`backend.mode: skyway2023` in `src/assets/config.yaml`); the browser fetches an auth token from a Netlify Function (`/v1/skyway2023/token`), which needs `SKYWAY_APP_ID` / `SKYWAY_SECRET` / `ACCESS_CONTROL_ALLOW_ORIGIN` env vars. Run `netlify dev` (or set `backend.url` to a deployed backend); plain `ng serve` loads the UI but has no token endpoint, so peers cannot connect. The legacy `webrtc.key` path survives only as a `backend.mode: skyway` fallback, and the old SkyWay is shut down.
+**To actually connect peers you need the SkyWay token backend.** The app defaults to new SkyWay (`backend.mode: skyway2023` in `src/assets/config.yaml`); the browser fetches an auth token from a Netlify Function (`/v1/skyway2023/token`), which needs `SKYWAY_APP_ID` / `SKYWAY_SECRET` / `ACCESS_CONTROL_ALLOW_ORIGIN` env vars. `SKYWAY_TOKEN_TTL_SECONDS` is optional and defaults to 7200 seconds. Run `netlify dev` (or set `backend.url` to a deployed backend); plain `ng serve` loads the UI but has no token endpoint, so peers cannot connect. The legacy `webrtc.key` path survives only as a `backend.mode: skyway` fallback, and the old SkyWay is shut down.
 
 ## Architecture
 
@@ -76,7 +77,7 @@ Angular components (`src/app/component/`) render and mutate game objects and sub
 
 ## Networking: new SkyWay (skyway2023) + Netlify Functions
 
-The migration off legacy SkyWay is **done**. `Network` picks the connection layer at runtime from `backend.mode` (default `skyway2023`) via `dynamicImport()`; new SkyWay needs an auth token, fetched from a Netlify Function at `/v1/skyway2023/token` (`netlify/functions/udonarium-backend.ts`). Config is in `src/assets/config.yaml` (`backend.mode` / `backend.url`, empty URL = same-origin `/v1`); `@skyway-sdk/core` is `^1.9.2`. The legacy `skyway/` layer and `webrtc.key` remain only as a `backend.mode: skyway` fallback. `docs/new-skyway-migration-plan.md` records the rationale; the current design is in [`docs/architecture/03-messaging-and-network.md`](docs/architecture/03-messaging-and-network.md) and [`04-backend.md`](docs/architecture/04-backend.md). Read those before touching the network layer.
+`Network` picks the connection layer at runtime from `backend.mode` (default `skyway2023`) via `dynamicImport()`; new SkyWay needs an auth token, fetched from a Netlify Function at `/v1/skyway2023/token` (`netlify/functions/udonarium-backend.ts`). Config is in `src/assets/config.yaml` (`backend.mode` / `backend.url`, empty URL = same-origin `/v1`); `@skyway-sdk/core` is `^1.9.2`. The legacy `skyway/` layer and `webrtc.key` remain only as a `backend.mode: skyway` fallback. The current design is in [`docs/architecture/03-messaging-and-network.md`](docs/architecture/03-messaging-and-network.md) and [`04-backend.md`](docs/architecture/04-backend.md). Read those before touching the network layer.
 
 ## Conventions
 

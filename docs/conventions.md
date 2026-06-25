@@ -8,11 +8,13 @@ ng serve                     # 開発サーバ http://localhost:4200（ライブ
 ng build                     # 本番ビルド → dist/udonarium/
 npm run watch                # 開発ビルド（変更監視）
 ng test                      # Karma + Jasmine（Chrome、ウォッチ）
+npm run test:backend         # Netlify Function の Node テスト
 netlify dev                  # フロント + Functions を一体起動（バックエンド検証時）
 ```
 
 - **単一テスト**: `.spec.ts` 内で `fdescribe`/`fit` に絞る、またはパス指定 `ng test --include='**/object-store.spec.ts'`。
 - **ヘッドレス 1 回実行**: `ng test --watch=false --browsers=ChromeHeadless`。
+- **バックエンド 1 回実行**: `npm run test:backend`。
 - 実際に通信を動かすには SkyWay の構成が必要です（下記「設定」）。
 
 ## 設定（config.yaml）

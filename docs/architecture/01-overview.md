@@ -28,7 +28,7 @@
 | PDF 閲覧 | `ng2-pdf-viewer`（フォーク固有） |
 | 保存形式 | XML（オブジェクト直列化）＋ ZIP（`jszip`）。圧縮に `lzbase62` / `pako` |
 | 直列化/転送 | `msgpack-lite`（ネットワーク）、`crypto-js`（ハッシュ）、`js-yaml`（設定読込） |
-| テスト | Karma + Jasmine（Chrome） |
+| テスト | Karma + Jasmine（Angular/Chrome）、Node test（Netlify Functions） |
 
 ## レイヤー構成
 

@@ -22,6 +22,7 @@
 - （Windows PowerShell のみ）Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 - `.env.example` を参考に `.env` を作成
 - npx netlify dev
+- npm run test:backend
 
 ## バージョンアップ方法
 
@@ -46,6 +47,7 @@
 SKYWAY_APP_ID=your-skyway-application-id
 SKYWAY_SECRET=your-skyway-secret-key
 SKYWAY_UDONARIUM_LOBBY_SIZE=4
+SKYWAY_TOKEN_TTL_SECONDS=7200
 ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:8888
 ```
 
@@ -57,6 +59,7 @@ Netlify本番では環境変数に以下を設定します。
 - `SKYWAY_SECRET`
 - `ACCESS_CONTROL_ALLOW_ORIGIN=https://your-site.netlify.app`
 - `SKYWAY_UDONARIUM_LOBBY_SIZE=4` 任意
+- `SKYWAY_TOKEN_TTL_SECONDS=7200` 任意
 
 SkyWay Free Plan は開発・検証用途なら無料枠で利用できます。ただし商用利用不可の条件があるため、恒常的な公開サービスとして運用する場合はSkyWayの契約条件を確認してください。
 
@@ -149,7 +152,7 @@ npx netlify dev
 
 **[旧 SkyWay](https://support.skyway.io/hc/)の Community Edition(無料版)の新規登録は終了しています。**
 
-旧SkyWayのCDN読み込みは削除済みです。通常は `backend.mode: skyway2023` の新SkyWay構成を使用してください。
+旧SkyWayは `backend.mode: skyway` のフォールバックとしてだけ扱います。通常は `backend.mode: skyway2023` の新SkyWay構成を使用してください。
 
 #### 新 SkyWay
 

@@ -49,17 +49,17 @@ export class GamePanel extends ObjectNode {
     nickname = nickname.replace('＠', '@');
     const filterArray: string[] = this.nicknameFillter.split(',');
 
-    let matchCont = 0;
+    let matchCount = 0;
 
     filterArray.forEach((element) => {
       if (element) {
         if (nickname.indexOf(element.replace('＠', '@')) >= 0) {
-          matchCont++;
+          matchCount++;
         }
       }
     });
 
-    if (matchCont > 0) {
+    if (matchCount > 0) {
       return true;
     }
     return false;

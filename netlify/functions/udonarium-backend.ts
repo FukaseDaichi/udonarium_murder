@@ -23,7 +23,9 @@ type ChannelScope = {
 
 const corsMethods = 'GET,POST,OPTIONS';
 const corsHeaders = 'Content-Type';
-const tokenLifetimeSeconds = 60 * 60 * 24;
+const defaultTokenLifetimeSeconds = 60 * 60 * 2;
+const maxTokenLifetimeSeconds = 60 * 60 * 24;
+const minTokenLifetimeSeconds = 60;
 
 export default async function handler(request: Request): Promise<Response> {
   const url = new URL(request.url);
@@ -55,6 +57,7 @@ async function createSkyWayAuthTokenResponse(request: Request, cors: HeadersInit
   const appId = process.env.SKYWAY_APP_ID ?? '';
   const secret = process.env.SKYWAY_SECRET ?? '';
   const lobbySize = parseLobbySize(process.env.SKYWAY_UDONARIUM_LOBBY_SIZE);
+  const tokenLifetimeSeconds = parseTokenLifetimeSeconds(process.env.SKYWAY_TOKEN_TTL_SECONDS);
 
   if (!appId || !secret) {
     return jsonResponse({ error: 'SKYWAY_APP_ID and SKYWAY_SECRET are required.' }, 400, cors);
@@ -67,7 +70,7 @@ async function createSkyWayAuthTokenResponse(request: Request, cors: HeadersInit
     return jsonResponse({ error: 'Request body must be JSON.' }, 400, cors);
   }
 
-  if (body?.formatVersion !== 1 || !isValidName(body.channelName) || !isValidName(body.peerId)) {
+  if (body?.formatVersion !== 1 || typeof body.channelName !== 'string' || typeof body.peerId !== 'string') {
     return jsonResponse({ error: 'Invalid token request.' }, 400, cors);
   }
 
@@ -75,11 +78,15 @@ async function createSkyWayAuthTokenResponse(request: Request, cors: HeadersInit
     return jsonResponse({ error: 'Invalid channel or peer name.' }, 400, cors);
   }
 
-  const token = createSkyWayAuthToken(appId, secret, lobbySize, body.channelName, body.peerId);
+  if (!isValidName(body.channelName) || !isValidName(body.peerId)) {
+    return jsonResponse({ error: 'Invalid token request.' }, 400, cors);
+  }
+
+  const token = createSkyWayAuthToken(appId, secret, lobbySize, tokenLifetimeSeconds, body.channelName, body.peerId);
   return jsonResponse({ token }, 200, cors);
 }
 
-function createSkyWayAuthToken(appId: string, secret: string, lobbySize: number, channelName: string, peerId: string): string {
+function createSkyWayAuthToken(appId: string, secret: string, lobbySize: number, tokenLifetimeSeconds: number, channelName: string, peerId: string): string {
   const now = Math.floor(Date.now() / 1000);
   const isPrivateRoom = channelName === peerId;
   const channels = new Map<string, ChannelScope>();
@@ -204,6 +211,16 @@ function parseLobbySize(value: string | undefined): number {
   const lobbySize = Number.parseInt(value ?? '4', 10);
   if (!Number.isFinite(lobbySize) || lobbySize < 1 || 100 < lobbySize) return 4;
   return lobbySize;
+}
+
+function parseTokenLifetimeSeconds(value: string | undefined): number {
+  const trimmedValue = value?.trim();
+  if (!trimmedValue) return defaultTokenLifetimeSeconds;
+  if (!/^\d+$/.test(trimmedValue)) return defaultTokenLifetimeSeconds;
+
+  const tokenLifetimeSeconds = Number.parseInt(trimmedValue, 10);
+  if (tokenLifetimeSeconds < minTokenLifetimeSeconds || maxTokenLifetimeSeconds < tokenLifetimeSeconds) return defaultTokenLifetimeSeconds;
+  return tokenLifetimeSeconds;
 }
 
 function signJwt(header: unknown, payload: unknown, secret: string): string {

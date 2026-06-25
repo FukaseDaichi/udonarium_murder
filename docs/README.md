@@ -32,6 +32,6 @@
 
 ## 関連資料
 
+- [room-invite-url-design.md](room-invite-url-design.md) — **機能設計（提案）**: GM のルーム作成と「参加用URL」配布 UX。新 SkyWay 対応で接続が復活した経緯と、旧「接続URL取得」を置き換える招待URL機能の設計。
 - [skyway-netlify-env-setup.md](skyway-netlify-env-setup.md) — 新 SkyWay / Netlify の環境変数とブラウザ設定の **実務手順**（セットアップ時に参照）。
-- [new-skyway-migration-plan.md](new-skyway-migration-plan.md) — 新 SkyWay 移行の計画書（背景・設計判断の記録）。**移行自体はおおむね完了済み**で、現行の構成は上記 03・04 を正とします。
 - リポジトリ直下の [AGENTS.md](../AGENTS.md) — エージェント/開発者向けの要約（このドキュメント群への入口）。

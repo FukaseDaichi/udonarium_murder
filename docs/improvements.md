@@ -1,8 +1,6 @@
 # 改善点・不良（優先度付き）
 
-現行コードを見直して洗い出した、**いま対応を検討すべき** 項目です。設計の説明は各 [architecture/](architecture/) ドキュメントを参照してください。
-
-> 確認時点: 本リポジトリは並行して活発に更新されています（新 SkyWay / Netlify 対応が直近コミットで進行）。本書はその時点のコードを実地確認した結果です。着手前に最新コードで再確認してください。
+現行コードで対応を検討すべき項目です。設計の説明は各 [architecture/](architecture/) ドキュメントを参照してください。
 
 優先度の目安: **High** = セキュリティ/事故リスクや即効性が高い、**Medium** = 品質/保守性、**Low** = 軽微・本家由来・体感影響小。
 
@@ -10,71 +8,40 @@
 
 | # | 優先度 | 項目 | 種別 |
 | --- | --- | --- | --- |
-| 1 | Medium | 新バックエンド / skyway2023 接続層に自動テストが無い | テスト |
-| 2 | Medium | 認証トークン TTL が 24h 固定（環境変数で可変化したい） | セキュリティ/運用 |
-| 3 | Medium | skyway2023 実装が SDK 内部 API に依存（SDK 更新で破損し得る） | 保守性 |
-| 4 | Low | `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定だと全リクエスト 403（運用の落とし穴） | 運用 |
-| 5 | Low | フォークコードの命名タイポ（`nicknameFillter` 等） | 可読性 |
-| 6 | Low | `ObjectStore._garbageCollection()` のデッドループ（GC が実質無効） | 不具合（本家由来） |
-| 7 | Low | `GamePanelViewerComponent.pdfSrc` の null ガード欠如 | 堅牢性 |
-| 8 | Low | `README.md` に残る軽微な誤り（本家 clone URL 等）※本タスクで修正 | ドキュメント |
+| 1 | Medium | Angular component smoke spec が多数失敗する | テスト |
+| 2 | Medium | skyway2023 接続層の SDK 連携テストが薄い | テスト |
+| 3 | Medium | skyway2023 実装が SDK 内部 API に依存している | 保守性 |
+| 4 | Low | `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定時の案内が弱い | 運用 |
+| 5 | Low | フォークコードに保存互換を伴う命名タイポが残っている | 可読性 |
 
 ---
 
-### 1. バックエンド / skyway2023 にテストが無い（Medium）
+### 1. Angular component smoke spec が多数失敗する（Medium）
 
-- 事実: 既存 `.spec.ts` は旧来のコア中心で、`netlify/functions/udonarium-backend.ts` と `network/skyway2023/*` のテストが無い（確認済み）。移行計画のテスト計画（Origin 許可/拒否、トークン入力検証、env 不足時 400、`PeerContext`、チャンク分割）が未消化。
-- 対応（最小セット）:
-  - トークン API: `formatVersion`/`channelName`/`peerId` の検証、`udonarium-lobby-` 拒否、`*` 拒否、env 不足時 400、CORS 許可/拒否。
-  - `PeerContext` の生成/parse/パスワード由来チャンネル名。
-  - `BufferSharingTask` のチャンク分割/結合。
-- 参照: [architecture/04-backend.md](architecture/04-backend.md)、[architecture/03-messaging-and-network.md](architecture/03-messaging-and-network.md)。
+- 現状: `ng test --watch=false --browsers=ChromeHeadless` は、生成時のままに近い component spec で多数失敗します。代表例は `NoopAnimationsModule` / `BrowserAnimationsModule` 未導入による synthetic property エラー、`ContextMenuService` / `ChatMessageService` / `ModalService` などの provider 不足です。
+- 影響: 変更箇所だけを `--include` で絞れば検証できますが、フルの Karma/Jasmine スイートを回帰確認として使いにくい状態です。
+- 対応: component smoke spec を実際の依存に合わせて整理し、アニメーションは `NoopAnimationsModule`、サービスは実サービスまたは明示的な stub を使う方針に統一します。
 
-### 2. 認証トークン TTL が 24h 固定（Medium）
+### 2. skyway2023 接続層の SDK 連携テストが薄い（Medium）
 
-- 事実: `udonarium-backend.ts` の `tokenLifetimeSeconds = 60*60*24` がハードコード（確認済み）。
-- 背景: フロントは `onTokenUpdateReminder` で失効前に自動再取得するため、**TTL を短くしても再ログインは不要**。長い TTL は漏洩時の影響を広げる。
-- 対応: `SKYWAY_TOKEN_TTL_SECONDS`（環境変数）で可変化し、既定をより短く（例 1〜2 時間）。
+- 現状: トークン API、`PeerContext`、ファイル共有のチャンク分割/結合は自動テストがあります。
+- 不足: `network/skyway2023/*` の実 SDK 接続、ロビー参加、トークン自動更新、再接続、Publication/Subscription の張り替えはブラウザ実行と SkyWay 側状態に依存しており、単体テストでは十分に押さえられていません。
+- 対応: `SkyWayBackend` の HTTP 境界をモックしたテスト、`SkyWayFacade` の SDK 呼び出しを薄く差し替えたユニットテスト、手動確認手順の Playwright 化を検討します。
+- 参照: [architecture/03-messaging-and-network.md](architecture/03-messaging-and-network.md)、[architecture/04-backend.md](architecture/04-backend.md)。
 
-### 3. skyway2023 が SDK 内部 API に依存（Medium）
+### 3. skyway2023 実装が SDK 内部 API に依存している（Medium）
 
-- 事実: 移行計画自身が「安全化フェーズ」として **SDK 内部プロパティ参照の削減** を課題に挙げている（本家 `skyway2023` 由来）。
-- リスク: `@skyway-sdk/core` の更新で動作が壊れ得る。
-- 対応: 公開 API 中心へ寄せる。`@skyway-sdk/core` 1 系→2 系、Auth Token v3、`@skyway-sdk/room` 化の検証（移行計画 Phase 6）。当面は本家追従で安定運用。
+- 現状: `skyway-data-stream.ts` で `_getOrCreateConnection`、`_datachannel`、`_getRTCPeerConnection` など、`@skyway-sdk/core` の内部メンバーを参照しています。
+- リスク: SDK の minor/major 更新で内部構造が変わると、接続状態監視や DataChannel 取得が壊れる可能性があります。
+- 対応: 公開 API で代替できる箇所を切り分け、SDK 更新時は `network/skyway2023/` を重点的に動作確認します。必要に応じて `@skyway-sdk/room` など現行 SDK の推奨構成も検証します。
 
-### 4. `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定で全 403（Low/運用）
+### 4. `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定時の案内が弱い（Low/運用）
 
-- 事実: 未設定だと CORS 判定が通らず、ブラウザからの `POST /v1/skyway2023/token` が一律 403（フェイルクローズ自体は安全側）。
-- 影響: デプロイ直後に「接続できない」と誤認しやすい。Netlify の cold start と重なると切り分けが難しい。
-- 対応: `GET /v1/status`（`SkyWayBackend.alive()`）を起動時チェックに使い、失敗時に分かりやすい案内を出す。設定例は `README.md` と [architecture/04-backend.md](architecture/04-backend.md) に記載済み。
+- 現状: Token API は Origin 不許可時に `403` を返します。フェイルクローズとしては安全ですが、未設定のままデプロイするとルーム接続だけが失敗して見えます。
+- 対応: 起動時に `GET /v1/status` と Token API の疎通結果を UI に出し、Origin 設定の不足が分かる案内を表示します。設定値は [skyway-netlify-env-setup.md](skyway-netlify-env-setup.md) を参照してください。
 
-### 5. フォークコードの命名タイポ（Low）
+### 5. フォークコードに保存互換を伴う命名タイポが残っている（Low）
 
-- 例: `GamePanel.nicknameFillter`（→ `filter`）、`isShortcutView` 内の `matchCont`（→ `count`）、`AppComponent.isSaveing` / `progresPercent`（確認済み）。
-- 注意: `nicknameFillter` は **`@SyncVar`（= XML 属性名 = セーブ互換）** のため、単純リネームは過去セーブデータと非互換になる。リネームするなら読み込み時の旧名フォールバックを用意する。
-- 対応: 同期に絡まないローカル変数（`matchCont` 等）は即リネーム可。同期フィールドは互換を保ったうえで段階的に。
-
-### 6. `ObjectStore._garbageCollection()` のデッドループ（Low/本家由来）
-
-- 事実: `let checkLength = size - 100000; if (checkLength < 1) return;` の直後に `while (checkLength < 1) { ... }` があり、早期 return を抜けた時点で `checkLength >= 1` のため **ループ本体が一度も実行されない**（`object-store.ts` で確認）。内部の `if (timeStamp + ms < nowDate) continue; delete` も条件が反転しているように見える。
-- 影響: 削除履歴（`garbageMap`）の自動回収が機能しない。ただし 10 万件超の削除でのみ顕在化するため実害は限定的。本家由来。
-- 対応: 余裕があるときに本家の最新実装と突き合わせて修正。`clearDeleteHistory()` が別途あるため緊急度は低い。
-
-### 7. `GamePanelViewerComponent.pdfSrc` の null ガード欠如（Low）
-
-- 事実: `get pdfSrc() { return this.pdfFile.url; }` だが `@Input() pdfFile` は既定 `null`（確認済み）。設定前に評価されるとテンプレートエラー。
-- 対応: `this.pdfFile?.url ?? ''` 等のガードを入れる。
-
-### 8. `README.md` の軽微な誤り（Low・本タスクで修正）
-
-- 事実: 「実際の開発手順コマンド」の `git clone` が本家リポジトリ URL を指している、`Set-ExecutionPolicy`（Windows PowerShell 専用）が文脈不明に並ぶ、「今後の開発」に旧前提（`config.yaml` に API キー記載）が残る。
-- 対応: 本タスクで fork URL・注記・設計ドキュメントへの導線を修正済み。
-
----
-
-## 解決済み（参考）
-
-レビュー中に並行コミットで解消された項目です。記録として残します。
-
-- **`.env` の Git 追跡リスク**: `.gitignore` に `.env`（および `.netlify`）が追加され、`.env.example` も用意済み（`git check-ignore .env` で確認）。シークレットは Netlify 環境変数にのみ置く運用。万一、過去に有効な `SKYWAY_SECRET` / SkyWay キーをコミットしていた場合は履歴削除だけでなく**失効・再発行**を行うこと。
-- **ドキュメントの陳腐化**: `README.md` は新 SkyWay + Netlify 構成へ更新済み。`AGENTS.md` と `docs/new-skyway-migration-plan.md` は本タスクで現行構成へ更新（移行完了を明記、現行の正は [architecture/03](architecture/03-messaging-and-network.md)・[04](architecture/04-backend.md)）。
+- 例: `GamePanel.nicknameFillter`、`AppComponent.isSaveing` / `progresPercent` など。
+- 注意: `nicknameFillter` は `@SyncVar`（XML 属性名）なので、単純リネームは既存セーブデータと非互換になります。変更する場合は読み込み時の旧名フォールバックを用意します。
+- 対応: 同期・保存形式に絡まないローカル名から順に直し、`@SyncVar` 名は互換移行の設計がある場合だけ変更します。

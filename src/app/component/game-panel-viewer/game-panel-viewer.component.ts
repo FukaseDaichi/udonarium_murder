@@ -12,8 +12,12 @@ export class GamePanelViewerComponent implements OnInit, OnDestroy, AfterViewIni
   @Input() gamePanel: GamePanel = null;
   @Input() pdfFile: ImageFile = null;
 
-  get pdfSrc() {
-    return this.pdfFile.url;
+  get pdfSrc(): string {
+    return this.pdfFile?.url ?? '';
+  }
+
+  get isOriginalSize(): boolean {
+    return this.gamePanel?.isOriginalSize ?? true;
   }
   constructor() {}
 
@@ -21,7 +25,7 @@ export class GamePanelViewerComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.gamePanel.resize();
+      this.gamePanel?.resize();
     }, 500);
   }
 

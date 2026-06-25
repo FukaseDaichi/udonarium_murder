@@ -51,7 +51,7 @@ Network.send(data, sendTo?);   // 送信（キューに積んでバッチ送信�
   - `mode === 'skyway2023'`（既定）→ `network/skyway2023/skyway-connection`（新 SkyWay）
 - `initializeConnection()` は選択した接続クラスを生成し、`connection.configure(this.config)` を呼び、各種コールバック（`onOpen`/`onData`/`onError` …）を中継します。
 
-> 補足: 本家 v1.17.4 由来のこの構成により、`Network` 自体は SkyWay の世代に依存しません。世代差は `dynamicImport` と各 `Connection` 実装に閉じています。
+> 補足: `Network` 自体は SkyWay の世代に依存しません。世代差は `dynamicImport` と各 `Connection` 実装に閉じています。
 
 ### 送信キュー（broadcast / unicast / echocast）
 

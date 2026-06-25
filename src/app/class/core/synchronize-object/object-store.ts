@@ -160,20 +160,15 @@ export class ObjectStore {
   private _garbageCollection(ms: number) {
     let nowDate = performance.now();
 
-    let checkLength = this.garbageMap.size - 100000;
-    if (checkLength < 1) return;
+    let deleteCount = this.garbageMap.size - 100000;
+    if (deleteCount < 1) return;
 
-    let entries = this.garbageMap.entries();
-    while (checkLength < 1) {
-      checkLength--;
-      let item = entries.next();
-      if (item.done) break;
+    for (let [identifier, timeStamp] of this.garbageMap) {
+      if (deleteCount < 1) break;
+      if (nowDate < timeStamp + ms) continue;
 
-      let identifier = item.value[0];
-      let timeStamp = item.value[1];
-
-      if (timeStamp + ms < nowDate) continue;
       this.garbageMap.delete(identifier);
+      deleteCount--;
     }
   }
 }

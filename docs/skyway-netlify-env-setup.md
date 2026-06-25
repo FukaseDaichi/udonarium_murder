@@ -1,7 +1,5 @@
 # 新SkyWay + Netlify環境変数設定手順
 
-作成日: 2026-06-25
-
 このドキュメントは、Udonarium Murderを新SkyWay + Netlify Functions構成で動かすために必要な `.env` / Netlify環境変数と、ブラウザ上での設定手順をまとめたものです。
 
 ## 設定する環境変数
@@ -12,6 +10,7 @@
 SKYWAY_APP_ID=
 SKYWAY_SECRET=
 SKYWAY_UDONARIUM_LOBBY_SIZE=4
+SKYWAY_TOKEN_TTL_SECONDS=7200
 ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:8888
 ```
 
@@ -20,6 +19,7 @@ ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:8888
 | `SKYWAY_APP_ID` | 必須 | Netlify Functions / ローカル `.env` | SkyWay Consoleで作成したアプリケーションID。 |
 | `SKYWAY_SECRET` | 必須 | Netlify Functions / ローカル `.env` | SkyWay Consoleで取得するシークレットキー。フロントエンド、`src/assets/config.yaml`、`netlify.toml` には書かない。 |
 | `SKYWAY_UDONARIUM_LOBBY_SIZE` | 任意 | Netlify Functions / ローカル `.env` | ロビー用Channelの分割数。未設定や不正値の場合はFunction側で `4` として扱う。通常は `4` のままでよい。 |
+| `SKYWAY_TOKEN_TTL_SECONDS` | 任意 | Netlify Functions / ローカル `.env` | SkyWay Auth Tokenの有効期限。未設定や不正値の場合は `7200` 秒として扱う。指定できる範囲は `60`〜`86400` 秒。 |
 | `ACCESS_CONTROL_ALLOW_ORIGIN` | 必須 | Netlify Functions / ローカル `.env` | Token APIを許可するブラウザOrigin。例: `http://localhost:8888`、`https://your-site.netlify.app`。複数指定する場合はカンマ区切り。 |
 
 ## ローカル開発用 `.env`
@@ -36,6 +36,7 @@ cp .env.example .env
 SKYWAY_APP_ID=00000000-0000-0000-0000-000000000000
 SKYWAY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SKYWAY_UDONARIUM_LOBBY_SIZE=4
+SKYWAY_TOKEN_TTL_SECONDS=7200
 ACCESS_CONTROL_ALLOW_ORIGIN=http://localhost:8888
 ```
 
@@ -49,6 +50,7 @@ Netlify本番では、`ACCESS_CONTROL_ALLOW_ORIGIN` を公開URLのOriginにし�
 SKYWAY_APP_ID=00000000-0000-0000-0000-000000000000
 SKYWAY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SKYWAY_UDONARIUM_LOBBY_SIZE=4
+SKYWAY_TOKEN_TTL_SECONDS=7200
 ACCESS_CONTROL_ALLOW_ORIGIN=https://your-site.netlify.app
 ```
 
@@ -103,6 +105,7 @@ ACCESS_CONTROL_ALLOW_ORIGIN=https://your-site.netlify.app,https://udonarium.exam
 SKYWAY_APP_ID=SkyWayのアプリケーションID
 SKYWAY_SECRET=SkyWayのシークレットキー
 SKYWAY_UDONARIUM_LOBBY_SIZE=4
+SKYWAY_TOKEN_TTL_SECONDS=7200
 ACCESS_CONTROL_ALLOW_ORIGIN=https://your-site.netlify.app
 ```
 

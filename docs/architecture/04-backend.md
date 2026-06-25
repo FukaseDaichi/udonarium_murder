@@ -4,7 +4,6 @@
 
 - 実体: `netlify/functions/udonarium-backend.ts`（Netlify Functions v2）
 - フロント側クライアント: `src/app/class/core/system/network/skyway2023/skyway-backend.ts`
-- 設計の背景・判断記録: [../new-skyway-migration-plan.md](../new-skyway-migration-plan.md)
 
 ## Netlify 構成
 
@@ -94,7 +93,7 @@ SkyWay 認証トークンを発行します。
 - **ロビー Channel**（`udonarium-lobby-*-of-${lobbySize}`）
   - Channel: `read` / `create`、自 Member: `write`
 
-トークン有効期限は現状 **24 時間固定**（`tokenLifetimeSeconds`）。フロントは `onTokenUpdateReminder` で失効前に再取得します（[03 章](03-messaging-and-network.md)）。
+トークン有効期限は `SKYWAY_TOKEN_TTL_SECONDS` で指定します。未指定または不正値の場合は **2 時間**、許可範囲は **60 秒〜24 時間** です。フロントは `onTokenUpdateReminder` で失効前に再取得します（[03 章](03-messaging-and-network.md)）。
 
 > ロビー名はトークン内ではワイルドカード（`udonarium-lobby-*-of-N`）で、フロントが `udonarium-lobby-1-of-N` … `N-of-N` に展開して使います。`N` は `SKYWAY_UDONARIUM_LOBBY_SIZE`（既定 4）。
 
@@ -106,8 +105,9 @@ SkyWay 認証トークンを発行します。
 | `SKYWAY_SECRET` | SkyWay Secret Key（**サーバーのみ**。フロントやリポジトリに置かない） |
 | `ACCESS_CONTROL_ALLOW_ORIGIN` | 許可する Origin（例 `https://udonarium-murder.netlify.app`）。カンマ区切り可 |
 | `SKYWAY_UDONARIUM_LOBBY_SIZE` | ロビー数（未指定で 4。1〜100 にクランプ） |
+| `SKYWAY_TOKEN_TTL_SECONDS` | SkyWay Auth Token の有効期限（未指定で 7200 秒。60〜86400 秒） |
 
-> セキュリティ: シークレットは Netlify の環境変数にのみ置きます。ローカル用の `.env` は **Git 管理対象に入れない**こと（現状 `.gitignore` に未登録のため要対応。[improvements.md](../improvements.md) 参照）。
+> セキュリティ: シークレットは Netlify の環境変数にのみ置きます。ローカル用の `.env` は **Git 管理対象に入れません**。
 
 ## フロント連携
 
