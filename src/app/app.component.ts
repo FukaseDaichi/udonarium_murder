@@ -40,7 +40,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
-import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { decodeRoomInvite, RoomInvitePayload } from '@udonarium/core/system/network/room-invite';
 import { AlermSound } from '@udonarium/timer-bot';
 
 // タイマーメニュー
@@ -212,17 +212,32 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         PeerCursor.myCursor.peerId = Network.peer.peerId;
         PeerCursor.myCursor.userId = Network.peer.userId;
 
-        // 接続
+        // 参加用URL（?room=<token>）からの自動入室
         const url = new URL(window.location.href);
-        const params = url.searchParams;
-        const id = params.get('id');
+        const token = url.searchParams.get('room');
+        if (!token) return;
 
-        if (id) {
-          let context = PeerContext.create(id);
-          if (context.isRoom) return;
-          ObjectStore.instance.clearDeleteHistory();
-          Network.connect(context);
+        // 再入室ループ防止＋アドレスバーから合言葉付きURLを除去
+        url.searchParams.delete('room');
+        history.replaceState(null, '', url.href);
+
+        const invite = decodeRoomInvite(token);
+        if (!invite) {
+          this.ngZone.run(() => {
+            this.modalService.open(TextViewComponent, {
+              title: '参加用URLが正しくありません',
+              text: 'URLをもう一度確認してください。',
+            });
+          });
+          return;
         }
+
+        if (Network.peer.isRoom && Network.peer.roomId === invite.r) return; // 既に同じ部屋にいる
+
+        // 別の部屋に接続中なら、退出して移動してよいか確認
+        if (0 < Network.peers.length && !window.confirm(`別の部屋「${invite.n}」に移動しますか？\n現在の部屋からは退出します。`)) return;
+
+        this.joinRoomFromInvite(invite);
       })
       .on('NETWORK_ERROR', (event) => {
         console.log('NETWORK_ERROR', event.data.peerId);
@@ -263,6 +278,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     });
     this.isGM = this.appCustomService.dataViewer;
     workaroundForMobileSafari();
+  }
+
+  private joinRoomFromInvite(invite: RoomInvitePayload) {
+    const userId = Network.peer.userId; // 既存の userId を引き継いでルームへ入り直す
+    ObjectStore.instance.clearDeleteHistory();
+    Network.open(userId, invite.r, invite.n, invite.p);
+    PeerCursor.myCursor.peerId = Network.peerId;
   }
 
   ngAfterViewInit() {

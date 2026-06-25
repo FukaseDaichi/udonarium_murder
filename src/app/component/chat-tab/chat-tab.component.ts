@@ -110,6 +110,20 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
       '<a href="https://udonarium.app/" target="_blank" >本家ユドナリウム様</a>の最新アップデート内容を全て反映し、軽微不良の修正をしました。',
       1703069578000
     ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      '新しいSkyWayに対応しました。旧SkyWayの終了で接続できなくなっていた問題を解消し、ルームでの接続が復活しています。',
+      1782345600000
+    ),
+    this.makeSampleMessage(
+      'System',
+      null,
+      'アップデート',
+      'マスター（GM）がルームを作成すると「参加用URL」を配布できるようになりました。参加者はURLを開くだけで自動で同じ部屋に入れます。（旧「接続URL取得」は本機能に置き換わりました）',
+      1782345600000
+    ),
   ];
 
   private topTimestamp = 0;

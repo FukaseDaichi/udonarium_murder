@@ -1,16 +1,63 @@
 <div *ngIf="myPeer">
   <button (click)="changeIcon()">アイコンを変更する</button>
-  <div *ngIf="myPeer.image" class="image cover" [style.background-image]="'url(' + myPeer.image.url + ')' | safe : 'style'" (click)="changeIcon()">
-    <!--<img *ngIf="myPeer.image" [src]="myPeer.image.url | safe: 'resourceUrl'" />-->
-  </div>
+  <div *ngIf="myPeer.image" class="image cover" [style.background-image]="'url(' + myPeer.image.url + ')' | safe : 'style'" (click)="changeIcon()"></div>
   <span><span class="property">あなたのニックネーム</span>： <input [(ngModel)]="myPeer.name" placeholder="ニックネーム" /></span>
 </div>
+
+<!-- 状態A: 未入室 — 役割の導線（GM=作成 / 参加者=参加） -->
+<ng-container *ngIf="!networkService.peer.isRoom">
+  <hr />
+  <div class="role-guide">
+    <div class="role-card role-card--primary">
+      <div class="role-card__title"><i class="material-icons">stars</i><span>マスター（GM）として始める</span></div>
+      <p class="role-card__desc">あなたが進行役です。部屋を作成して、参加者に参加用URLを配ります。</p>
+      <button class="cta cta--primary" (click)="createRoom()" [disabled]="!networkService.isOpen">ルームを作成</button>
+    </div>
+    <div class="role-card">
+      <div class="role-card__title"><i class="material-icons">group_add</i><span>参加者として参加する</span></div>
+      <p class="role-card__desc">進行役から届いた参加用URLを開くと、自動でこの部屋に入れます。URLが無い場合はロビーから探せます。</p>
+      <button class="cta" (click)="showLobby()" [disabled]="!networkService.isOpen">ロビーを開く</button>
+    </div>
+  </div>
+</ng-container>
+
+<!-- 状態B: 入室済 — 招待パネル -->
+<ng-container *ngIf="networkService.peer.isRoom">
+  <hr />
+  <div class="invite-panel">
+    <div class="invite-panel__title"><i class="material-icons">person_add</i><span>参加者を招待</span></div>
+    <input #urlInput class="invite-url" type="text" readonly [value]="inviteUrl" (focus)="urlInput.select()" (click)="urlInput.select()" aria-label="参加用URL" />
+    <div class="invite-actions">
+      <button class="cta cta--primary" [class.is-copied]="isUrlCopied" (click)="copyInviteUrl()" [disabled]="!networkService.isOpen">
+        <i class="material-icons">{{ isUrlCopied ? "check" : "content_copy" }}</i>{{ isUrlCopied ? "コピーしました" : "リンクをコピー" }}
+      </button>
+      <button *ngIf="canShare" class="cta" (click)="shareInviteUrl()"><i class="material-icons">share</i>共有</button>
+    </div>
+    <p class="invite-hint">このURLを参加者に配ってください。開くだけで自動でこの部屋に参加します。</p>
+    <p class="invite-warning"><i class="material-icons">vpn_key</i><span>URLには合言葉（パスワード）が含まれます。部屋の鍵と同じです。公開の場所には貼らないでください。</span></p>
+    <p class="invite-status" aria-live="polite">
+      <ng-container *ngIf="networkService.peers.length < 1">まだ誰も参加していません。上のURLを配って参加者を待ちましょう。</ng-container>
+      <ng-container *ngIf="networkService.peers.length >= 1">現在 {{ networkService.peers.length }} 人が参加しています。</ng-container>
+    </p>
+  </div>
+  <div class="room-info">
+    <div>ルーム名：<span *ngIf="networkService.isOpen" style="font-weight: bold">{{ networkService.peer.roomName }}/{{ networkService.peer.roomId }}</span></div>
+    <div *ngIf="networkService.peer.hasPassword">
+      パスワード：
+      <span *ngIf="networkService.isOpen" style="font-weight: bold">{{ isPasswordVisible ? networkService.peer.password : "●●●●●●●●" }}</span>
+      <button class="icon-btn" (click)="togglePasswordVisibility()" [attr.aria-label]="isPasswordVisible ? 'パスワードを隠す' : 'パスワードを表示'">
+        <span class="material-icons">{{ isPasswordVisible ? "visibility" : "visibility_off" }}</span>
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<hr />
 <div>
   <span
     >あなたのID：<span *ngIf="networkService.isOpen" style="font-weight: bold">{{ networkService.peer.userId }}</span>
     <span *ngIf="!networkService.isOpen" style="font-weight: bold">???</span>
   </span>
-  <button *ngIf="networkService.isOpen" (click)="getUrl($event)">接続URL取得</button>
 </div>
 <div>
   <span><span class="property">GMモード</span>：<input type="checkbox" [(ngModel)]="isViewer" (change)="output()" /></span>
@@ -58,25 +105,7 @@
     </div>
   </div>
 </div>
-<!--<div>host ID:{{networkService.hostPeerID}}</div>-->
-<ng-container *ngIf="networkService.peer.isRoom">
-  <hr />
-  <div>
-    <span
-      >ルーム名：<span *ngIf="networkService.isOpen" style="font-weight: bold">{{ networkService.peer.roomName }}/{{ networkService.peer.roomId }}</span></span
-    >
-  </div>
-  <div>
-    <span
-      >パスワード：<span *ngIf="networkService.peer.hasPassword">
-        <span *ngIf="networkService.isOpen" style="font-weight: bold">{{ isPasswordVisible ? networkService.peer.password : "●●●●●●●●" }}</span>
-        <button style="padding: 2px; margin-left: 1em; font-size: 1em" (click)="togglePasswordVisibility()">
-          <span class="material-icons" style="font-size: 1em; vertical-align: text-bottom">{{ isPasswordVisible ? "visibility" : "visibility_off" }}</span>
-        </button>
-      </span>
-    </span>
-  </div>
-</ng-container>
+
 <hr />
 <div *ngFor="let peer of networkService.peers">
   <div class="peer-info">
@@ -91,20 +120,16 @@
     </div>
   </div>
 </div>
-<div>
-  <ng-container *ngIf="!networkService.peer.isRoom && canUsePrivateSession">
+
+<!-- レガシー: プライベート接続（旧SkyWayモードのみ利用可） -->
+<ng-container *ngIf="!networkService.peer.isRoom && canUsePrivateSession">
+  <div>
     <input [(ngModel)]="targetUserId" placeholder="接続したい相手のID" name="targetUserId" />
-    <button (click)="connectPeer()" [disabled]="!networkService.isOpen">プライベート接続</button><br />
-  </ng-container>
-  <button *ngIf="networkService.peers.length < 1" (click)="showLobby()" [disabled]="!networkService.isOpen">ロビー（ルーム一覧）を表示</button>
-</div>
-<div>
+    <button (click)="connectPeer()" [disabled]="!networkService.isOpen">プライベート接続</button>
+  </div>
+  <div style="font-size: 12px">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
+</ng-container>
+<div *ngIf="help">
   <span style="font-size: 12px">{{ help }}</span>
 </div>
-<ng-container *ngIf="!networkService.peer.isRoom">
-  <div style="font-size: 12px" *ngIf="networkService.peers.length < 1 && canUsePrivateSession">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
-  <div style="font-size: 12px" *ngIf="networkService.peers.length < 1">※一人で動作確認を行いたい場合はブラウザを2つ開くと良いと思います。</div>
-</ng-container>
-<ng-container *ngIf="networkService.peer.isRoom && canUsePrivateSession">
-  <div style="font-size: 12px">※ルーム機能を利用している時はプライベート接続を利用できません。</div>
-</ng-container>
+<div style="font-size: 12px" *ngIf="!networkService.peer.isRoom">※一人で動作確認を行いたい場合はブラウザを2つ開くと良いと思います。</div>

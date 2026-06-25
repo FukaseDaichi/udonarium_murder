@@ -8,11 +8,13 @@ import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { LobbyComponent } from 'component/lobby/lobby.component';
+import { RoomSettingComponent } from 'component/room-setting/room-setting.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { AppConfigCustomService } from 'service/app-config-custom.service';
 import { RoomSetting } from '@udonarium/room-setting';
+import { buildRoomInviteUrl } from '@udonarium/core/system/network/room-invite';
 
 @Component({
   selector: 'peer-menu',
@@ -25,6 +27,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   gameRoomService = ObjectStore.instance;
   help: string = '';
   isPasswordVisible = false;
+  isUrlCopied = false;
 
   @Input() isViewer: boolean = false;
 
@@ -167,21 +170,36 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getUrl = (event: any) => {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('id');
-    url.searchParams.append('id', this.networkService.peer.userId);
-    navigator.clipboard.writeText(url.href);
+  // ルームに入室中なら、合言葉込みの「参加用URL」を生成する（同じ部屋に入り直せる）
+  get inviteUrl(): string {
+    const peer = this.networkService.peer;
+    if (!peer || !peer.isRoom) return '';
+    return buildRoomInviteUrl({ r: peer.roomId, n: peer.roomName, p: peer.password });
+  }
 
-    const btnDom = event.target;
-    btnDom.classList.remove('clicked');
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        btnDom.classList.add('clicked');
-        btnDom.innerText = 'コピー完了';
-      });
+  get canShare(): boolean {
+    return typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  }
+
+  copyInviteUrl() {
+    const url = this.inviteUrl;
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(() => {
+      this.ngZone.run(() => (this.isUrlCopied = true));
+      setTimeout(() => this.ngZone.run(() => (this.isUrlCopied = false)), 2000);
     });
-  };
+  }
+
+  shareInviteUrl() {
+    const url = this.inviteUrl;
+    if (!url || !this.canShare) return;
+    navigator.share({ title: 'ユドナリウム マーダー', text: 'ルームへの招待です。URLを開くと参加できます。', url }).catch(() => {});
+  }
+
+  // GM向け: ルーム作成モーダルを直接開く（ロビーを経由しない）
+  createRoom() {
+    this.modalService.open(RoomSettingComponent, { width: 700, height: 400, left: 0, top: 400 });
+  }
 
   connectPeer() {
     let targetUserId = this.targetUserId;

@@ -123,3 +123,170 @@
 .peer-info:hover .session-info {
   visibility: visible;
 }
+
+/* ===== 役割の導線（未入室） / 招待パネル（入室済） ===== */
+.role-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.role-card {
+  border: 1px solid #d9d2c8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fbf8f3;
+}
+.role-card--primary {
+  border-color: #3b76ff;
+  background: #f1f5ff;
+}
+.role-card__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #333;
+}
+.role-card__title .material-icons {
+  font-size: 1.1rem;
+  color: #3b76ff;
+}
+.role-card__desc {
+  margin: 6px 0 10px;
+  font-size: 0.78rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #b9b2a7;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.cta:hover:not(:disabled) {
+  background: #f3efe8;
+}
+.cta:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cta .material-icons {
+  font-size: 1.05rem;
+}
+.cta--primary {
+  background: #3b76ff;
+  border-color: #3b76ff;
+  color: #fff;
+  font-weight: bold;
+}
+.cta--primary:hover:not(:disabled) {
+  background: #2f63e0;
+}
+.cta--primary.is-copied {
+  background: #2e9b5b;
+  border-color: #2e9b5b;
+}
+
+.invite-panel {
+  border: 1px solid #3b76ff;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #f1f5ff;
+}
+.invite-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  color: #2b4f9e;
+  margin-bottom: 8px;
+}
+.invite-panel__title .material-icons {
+  font-size: 1.15rem;
+}
+.invite-url {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid #b9c4e0;
+  border-radius: 6px;
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: #333;
+}
+.invite-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.invite-actions .cta {
+  flex: 1 1 auto;
+}
+.invite-hint {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #444;
+  line-height: 1.5;
+}
+.invite-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 8px 0 0;
+  font-size: 0.72rem;
+  color: #9a6a00;
+  line-height: 1.5;
+}
+.invite-warning .material-icons {
+  font-size: 0.95rem;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.invite-status {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #2b4f9e;
+  font-weight: bold;
+}
+
+.room-info {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #333;
+}
+.room-info > div {
+  margin-top: 2px;
+}
+.icon-btn {
+  padding: 2px;
+  margin-left: 0.6em;
+  vertical-align: middle;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.icon-btn .material-icons {
+  font-size: 1em;
+  vertical-align: text-bottom;
+}
+
+@media (max-width: 420px) {
+  .invite-actions {
+    flex-direction: column;
+  }
+}
