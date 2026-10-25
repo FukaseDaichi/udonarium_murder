@@ -10,10 +10,11 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 
 @Component({
-  selector: 'file-storage',
-  templateUrl: './file-storage.component.html',
-  styleUrls: ['./file-storage.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'file-storage',
+    templateUrl: './file-storage.component.html',
+    styleUrls: ['./file-storage.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class FileStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   fileStorageService = ImageStorage.instance;

@@ -14,9 +14,10 @@ import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
 
 @Component({
-  selector: 'game-table-setting',
-  templateUrl: './game-table-setting.component.html',
-  styleUrls: ['./game-table-setting.component.css']
+    selector: 'game-table-setting',
+    templateUrl: './game-table-setting.component.html',
+    styleUrls: ['./game-table-setting.component.css'],
+    standalone: false
 })
 export class GameTableSettingComponent implements OnInit, OnDestroy {
   minSize: number = 1;

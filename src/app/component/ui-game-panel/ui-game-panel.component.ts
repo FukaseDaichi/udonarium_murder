@@ -6,9 +6,10 @@ import { ImageService } from 'service/image.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
-  selector: 'ui-game-panel',
-  templateUrl: './ui-game-panel.component.html',
-  styleUrls: ['./ui-game-panel.component.css'],
+    selector: 'ui-game-panel',
+    templateUrl: './ui-game-panel.component.html',
+    styleUrls: ['./ui-game-panel.component.css'],
+    standalone: false
 })
 export class UIGamePanelComponent implements OnInit {
   @ViewChild('draggablePanel', { static: true })

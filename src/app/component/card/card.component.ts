@@ -21,10 +21,11 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
 import { TabletopService } from 'service/tabletop.service';
 
 @Component({
-  selector: 'card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'card',
+    templateUrl: './card.component.html',
+    styleUrls: ['./card.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
   @Input() card: Card = null;

@@ -5,9 +5,10 @@ import { GamePanel } from '@udonarium/game-panel';
 import { PeerCursor } from '@udonarium/peer-cursor';
 
 @Component({
-  selector: 'app-game-panel-store',
-  templateUrl: './game-panel-store.component.html',
-  styleUrls: ['./game-panel-store.component.css'],
+    selector: 'app-game-panel-store',
+    templateUrl: './game-panel-store.component.html',
+    styleUrls: ['./game-panel-store.component.css'],
+    standalone: false
 })
 export class GamePanelStoreComponent implements OnInit {
   getGamePanels(): GamePanel[] {
