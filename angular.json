@@ -32,8 +32,6 @@
               "jszip",
               "lzbase62",
               "pako",
-              "pdfjs-dist/build/pdf",
-              "pdfjs-dist/web/pdf_viewer",
               "msgpack-lite",
               "vkbeautify"
             ]

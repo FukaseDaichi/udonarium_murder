@@ -15,6 +15,7 @@ netlify dev                  # フロント + Functions を一体起動（バッ
 - **単一テスト**: `.spec.ts` 内で `fdescribe`/`fit` に絞る、またはパス指定 `ng test --include='**/object-store.spec.ts'`。
 - **ヘッドレス 1 回実行**: `ng test --watch=false --browsers=ChromeHeadless`。
 - **バックエンド 1 回実行**: `npm run test:backend`。
+- **component spec**: `src/app/testing/component-testing.ts` の `configureComponentTestingModule()` で TestBed を構成します（`AppModule` と同じサービス群、`provideNoopAnimations()`、`SafePipe`、`NO_ERRORS_SCHEMA`）。入力が必要なコンポーネントは `GameCharacter.create()` などで実オブジェクトを作って渡し、`afterEach` で `destroy()` します。固定 ID の `timer-bot` は `createTimerBot()` を使います。
 - 実際に通信を動かすには SkyWay の構成が必要です（下記「設定」）。
 
 ## 設定（config.yaml）
