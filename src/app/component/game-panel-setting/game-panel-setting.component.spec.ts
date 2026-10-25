@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { GamePanelSettingComponent } from './game-panel-setting.component';
 
@@ -7,9 +8,7 @@ describe('GamePanelSettingComponent', () => {
   let fixture: ComponentFixture<GamePanelSettingComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [GamePanelSettingComponent],
-    }).compileComponents();
+    configureComponentTestingModule([GamePanelSettingComponent]).compileComponents();
   }));
 
   beforeEach(() => {

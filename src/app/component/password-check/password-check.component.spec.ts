@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ModalService } from 'service/modal.service';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { PasswordCheckComponent } from './password-check.component';
 
@@ -7,10 +9,9 @@ describe('PasswordCheckComponent', () => {
   let fixture: ComponentFixture<PasswordCheckComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PasswordCheckComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([PasswordCheckComponent], {
+      providers: [{ provide: ModalService, useValue: { option: { peers: [], title: 'テストルーム' }, title: '' } }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

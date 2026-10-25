@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { PeerCursorComponent } from './peer-cursor.component';
 
@@ -7,10 +8,7 @@ describe('PeerCursorComponent', () => {
   let fixture: ComponentFixture<PeerCursorComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PeerCursorComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([PeerCursorComponent]).compileComponents();
   }));
 
   beforeEach(() => {

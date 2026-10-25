@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { LobbyComponent } from './lobby.component';
 
@@ -7,10 +8,7 @@ describe('CardStackListComponent', () => {
   let fixture: ComponentFixture<LobbyComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LobbyComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([LobbyComponent]).compileComponents();
   }));
 
   beforeEach(() => {

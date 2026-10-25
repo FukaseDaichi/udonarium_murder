@@ -5,9 +5,9 @@ import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { GamePanelViewerComponent } from './game-panel-viewer.component';
 
 @Component({
-    selector: 'pdf-viewer',
-    template: '',
-    standalone: false
+  selector: 'pdf-viewer',
+  template: '',
+  standalone: false
 })
 class PdfViewerStubComponent {
   @Input() src: string = '';
