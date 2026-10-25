@@ -12,8 +12,8 @@ interface BoxSize {
 }
 
 @Directive({
-    selector: '[appResizable]',
-    standalone: false
+  selector: '[appResizable]',
+  standalone: false
 })
 export class ResizableDirective implements AfterViewInit, OnDestroy {
   @Input('resizable.disable') isDisable: boolean = false;

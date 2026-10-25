@@ -20,10 +20,10 @@ import {
 } from '@udonarium/core/file-storage/audio-player';
 
 @Component({
-    selector: 'timer-modal',
-    templateUrl: './timer-modal.component.html',
-    styleUrls: ['./timer-modal.component.css'],
-    standalone: false
+  selector: 'timer-modal',
+  templateUrl: './timer-modal.component.html',
+  styleUrls: ['./timer-modal.component.css'],
+  standalone: false
 })
 export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isAllowedEmpty: boolean = false;

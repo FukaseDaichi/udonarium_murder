@@ -3,10 +3,10 @@ import { ContextMenuAction, ContextMenuService } from 'service/context-menu.serv
 import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
-    selector: 'context-menu',
-    templateUrl: './context-menu.component.html',
-    styleUrls: ['./context-menu.component.css'],
-    standalone: false
+  selector: 'context-menu',
+  templateUrl: './context-menu.component.html',
+  styleUrls: ['./context-menu.component.css'],
+  standalone: false
 })
 export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;

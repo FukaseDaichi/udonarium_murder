@@ -4,10 +4,10 @@ import { EventSystem } from '@udonarium/core/system';
 import { GamePanel } from '@udonarium/game-panel';
 
 @Component({
-    selector: 'game-panel-viewer',
-    templateUrl: './game-panel-viewer.component.html',
-    styleUrls: ['./game-panel-viewer.component.css'],
-    standalone: false
+  selector: 'game-panel-viewer',
+  templateUrl: './game-panel-viewer.component.html',
+  styleUrls: ['./game-panel-viewer.component.css'],
+  standalone: false
 })
 export class GamePanelViewerComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() gamePanel: GamePanel = null;

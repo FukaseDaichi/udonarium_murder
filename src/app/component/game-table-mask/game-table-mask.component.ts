@@ -26,11 +26,11 @@ import { TabletopActionService } from 'service/tabletop-action.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
-    selector: 'game-table-mask',
-    templateUrl: './game-table-mask.component.html',
-    styleUrls: ['./game-table-mask.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'game-table-mask',
+  templateUrl: './game-table-mask.component.html',
+  styleUrls: ['./game-table-mask.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() gameTableMask: GameTableMask = null;

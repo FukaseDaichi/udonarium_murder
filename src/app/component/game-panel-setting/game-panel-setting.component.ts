@@ -13,10 +13,10 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 
 @Component({
-    selector: 'game-panel-setting',
-    templateUrl: './game-panel-setting.component.html',
-    styleUrls: ['./game-panel-setting.component.css'],
-    standalone: false
+  selector: 'game-panel-setting',
+  templateUrl: './game-panel-setting.component.html',
+  styleUrls: ['./game-panel-setting.component.css'],
+  standalone: false
 })
 export class GamePanelSettingComponent implements OnInit, OnDestroy, AfterViewInit {
   minSize: number = 1;

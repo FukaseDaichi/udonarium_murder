@@ -3,11 +3,11 @@ import { EventSystem } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
 
 @Component({
-    selector: 'game-data-element, [game-data-element]',
-    templateUrl: './game-data-element.component.html',
-    styleUrls: ['./game-data-element.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'game-data-element, [game-data-element]',
+  templateUrl: './game-data-element.component.html',
+  styleUrls: ['./game-data-element.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class GameDataElementComponent implements OnInit, OnChanges, OnDestroy {
   @Input() gameDataElement: DataElement = null;

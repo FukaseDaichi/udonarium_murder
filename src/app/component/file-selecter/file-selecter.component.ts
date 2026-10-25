@@ -6,11 +6,11 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 
 @Component({
-    selector: 'file-selector',
-    templateUrl: './file-selecter.component.html',
-    styleUrls: ['./file-selecter.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'file-selector',
+  templateUrl: './file-selecter.component.html',
+  styleUrls: ['./file-selecter.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isAllowedEmpty: boolean = false;

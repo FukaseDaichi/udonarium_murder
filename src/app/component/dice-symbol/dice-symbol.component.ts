@@ -29,38 +29,38 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
-    selector: 'dice-symbol',
-    templateUrl: './dice-symbol.component.html',
-    styleUrls: ['./dice-symbol.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: [
-        trigger('diceRoll', [
-            transition('* => active', [
-                animate('800ms ease', keyframes([
-                    style({ transform: 'scale3d(0.8, 0.8, 0.8) rotateZ(0deg)', offset: 0 }),
-                    style({ transform: 'scale3d(1.2, 1.2, 1.2) rotateZ(360deg)', offset: 0.5 }),
-                    style({ transform: 'scale3d(0.75, 0.75, 0.75) rotateZ(520deg)', offset: 0.75 }),
-                    style({ transform: 'scale3d(1.125, 1.125, 1.125) rotateZ(630deg)', offset: 0.875 }),
-                    style({ transform: 'scale3d(1.0, 1.0, 1.0) rotateZ(720deg)', offset: 1.0 })
-                ]))
-            ])
-        ]),
-        trigger('bounceInOut', [
-            transition('void => *', [
-                animate('600ms ease', keyframes([
-                    style({ transform: 'scale3d(0, 0, 0)', offset: 0 }),
-                    style({ transform: 'scale3d(1.5, 1.5, 1.5)', offset: 0.5 }),
-                    style({ transform: 'scale3d(0.75, 0.75, 0.75)', offset: 0.75 }),
-                    style({ transform: 'scale3d(1.125, 1.125, 1.125)', offset: 0.875 }),
-                    style({ transform: 'scale3d(1.0, 1.0, 1.0)', offset: 1.0 })
-                ]))
-            ]),
-            transition('* => void', [
-                animate(100, style({ transform: 'scale3d(0, 0, 0)' }))
-            ])
-        ])
-    ],
-    standalone: false
+  selector: 'dice-symbol',
+  templateUrl: './dice-symbol.component.html',
+  styleUrls: ['./dice-symbol.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('diceRoll', [
+      transition('* => active', [
+        animate('800ms ease', keyframes([
+          style({ transform: 'scale3d(0.8, 0.8, 0.8) rotateZ(0deg)', offset: 0 }),
+          style({ transform: 'scale3d(1.2, 1.2, 1.2) rotateZ(360deg)', offset: 0.5 }),
+          style({ transform: 'scale3d(0.75, 0.75, 0.75) rotateZ(520deg)', offset: 0.75 }),
+          style({ transform: 'scale3d(1.125, 1.125, 1.125) rotateZ(630deg)', offset: 0.875 }),
+          style({ transform: 'scale3d(1.0, 1.0, 1.0) rotateZ(720deg)', offset: 1.0 })
+        ]))
+      ])
+    ]),
+    trigger('bounceInOut', [
+      transition('void => *', [
+        animate('600ms ease', keyframes([
+          style({ transform: 'scale3d(0, 0, 0)', offset: 0 }),
+          style({ transform: 'scale3d(1.5, 1.5, 1.5)', offset: 0.5 }),
+          style({ transform: 'scale3d(0.75, 0.75, 0.75)', offset: 0.75 }),
+          style({ transform: 'scale3d(1.125, 1.125, 1.125)', offset: 0.875 }),
+          style({ transform: 'scale3d(1.0, 1.0, 1.0)', offset: 1.0 })
+        ]))
+      ]),
+      transition('* => void', [
+        animate(100, style({ transform: 'scale3d(0, 0, 0)' }))
+      ])
+    ])
+  ],
+  standalone: false
 })
 export class DiceSymbolComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() diceSymbol: DiceSymbol = null;

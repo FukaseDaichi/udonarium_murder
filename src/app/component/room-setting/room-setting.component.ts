@@ -8,10 +8,10 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 
 @Component({
-    selector: 'room-setting',
-    templateUrl: './room-setting.component.html',
-    styleUrls: ['./room-setting.component.css'],
-    standalone: false
+  selector: 'room-setting',
+  templateUrl: './room-setting.component.html',
+  styleUrls: ['./room-setting.component.css'],
+  standalone: false
 })
 export class RoomSettingComponent implements OnInit, OnDestroy {
   peers: PeerContext[] = [];

@@ -28,11 +28,11 @@ import { TabletopActionService } from 'service/tabletop-action.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
-    selector: 'terrain',
-    templateUrl: './terrain.component.html',
-    styleUrls: ['./terrain.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'terrain',
+  templateUrl: './terrain.component.html',
+  styleUrls: ['./terrain.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() terrain: Terrain = null;
