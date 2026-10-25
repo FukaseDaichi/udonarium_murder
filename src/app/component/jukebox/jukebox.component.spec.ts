@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { JukeboxComponent } from './jukebox.component';
 
@@ -7,10 +8,7 @@ describe('JukeboxComponent', () => {
   let fixture: ComponentFixture<JukeboxComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ JukeboxComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([JukeboxComponent]).compileComponents();
   }));
 
   beforeEach(() => {

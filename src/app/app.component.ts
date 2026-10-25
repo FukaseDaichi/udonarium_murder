@@ -58,6 +58,7 @@ const MENU_LENGTH: number = 10;
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  standalone: false
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;

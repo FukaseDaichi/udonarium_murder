@@ -12,6 +12,7 @@ import { TimerModalComponent } from 'component/timer-modal/timer-modal.component
   selector: 'timer-menu',
   templateUrl: './timer-menu.component.html',
   styleUrls: ['./timer-menu.component.css'],
+  standalone: false
 })
 export class TimerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(

@@ -16,6 +16,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
       transition('* => void', [animate(100, style({ transform: 'scale(0, 0)' }))]),
     ]),
   ],
+  standalone: false
 })
 export class UIPanelComponent implements OnInit {
   @ViewChild('draggablePanel', { static: true })

@@ -29,7 +29,8 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
   selector: 'game-table-mask',
   templateUrl: './game-table-mask.component.html',
   styleUrls: ['./game-table-mask.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() gameTableMask: GameTableMask = null;

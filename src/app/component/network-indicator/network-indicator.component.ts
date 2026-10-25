@@ -5,7 +5,8 @@ import { EventSystem, Network } from '@udonarium/core/system';
 @Component({
   selector: 'network-indicator',
   templateUrl: './network-indicator.component.html',
-  styleUrls: ['./network-indicator.component.css']
+  styleUrls: ['./network-indicator.component.css'],
+  standalone: false
 })
 export class NetworkIndicatorComponent implements AfterViewInit, OnDestroy {
   private timer: NodeJS.Timeout = null;

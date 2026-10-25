@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { UIPanelComponent } from './ui-panel.component';
 
@@ -7,10 +8,7 @@ describe('UIPanelComponent', () => {
   let fixture: ComponentFixture<UIPanelComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UIPanelComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([UIPanelComponent]).compileComponents();
   }));
 
   beforeEach(() => {

@@ -47,7 +47,8 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
         ]))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() cardStack: CardStack = null;

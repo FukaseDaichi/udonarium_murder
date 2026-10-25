@@ -18,7 +18,8 @@ import { Component, Input, OnChanges } from '@angular/core';
         ]))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class BadgeComponent implements OnChanges {
   @Input() count: number = 0;

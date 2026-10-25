@@ -25,6 +25,7 @@ import { TabletopService } from 'service/tabletop.service';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
   @Input() card: Card = null;

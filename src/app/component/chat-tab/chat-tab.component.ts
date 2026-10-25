@@ -39,6 +39,7 @@ const isiOS = ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || (ua.indexO
   templateUrl: './chat-tab.component.html',
   styleUrls: ['./chat-tab.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges, AfterViewChecked {
   sampleMessages: ChatMessage[] = [

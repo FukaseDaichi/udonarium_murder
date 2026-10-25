@@ -25,7 +25,8 @@ import { ChatMessageService } from 'service/chat-message.service';
       ])
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
+  standalone: false
 })
 
 export class ChatMessageComponent implements OnInit {

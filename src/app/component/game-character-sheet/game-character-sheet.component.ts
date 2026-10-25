@@ -13,7 +13,8 @@ import { SaveDataService } from 'service/save-data.service';
 @Component({
   selector: 'game-character-sheet',
   templateUrl: './game-character-sheet.component.html',
-  styleUrls: ['./game-character-sheet.component.css']
+  styleUrls: ['./game-character-sheet.component.css'],
+  standalone: false
 })
 export class GameCharacterSheetComponent implements OnInit, OnDestroy {
 

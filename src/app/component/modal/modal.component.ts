@@ -27,7 +27,8 @@ import { ModalService } from 'service/modal.service';
         animate(200, style({ 'background-color': 'rgba(30, 30, 30, 0.0)' }))
       ])
     ]),
-  ]
+  ],
+  standalone: false
 })
 export class ModalComponent {
   @ViewChild('content', { read: ViewContainerRef, static: true }) content: ViewContainerRef;

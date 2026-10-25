@@ -8,7 +8,7 @@
 
 | # | 優先度 | 項目 | 種別 |
 | --- | --- | --- | --- |
-| 1 | Medium | Angular component smoke spec が多数失敗する | テスト |
+| 1 | Medium | `@skyway-sdk/core` 1.x 経由の依存に脆弱性が残っている | セキュリティ |
 | 2 | Medium | skyway2023 接続層の SDK 連携テストが薄い | テスト |
 | 3 | Medium | skyway2023 実装が SDK 内部 API に依存している | 保守性 |
 | 4 | Low | `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定時の案内が弱い | 運用 |
@@ -16,11 +16,12 @@
 
 ---
 
-### 1. Angular component smoke spec が多数失敗する（Medium）
+### 1. `@skyway-sdk/core` 1.x 経由の依存に脆弱性が残っている（Medium）
 
-- 現状: `ng test --watch=false --browsers=ChromeHeadless` は、生成時のままに近い component spec で多数失敗します。代表例は `NoopAnimationsModule` / `BrowserAnimationsModule` 未導入による synthetic property エラー、`ContextMenuService` / `ChatMessageService` / `ModalService` などの provider 不足です。
-- 影響: 変更箇所だけを `--include` で絞れば検証できますが、フルの Karma/Jasmine スイートを回帰確認として使いにくい状態です。
-- 対応: component smoke spec を実際の依存に合わせて整理し、アニメーションは `NoopAnimationsModule`、サービスは実サービスまたは明示的な stub を使う方針に統一します。
+- 現状: `npm audit --omit=dev` で、`@skyway-sdk/core` 1.x が依存する `uuid` 9.x（GHSA-w5hq-g745-h8pq）と `@skyway-sdk/token` の `zod` 3.x（GHSA-mrhx-c7xc-m3w5）が検出されます。`lodash` は `package.json` の `overrides` で修正版（4.18.1）に固定済みです。
+- リスク: `uuid` は v3/v5/v6 にバッファを渡す使い方、`zod` は巨大なコレクションの検証で問題になるもので、SDK の用途（v4 の ID 生成、自前バックエンドが発行したトークンの検証）では悪用の経路は限定的です。
+- 対応: `@skyway-sdk/core` 2.x への更新で `uuid` は解消しますが、メジャー更新で 項目 3 の内部 API 依存が壊れる可能性があるため、実接続での動作確認とあわせて行います。`zod` は SDK 側が zod 4 系へ移行するまで残ります。
+- 開発時のみの依存（`@angular/build` の `undici`、`webpack-dev-server` の `sockjs`/`uuid` など）にも指摘が残りますが、本番バンドルには含まれません。
 
 ### 2. skyway2023 接続層の SDK 連携テストが薄い（Medium）
 

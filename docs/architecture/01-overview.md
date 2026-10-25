@@ -20,8 +20,8 @@
 
 | 領域 | 採用技術 |
 | --- | --- |
-| フレームワーク | Angular 17（単一 `NgModule`。スタンドアロンコンポーネントは未使用） |
-| 言語 | TypeScript 5.2、`experimentalDecorators` 有効 |
+| フレームワーク | Angular 21（単一 `NgModule`。スタンドアロンコンポーネントは未使用、Zone.js による変更検知） |
+| 言語 | TypeScript 5.9、`experimentalDecorators` 有効 |
 | P2P 通信 | 新 SkyWay `@skyway-sdk/core` ^1.9.2（旧 SkyWay も動的 import でフォールバック可能） |
 | バックエンド | Netlify Functions（v2、`config.path` ルーティング） |
 | ダイス | BCDice（`bcdice` パッケージ） |

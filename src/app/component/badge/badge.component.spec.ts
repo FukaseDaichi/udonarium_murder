@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { BadgeComponent } from './badge.component';
 
@@ -7,10 +8,7 @@ describe('BadgeComponent', () => {
   let fixture: ComponentFixture<BadgeComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BadgeComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([BadgeComponent]).compileComponents();
   }));
 
   beforeEach(() => {

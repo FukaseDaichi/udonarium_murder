@@ -21,6 +21,7 @@ import { PointerCoordinate } from 'service/pointer-device.service';
   selector: 'peer-cursor, [peer-cursor]',
   templateUrl: './peer-cursor.component.html',
   styleUrls: ['./peer-cursor.component.css'],
+  standalone: false
 })
 export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('cursor') cursorElementRef: ElementRef;

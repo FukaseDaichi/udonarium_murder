@@ -13,7 +13,8 @@ import { PanelService } from 'service/panel.service';
 @Component({
   selector: 'chat-palette',
   templateUrl: './chat-palette.component.html',
-  styleUrls: ['./chat-palette.component.css']
+  styleUrls: ['./chat-palette.component.css'],
+  standalone: false
 })
 export class ChatPaletteComponent implements OnInit, OnDestroy {
   @ViewChild('chatInput', { static: true }) chatInputComponent: ChatInputComponent;

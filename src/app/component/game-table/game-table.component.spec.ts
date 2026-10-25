@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import 'hammerjs';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { GameTableComponent } from './game-table.component';
 
@@ -7,10 +9,7 @@ describe('GameTableComponent', () => {
   let fixture: ComponentFixture<GameTableComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GameTableComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([GameTableComponent]).compileComponents();
   }));
 
   beforeEach(() => {

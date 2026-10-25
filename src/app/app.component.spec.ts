@@ -1,32 +1,20 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { AppConfigService } from 'service/app-config.service';
+import { configureComponentTestingModule } from './testing/component-testing';
 
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+    configureComponentTestingModule([AppComponent], {
+      // 設定ファイルの読み込みを起点にネットワーク接続が始まるため、テストでは初期化処理を行わない
+      providers: [{ provide: AppConfigService, useValue: { initialize: () => {} } }],
     }).compileComponents();
   }));
 
-  it('should create the app', waitForAsync(() => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
+    const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  }));
-
-  it(`should have as title 'app works!'`, waitForAsync(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app works!');
-  }));
-
-  it('should render title in a h1 tag', waitForAsync(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('app works!');
-  }));
+  });
 });

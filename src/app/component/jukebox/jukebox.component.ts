@@ -19,6 +19,7 @@ import { PanelService } from 'service/panel.service';
   selector: 'app-jukebox',
   templateUrl: './jukebox.component.html',
   styleUrls: ['./jukebox.component.css'],
+  standalone: false
 })
 export class JukeboxComponent implements OnInit, OnDestroy {
   get volume(): number {

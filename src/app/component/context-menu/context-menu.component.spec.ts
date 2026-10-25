@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { ContextMenuComponent } from './context-menu.component';
 
@@ -7,10 +8,7 @@ describe('ContextMenuComponent', () => {
   let fixture: ComponentFixture<ContextMenuComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ContextMenuComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([ContextMenuComponent]).compileComponents();
   }));
 
   beforeEach(() => {

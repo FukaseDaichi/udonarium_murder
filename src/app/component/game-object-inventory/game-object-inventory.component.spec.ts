@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { GameObjectInventoryComponent } from './game-object-inventory.component';
 
@@ -7,10 +8,7 @@ describe('GameObjectInventoryComponent', () => {
   let fixture: ComponentFixture<GameObjectInventoryComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GameObjectInventoryComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([GameObjectInventoryComponent]).compileComponents();
   }));
 
   beforeEach(() => {

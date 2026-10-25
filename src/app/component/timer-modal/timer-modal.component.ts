@@ -23,6 +23,7 @@ import {
   selector: 'timer-modal',
   templateUrl: './timer-modal.component.html',
   styleUrls: ['./timer-modal.component.css'],
+  standalone: false
 })
 export class TimerModalComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isAllowedEmpty: boolean = false;

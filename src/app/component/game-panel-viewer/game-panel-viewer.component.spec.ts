@@ -7,6 +7,7 @@ import { GamePanelViewerComponent } from './game-panel-viewer.component';
 @Component({
   selector: 'pdf-viewer',
   template: '',
+  standalone: false
 })
 class PdfViewerStubComponent {
   @Input() src: string = '';

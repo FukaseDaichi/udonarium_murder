@@ -34,6 +34,7 @@ import { TableTouchGesture } from './table-touch-gesture';
   selector: 'game-table',
   templateUrl: './game-table.component.html',
   styleUrls: ['./game-table.component.css'],
+  standalone: false
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;

@@ -31,7 +31,8 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
   selector: 'terrain',
   templateUrl: './terrain.component.html',
   styleUrls: ['./terrain.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() terrain: Terrain = null;

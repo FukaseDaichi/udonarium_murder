@@ -20,6 +20,7 @@ import { buildRoomInviteUrl } from '@udonarium/core/system/network/room-invite';
   selector: 'peer-menu',
   templateUrl: './peer-menu.component.html',
   styleUrls: ['./peer-menu.component.css'],
+  standalone: false
 })
 export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   targetUserId: string = '';

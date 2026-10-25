@@ -10,6 +10,7 @@ import { PanelService } from 'service/panel.service';
   templateUrl: './file-selecter.component.html',
   styleUrls: ['./file-selecter.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() isAllowedEmpty: boolean = false;

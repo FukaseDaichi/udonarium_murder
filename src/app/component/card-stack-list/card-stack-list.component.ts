@@ -13,7 +13,8 @@ import { PanelOption, PanelService } from 'service/panel.service';
   selector: 'card-stack-list',
   templateUrl: './card-stack-list.component.html',
   styleUrls: ['./card-stack-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class CardStackListComponent implements OnChanges, OnDestroy {
   @Input() cardStack: CardStack = null;

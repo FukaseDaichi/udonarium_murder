@@ -14,6 +14,7 @@ import { PanelService } from 'service/panel.service';
   selector: 'lobby',
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css'],
+  standalone: false
 })
 export class LobbyComponent implements OnInit, OnDestroy {
   rooms: IRoomInfo[] = [];

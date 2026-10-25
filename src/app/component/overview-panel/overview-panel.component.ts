@@ -19,6 +19,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
       transition('* => void', [animate('100ms ease-in', keyframes([style({ opacity: 1, offset: 0 }), style({ opacity: 0, offset: 1.0 })]))]),
     ]),
   ],
+  standalone: false
 })
 export class OverviewPanelComponent implements OnChanges, AfterViewInit, OnDestroy {
   @ViewChild('draggablePanel', { static: true }) draggablePanel: ElementRef<HTMLElement>;

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { configureComponentTestingModule } from '../../testing/component-testing';
 
 import { FileSelecterComponent } from './file-selecter.component';
 
@@ -7,10 +8,7 @@ describe('FileSelecterComponent', () => {
   let fixture: ComponentFixture<FileSelecterComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ FileSelecterComponent ]
-    })
-    .compileComponents();
+    configureComponentTestingModule([FileSelecterComponent]).compileComponents();
   }));
 
   beforeEach(() => {

@@ -17,7 +17,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 @Component({
   selector: 'chat-input',
   templateUrl: './chat-input.component.html',
-  styleUrls: ['./chat-input.component.css']
+  styleUrls: ['./chat-input.component.css'],
+  standalone: false
 })
 export class ChatInputComponent implements OnInit, OnDestroy {
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;

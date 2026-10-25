@@ -27,7 +27,8 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
   selector: 'text-note',
   templateUrl: './text-note.component.html',
   styleUrls: ['./text-note.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TextNoteComponent implements OnChanges, OnDestroy {
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;

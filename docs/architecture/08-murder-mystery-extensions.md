@@ -54,7 +54,8 @@ GM がプレイヤーへハンドアウト等を提示するための **パネ�
 シナリオ/ハンドアウトの PDF 表示に [`ng2-pdf-viewer`](https://www.npmjs.com/package/ng2-pdf-viewer) を使います（`app.module.ts` で `PdfViewerModule` を import）。
 
 - `GamePanelViewerComponent` が `@Input() pdfFile: ImageFile` の `url` を `pdfSrc` として渡し、`<pdf-viewer>` で描画。
-- `angular.json` の `allowedCommonJsDependencies` に `pdfjs-dist/...` を登録済み（CommonJS 警告抑制）。
+- `ng2-pdf-viewer` 10.x は ESM 版の `pdfjs-dist` 4.x を使います。悪意ある PDF による任意スクリプト実行（GHSA-wgrm-67xf-hhpq）への対策のため 4.2 未満へ戻さないでください（`ng2-pdf-viewer` 側で `isEvalSupported: false` も設定済み）。
+- PDF.js の Worker は `ng2-pdf-viewer` の既定どおり jsDelivr CDN から読み込みます。
 - 画像と同じく PDF も `ImageFile`/`ImageStorage` の仕組みに乗せて共有します。
 
 ## タイマー
@@ -76,5 +77,5 @@ GM 進行用のタイマー。
 - `class/game-panel*.ts`、`component/game-panel-*` / `ui-game-panel` 一式
 - `class/timer-bot.ts`、`component/timer*`
 - `service/app-config-custom.service.ts` と `AppComponent` の `isGM` ロジック
-- `ng2-pdf-viewer` 依存と `PdfViewerModule` 登録、`allowedCommonJsDependencies` の pdfjs
+- `ng2-pdf-viewer`（10.x 以上）依存と `PdfViewerModule` 登録
 - `index.html` の OGP/タイトル、`README.md` のフォーク説明

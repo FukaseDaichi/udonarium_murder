@@ -14,6 +14,7 @@ import { PanelService } from 'service/panel.service';
   templateUrl: './file-storage.component.html',
   styleUrls: ['./file-storage.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FileStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   fileStorageService = ImageStorage.instance;

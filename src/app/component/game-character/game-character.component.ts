@@ -42,7 +42,8 @@ import { SelectionState, TabletopSelectionService } from 'service/tabletop-selec
         animate(100, style({ transform: 'scale3d(0, 0, 0)' }))
       ])
     ])
-  ]
+  ],
+  standalone: false
 })
 export class GameCharacterComponent implements OnChanges, OnDestroy {
   @Input() gameCharacter: GameCharacter = null;

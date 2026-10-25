@@ -20,7 +20,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   selector: 'game-object-inventory',
   templateUrl: './game-object-inventory.component.html',
   styleUrls: ['./game-object-inventory.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class GameObjectInventoryComponent implements OnInit, OnDestroy {
   inventoryTypes: string[] = ['table', 'common', 'graveyard'];

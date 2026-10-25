@@ -6,7 +6,8 @@ import { DataElement } from '@udonarium/data-element';
   selector: 'game-data-element, [game-data-element]',
   templateUrl: './game-data-element.component.html',
   styleUrls: ['./game-data-element.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class GameDataElementComponent implements OnInit, OnChanges, OnDestroy {
   @Input() gameDataElement: DataElement = null;
