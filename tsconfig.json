@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": false,
+    "skipLibCheck": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",

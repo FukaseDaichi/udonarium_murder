@@ -37,7 +37,7 @@ export class SkyWayDataStream extends EventEmitter implements WebRTCConnection {
   private stats: WebRTCStats;
 
   get open(): boolean { return this.peer.isOpen; }
-  get member(): RemoteMember { return this.skyWay.room?.members.find(member => member.name === this.peer.peerId); }
+  get member(): RemoteMember { return this.skyWay.room?.members.find((member): member is RemoteMember => member.side === 'remote' && member.name === this.peer.peerId); }
 
   private isQueuing = false;
   private sendQueue: Set<Uint8Array> = new Set();
@@ -244,9 +244,14 @@ export class SkyWayDataStream extends EventEmitter implements WebRTCConnection {
     let p2pconnection = (member as any)?._getOrCreateConnection((this.skyWay.roomPerson as any)?._impl) as P2PConnection;
     let publication = member?.publications.find(publication => publication.metadata === 'udonarium-data-stream');
 
+    let remoteStream = this.isPublication ? null : (p2pconnection?.receiver.streams[publication?.id] as RemoteDataStream);
     let dataChannel = this.isPublication
       ? p2pconnection?.sender.datachannels[this.skyWay.publication?.id]
-      : (p2pconnection?.receiver.streams[publication?.id] as RemoteDataStream)?._datachannel;
+      : remoteStream?._datachannel;
+
+    // SDK 2.x の RemoteDataStream は onData のリスナーが登録されるまで受信データを溜め続ける。
+    // 受信は RTCDataChannel から直接行うため、空のリスナーを登録してバッファリングを止める。
+    if (remoteStream && remoteStream.onData.length === 0) remoteStream.onData.add(() => {});
 
     // 接続状況確認
     let isOpen = dataChannel?.readyState === 'open';
