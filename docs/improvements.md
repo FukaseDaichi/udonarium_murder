@@ -8,7 +8,7 @@
 
 | # | 優先度 | 項目 | 種別 |
 | --- | --- | --- | --- |
-| 1 | Medium | `@skyway-sdk/core` 1.x 経由の依存に脆弱性が残っている | セキュリティ |
+| 1 | Low | SkyWay SDK の依存 `deepmerge` に修正版のない脆弱性が残っている | セキュリティ |
 | 2 | Medium | skyway2023 接続層の SDK 連携テストが薄い | テスト |
 | 3 | Medium | skyway2023 実装が SDK 内部 API に依存している | 保守性 |
 | 4 | Low | `ACCESS_CONTROL_ALLOW_ORIGIN` 未設定時の案内が弱い | 運用 |
@@ -16,12 +16,14 @@
 
 ---
 
-### 1. `@skyway-sdk/core` 1.x 経由の依存に脆弱性が残っている（Medium）
+### 1. SkyWay SDK の依存 `deepmerge` に修正版のない脆弱性が残っている（Low）
 
-- 現状: `npm audit --omit=dev` で、`@skyway-sdk/core` 1.x が依存する `uuid` 9.x（GHSA-w5hq-g745-h8pq）と `@skyway-sdk/token` の `zod` 3.x（GHSA-mrhx-c7xc-m3w5）が検出されます。`lodash` は `package.json` の `overrides` で修正版（4.18.1）に固定済みです。
-- リスク: `uuid` は v3/v5/v6 にバッファを渡す使い方、`zod` は巨大なコレクションの検証で問題になるもので、SDK の用途（v4 の ID 生成、自前バックエンドが発行したトークンの検証）では悪用の経路は限定的です。
-- 対応: `@skyway-sdk/core` 2.x への更新で `uuid` は解消しますが、メジャー更新で 項目 3 の内部 API 依存が壊れる可能性があるため、実接続での動作確認とあわせて行います。`zod` は SDK 側が zod 4 系へ移行するまで残ります。
-- 開発時のみの依存（`@angular/build` の `undici`、`webpack-dev-server` の `sockjs`/`uuid` など）にも指摘が残りますが、本番バンドルには含まれません。
+- 現状: `npm audit` で `deepmerge` 4.2.0〜4.3.1 のプロトタイプ汚染（GHSA-gcqx-w48m-w2h4、low）が検出されます。`@skyway-sdk/core` / `@skyway-sdk/rtc-api-client` が SDK の設定オブジェクトのマージに使っており、修正版は公開されていません。
+- リスク: 外部から渡された値をマージする経路はなく（設定はアプリ内の固定値と SDK の既定値のみ）、悪用の経路は限定的です。
+- 対応: `deepmerge` の修正版、または SDK 側の置き換えが公開されたら更新します。
+- `package.json` の `overrides` で次の依存を修正版に差し替えています。SDK や Angular を更新するときは、不要になったものを外してください。
+  - `@skyway-sdk/token` の `zod` → 4.6.6（SDK は zod 3 を要求しますが、zod 3 系には修正版がありません。トークンの検証は zod 3 と同じ結果になることを確認済みです。SDK の型定義が zod 3 の型を参照するため、`tsconfig.json` で `skipLibCheck` を有効にしています）
+  - `sockjs`（`webpack-dev-server` の依存、開発サーバーのみ）の `uuid` → 11.1.1
 
 ### 2. skyway2023 接続層の SDK 連携テストが薄い（Medium）
 
@@ -32,7 +34,8 @@
 
 ### 3. skyway2023 実装が SDK 内部 API に依存している（Medium）
 
-- 現状: `skyway-data-stream.ts` で `_getOrCreateConnection`、`_datachannel`、`_getRTCPeerConnection` など、`@skyway-sdk/core` の内部メンバーを参照しています。
+- 現状: `skyway-data-stream.ts` で `_getOrCreateConnection`、`_datachannel`、`_getRTCPeerConnection`、`skyway-facade.ts` で `SkyWayChannelImpl._unsubscribe`（2.x で削除された `Subscription.cancel()` の代替）など、`@skyway-sdk/core` の内部メンバーを参照しています。2.5.1 で存在することは確認済みです。
+- 2.x の `RemoteDataStream` は `onData` のリスナーが無いと受信データを最大 10MB までバッファするため、`refresh()` で空のリスナーを登録しています（受信は `RTCDataChannel` から直接行う）。
 - リスク: SDK の minor/major 更新で内部構造が変わると、接続状態監視や DataChannel 取得が壊れる可能性があります。
 - 対応: 公開 API で代替できる箇所を切り分け、SDK 更新時は `network/skyway2023/` を重点的に動作確認します。必要に応じて `@skyway-sdk/room` など現行 SDK の推奨構成も検証します。
 

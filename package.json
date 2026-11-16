@@ -20,7 +20,7 @@
     "@angular/platform-browser": "^21.2.25",
     "@angular/platform-browser-dynamic": "^21.2.25",
     "@angular/router": "^21.2.25",
-    "@skyway-sdk/core": "^1.9.2",
+    "@skyway-sdk/core": "^2.5.1",
     "base-x": "^4.0.0",
     "bcdice": "^4.4.0",
     "crypto-js": "^4.2.0",
@@ -59,6 +59,12 @@
     "typescript": "~5.9.3"
   },
   "overrides": {
-    "lodash": "^4.18.1"
+    "@skyway-sdk/token": {
+      "zod": "^4.6.6",
+      "zod-validation-error": "^5.0.0"
+    },
+    "sockjs": {
+      "uuid": "^11.1.1"
+    }
   }
 }

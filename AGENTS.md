@@ -77,7 +77,7 @@ Angular components (`src/app/component/`) render and mutate game objects and sub
 
 ## Networking: new SkyWay (skyway2023) + Netlify Functions
 
-`Network` picks the connection layer at runtime from `backend.mode` (default `skyway2023`) via `dynamicImport()`; new SkyWay needs an auth token, fetched from a Netlify Function at `/v1/skyway2023/token` (`netlify/functions/udonarium-backend.ts`). Config is in `src/assets/config.yaml` (`backend.mode` / `backend.url`, empty URL = same-origin `/v1`); `@skyway-sdk/core` is `^1.9.2`. The legacy `skyway/` layer and `webrtc.key` remain only as a `backend.mode: skyway` fallback. The current design is in [`docs/architecture/03-messaging-and-network.md`](docs/architecture/03-messaging-and-network.md) and [`04-backend.md`](docs/architecture/04-backend.md). Read those before touching the network layer.
+`Network` picks the connection layer at runtime from `backend.mode` (default `skyway2023`) via `dynamicImport()`; new SkyWay needs an auth token, fetched from a Netlify Function at `/v1/skyway2023/token` (`netlify/functions/udonarium-backend.ts`). Config is in `src/assets/config.yaml` (`backend.mode` / `backend.url`, empty URL = same-origin `/v1`); `@skyway-sdk/core` is `^2.5.1`. The legacy `skyway/` layer and `webrtc.key` remain only as a `backend.mode: skyway` fallback. The current design is in [`docs/architecture/03-messaging-and-network.md`](docs/architecture/03-messaging-and-network.md) and [`04-backend.md`](docs/architecture/04-backend.md). Read those before touching the network layer.
 
 ## Conventions
 

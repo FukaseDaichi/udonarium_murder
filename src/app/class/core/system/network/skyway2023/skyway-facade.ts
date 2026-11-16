@@ -5,6 +5,7 @@ import {
   Logger,
   Publication,
   SkyWayChannel,
+  SkyWayChannelImpl,
   SkyWayContext,
   SkyWayError,
   SkyWayStreamFactory,
@@ -240,7 +241,8 @@ export class SkyWayFacade {
       console.log(`publication onSubscribed ${event.subscription.subscriber.name}`);
       let peerId = event.subscription.subscriber.name;
       if (peerId == null) {
-        event.subscription.cancel();
+        // SDK 2.x で Subscription.cancel() が削除されたため、1.x の cancel() と同じ内部 API で購読を解除する
+        (this.room as SkyWayChannelImpl)?._unsubscribe(event.subscription.id).catch(err => console.error(err));
         return;
       }
 
@@ -319,8 +321,8 @@ export class SkyWayFacade {
     let publication = this.publication;
     this.publication = null;
 
-    if (!publication) return;
-    await publication.cancel();
+    if (!publication || this.roomPerson?.state !== 'joined') return;
+    await this.roomPerson.unpublish(publication).catch(err => console.error(err));
   }
 
   async listAllPeers(): Promise<string[]> {
